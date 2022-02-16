@@ -1,4 +1,4 @@
-import { createApp } from 'vue/dist/vue.esm-bundler.js'
+import { createApp } from './vue.esm-bundler.js'
 import Header from '../Components/Header.js'
 
 export function header() {
