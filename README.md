@@ -10,5 +10,5 @@ Useful Links
 ------------
 - [Vue documentation](https://vuejs.org/guide/introduction.html)
 - [Node.js documentation](https://nodejs.org/en/docs/)
-- [Node.js and Express Guide](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/Introduction)
-- [SQLiteStudio Download](https://sqlitestudio.pl)
+- [Node.js and Express guide](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/Introduction)
+- [SQLiteStudio download](https://sqlitestudio.pl)
