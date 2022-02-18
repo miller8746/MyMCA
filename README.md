@@ -4,7 +4,7 @@ This is our project for CS 341-01.  It is a small-scale web-based application th
 
 Setting Up a Development Environment
 ------------------------------------
-Follow [these](https://vuejs.org/guide/quick-start.html) instructions to set up and run a local development environment.  Part of the installation process requires installing Node.js, which may require some restarts or changes in administrative permissions.  After you have the requirements installed, you can start a local server by using the instructions on the same page.
+Follow [these](https://vuejs.org/guide/quick-start.html) instructions to set up and run a local development environment.  Part of the installation process requires installing Node.js, which may require some restarts or changes in administrative permissions.  After you have the requirements installed, create a Vue project and replace index.html and the contents of the src folder with the contents of the folder in this repo.
 
 Useful Links
 ------------
