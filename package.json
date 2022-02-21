@@ -1,0 +1,23 @@
+{
+  "name": "ymca-program-registration",
+  "version": "1.0.0",
+  "description": "This is our project for CS 341-01.  Formal project description pending.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miller8746/YMCA-Program-Registration.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miller8746/YMCA-Program-Registration/issues"
+  },
+  "homepage": "https://github.com/miller8746/YMCA-Program-Registration#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "sqlite3": "^5.0.2"
+  }
+}
