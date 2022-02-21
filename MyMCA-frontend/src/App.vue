@@ -1,0 +1,12 @@
+<template>
+  <router-view/>
+</template>
+
+<style>
+body {
+	margin: 0px !important;
+	font-size: 15pt;
+	font-family: system-ui;
+    	color: dimgrey;
+}
+</style>
