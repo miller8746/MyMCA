@@ -16,7 +16,14 @@ Next, install the project dependencies by **cd'ing into the project folder** and
 
 > npm install vue-router axios
 
-Finally, (re)place the contents of the project folder with the contents of /MyMCA-frontend in this repo.  Then, to run the project, run this command in the project folder:
+Finally, (re)place the contents of the project folder with the contents of /MyMCA-frontend in this repo.  There are some extra bits left over from the initial scaffolding that can be removed (but don't have to be), including:
+
+- src/views
+- src/store
+- src/router/index.js
+- src/components/HelloWorld.vue
+
+Then, to run the project, run this command in the project folder:
 
 > npm run serve
 
