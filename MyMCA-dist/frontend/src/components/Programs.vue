@@ -33,13 +33,18 @@
 	<div>
 		<Header :credentials="this.credentials" :includeSignOut="true"/>
 		<div>
-			<div class="programsContainer">
-				<div v-for="program in this.programs" v-bind:key="program" class="programContainer">
-					<div class="progName">{{ program['Title'] }}</div>
-					<div>Description: {{ program['Description'] }}</div>
-					<div class="supplementalText">Capacity: {{ program['Capacity'] }}</div>
-					<div class="supplementalText">Cost: ${{ program['Cost'] }}</div>
-					<div class="supplementalText">Starting time: {{ program['OfferingDate']}}</div>
+			<div class="container card-group">
+				<div v-for="program in this.programs" v-bind:key="program" class="card border-primary mt-3">
+					<div class="card-body">
+						<h3 class="card-title card-header">{{ program['Title'] }}</h3>
+						<p>{{ program['Description'] }}</p>
+
+						<div class="program-detail">[current capacity here] / {{ program['Capacity'] }} Openings - ${{ program['Cost'] }}/Person</div>
+						<a href="#" class="btn btn-primary btn-sm mt-3 mb-3">Sign Up</a>	
+						<div class="card-footer footer">
+							<div class="text-muted" >{{ program['OfferingDate']}}</div>
+    					</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -47,23 +52,12 @@
 </template>
 
 <style>
-.programsContainer {
-	display: flex;
-	justify-content: center;
+.footer {
+	font-size: small;
 }
 
-.programContainer {
-	display: flex;
-	flex-direction: column;
-	background-color: #8c0000;
-	color: #FFFFFF;
-	border-radius: 15px;
-	margin: 10px 0px 10px 0px;
-	padding: 5px;
-	min-width: 600px;
+.program-detail {
+	font-size: medium;
 }
 
-.supplementalText {
-	font-size: 12pt;
-}
 </style>
