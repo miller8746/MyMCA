@@ -1,6 +1,9 @@
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
+	import moment from 'moment'
+
+
 	export default {
 		components: { Header },
 		data() {
@@ -12,25 +15,32 @@
 		mounted() {
 			Service.getPrograms(this.$store.state.credentials.UserId).then(response => {
 				this.programs = response.data;
+
 				this.programs.forEach(program => {
-					var date = new Date(program.offeringPeriod);
-					program.offeringDate = date.toLocaleString();
+					var date = new Date(program['offeringPeriod']);
+					program['OfferingDate'] = date.toLocaleString();
 				});
 			})
-		}
+			.catch(error => {
+				console.log("Something went wrong: ");
+				console.log(error);
+			});
+		}		
 	}
 </script>
 
 <template>
-	<Header :credentials="this.credentials" :includeSignOut="true"/>
 	<div>
-		<div class="programsContainer">
-			<div v-for="program in this.programs" class="programContainer">
-				<div class="progName">{{ program.title }}</div>
-				<div>Description: {{ program.description }}</div>
-				<div class="supplementalText">Capacity: {{ program.capacity }}</div>
-				<div class="supplementalText">Cost: ${{ program.cost }}.00</div>
-				<div class="supplementalText">Starting time: {{ program.offeringDate }}</div>
+		<Header :credentials="this.credentials" :includeSignOut="true"/>
+		<div>
+			<div class="programsContainer">
+				<div v-for="program in this.programs" v-bind:key="program" class="programContainer">
+					<div class="progName">{{ program['Title'] }}</div>
+					<div>Description: {{ program['Description'] }}</div>
+					<div class="supplementalText">Capacity: {{ program['Capacity'] }}</div>
+					<div class="supplementalText">Cost: ${{ program['Cost'] }}</div>
+					<div class="supplementalText">Starting time: {{ program['OfferingDate']}}</div>
+				</div>
 			</div>
 		</div>
 	</div>
