@@ -20,28 +20,42 @@ app.get('/api/login/:user&:pass', (req, res) => {
         });
 });
 
-app.get('/api/users/:userId/programs/', (req, res) => {
-  var userId = req.params.userId;
-  if (userId == null) {
-    res.send('/');
-  } else {
-    let sql = `SELECT ProgramId, Title, OfferingPeriod, Description, Cost, Capacity, Instructor FROM Programs;`;
-    let programs = [];
-    
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        console.log("oopsie");
-      }
+app.get('/api/programs/', (req, res) => {
+  let sql = `SELECT ProgramId, Title, OfferingPeriod, Description, Cost, Capacity, Instructor FROM Programs ORDER BY OfferingPeriod ASC;`;
+  let programs = [];
 
-      let i = 0;
-      rows.forEach((row) => {
-        programs[i] = row;
-        i++
-      });
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log("oopsie");
+    }
 
-      res.send(programs);
+    let i = 0;
+    rows.forEach((row) => {
+      programs[i] = row;
+      i++
     });
-  }
+
+    res.send(programs);
+  });
+});
+
+app.get('/api/enrollments/', (req, res) => {
+  let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId GROUP BY p.ProgramId`;
+  let enrollments = [];
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log("oopsie");
+    }
+
+    let i = 0;
+    rows.forEach((row) => {
+      enrollments[i] = row;
+      i++
+    });
+
+    res.send(enrollments);
+  });
 });
 
 app.listen(port, () => {
