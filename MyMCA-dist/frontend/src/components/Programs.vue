@@ -2,8 +2,6 @@
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
 	import moment from 'moment'
-
-
 	export default {
 		components: { Header },
 		data() {
@@ -17,7 +15,6 @@
 			// Getting all available programs
 			Service.getPrograms().then(response => {
 				this.programs = response.data;
-
 				this.programs.forEach(program => {
 					var date = new Date(program['offeringPeriod']);
 					program['OfferingDate'] = date.toLocaleString();
@@ -27,7 +24,6 @@
 				console.log("Something went wrong: ");
 				console.log(error);
 			});
-
 			// Getting number of enrollments for all programs
 			Service.getEnrollments().then(response => {
 				console.log("data === " + response.data[0]['NumOfEnrollments']);
@@ -38,10 +34,10 @@
 				console.log(error);
 			});	
 		},
-		methods : {
+		methods: {
 			getCurrentEnrollments(programId) {
-				if( this.enrollments !== null ){
-					console.log(enrollments);
+				if(this.enrollments != null) {
+					console.log(this.enrollments);
 					this.enrollments.forEach(enrollment => {
 						console.log("enrollment = " + enrollment);
 						if( enrollment['ProgramId'] == programId ){
@@ -49,7 +45,6 @@
 						}
 					});
 				}
-
 				return 0;
 			}
 		}		
@@ -58,7 +53,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials" :includeSignOut="true"/>
+		<Header :credentials="this.credentials"/>
 		<div>
 			<div class="container card-deck">
 				<div v-for="program in this.programs" v-bind:key="program" class="card border-primary mt-3">
@@ -68,9 +63,9 @@
 
 						<a href="#" class="btn btn-primary btn-sm mb-3">Sign Up</a>	
 						<div class="card-footer footer">
-							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Openings</div>
+							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
 							<div class="text-muted" >02/2022 {{ program['OfferingDate']}}</div>
-    					</div>
+    						</div>
 					</div>
 				</div>
 			</div>
@@ -82,9 +77,7 @@
 .footer {
 	font-size: small;
 }
-
 .program-detail {
 	font-size: medium;
 }
-
 </style>

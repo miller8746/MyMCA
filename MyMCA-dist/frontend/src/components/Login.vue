@@ -41,7 +41,7 @@
 </script>
 
 <template>
-	<Header :credentials="this.credentials" :includeSignOut="false"/>
+	<Header :credentials="this.credentials" :isLoginPage="true"/>
 	<div class="loginContainer">
 		<div v-if="credentials == null" class="loginModule">
 			<div>
@@ -113,10 +113,5 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
-
-.warningText {
-	color: #fc0303;
-	font-size: 10pt;
 }
 </style>

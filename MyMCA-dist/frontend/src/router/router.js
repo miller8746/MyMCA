@@ -9,7 +9,10 @@ const routes =  [
     path: "/programs",
     component: () => import("../components/Programs")
   },
-  
+  {
+    path: "/create-program",
+    component: () => import("../components/CreateProgram")
+  }
 ];
 const router = createRouter({
   history: createWebHistory(),
