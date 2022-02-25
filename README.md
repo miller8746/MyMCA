@@ -34,7 +34,7 @@ The create command will ask you for some inputs.  Use the third option, "Manuall
 
 Next, install the frontend project dependencies by **cd'ing into the frontend project folder** and running
 
-> npm install axios vuex-persistedstate --save
+> npm install axios vuex-persistedstate moment --save
 
 Finally, (re)place the contents of the project folder with the contents of /MyMCA-dist/frontend in this repo.  There are some extra bits left over from the initial scaffolding that can be removed (but don't have to be), including:
 
