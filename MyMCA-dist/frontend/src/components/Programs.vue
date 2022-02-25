@@ -9,11 +9,13 @@
 		data() {
 			return {
 				credentials: this.$store.state.credentials,
-				programs: null
+				programs: null,
+				enrollments: null
 			};
 		},
 		mounted() {
-			Service.getPrograms(this.$store.state.credentials.UserId).then(response => {
+			// Getting all available programs
+			Service.getPrograms().then(response => {
 				this.programs = response.data;
 
 				this.programs.forEach(program => {
@@ -25,6 +27,31 @@
 				console.log("Something went wrong: ");
 				console.log(error);
 			});
+
+			// Getting number of enrollments for all programs
+			Service.getEnrollments().then(response => {
+				console.log("data === " + response.data[0]['NumOfEnrollments']);
+				this.enrollments = response.data;
+			})
+			.catch(error => {
+				console.log("Something went wrong: ");
+				console.log(error);
+			});	
+		},
+		methods : {
+			getCurrentEnrollments(programId) {
+				if( this.enrollments !== null ){
+					console.log(enrollments);
+					this.enrollments.forEach(enrollment => {
+						console.log("enrollment = " + enrollment);
+						if( enrollment['ProgramId'] == programId ){
+							return enrollment['NumOfEnrollments'];
+						}
+					});
+				}
+
+				return 0;
+			}
 		}		
 	}
 </script>
@@ -33,16 +60,16 @@
 	<div>
 		<Header :credentials="this.credentials" :includeSignOut="true"/>
 		<div>
-			<div class="container card-group">
+			<div class="container card-deck">
 				<div v-for="program in this.programs" v-bind:key="program" class="card border-primary mt-3">
 					<div class="card-body">
 						<h3 class="card-title card-header">{{ program['Title'] }}</h3>
-						<p>{{ program['Description'] }}</p>
+						<p>{{ program['Description'] }} (${{ program['Cost'] }}/Person)</p>
 
-						<div class="program-detail">[current capacity here] / {{ program['Capacity'] }} Openings - ${{ program['Cost'] }}/Person</div>
-						<a href="#" class="btn btn-primary btn-sm mt-3 mb-3">Sign Up</a>	
+						<a href="#" class="btn btn-primary btn-sm mb-3">Sign Up</a>	
 						<div class="card-footer footer">
-							<div class="text-muted" >{{ program['OfferingDate']}}</div>
+							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Openings</div>
+							<div class="text-muted" >02/2022 {{ program['OfferingDate']}}</div>
     					</div>
 					</div>
 				</div>
