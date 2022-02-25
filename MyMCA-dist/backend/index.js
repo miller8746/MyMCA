@@ -14,32 +14,33 @@ app.get('/api/login/:user&:pass', (req, res) => {
           if (err) {
             console.log("oopsie");
           }
+    // remove this for PROD
 	  console.log(row);
-	  userCredentials = row;
 	  res.send(row);
         });
 });
 
-app.get('/api/programs/:userId', (req, res) => {
+app.get('/api/users/:userId/programs/', (req, res) => {
   var userId = req.params.userId;
   if (userId == null) {
     res.send('/');
   } else {
-    // return program list for user
-    console.log('WARNING: data grab for programs is not currently implemented.');
-    // temporarily hard-coded data
-    var programs = [
-			{
-			programId: 1, 
-			title: 'testProgram', 
-			offeringPeriod: new Date('2/20/21'),
-			description: "it's not real",
-			cost: 48.0,
-			capacity: 20,
-			instructor: 1
-			}
-		];
-    res.send(programs);
+    let sql = `SELECT ProgramId, Title, OfferingPeriod, Description, Cost, Capacity, Instructor FROM Programs;`;
+    let programs = [];
+    
+    db.all(sql, [], (err, rows) => {
+      if (err) {
+        console.log("oopsie");
+      }
+
+      let i = 0;
+      rows.forEach((row) => {
+        programs[i] = row;
+        i++
+      });
+
+      res.send(programs);
+    });
   }
 });
 
