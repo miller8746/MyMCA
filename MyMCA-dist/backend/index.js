@@ -46,7 +46,6 @@ app.post(`/api/programs/`, (req, res) => {
   let program = req.body;
   console.log(program);
 
-
   db.run(`INSERT INTO Programs(Title, OfferingPeriod, Instructor, Description, Location, Cost, Capacity) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
   .all(`SELECT * FROM Programs WHERE Title = '${program.programTitle}'`, (err, rows) => {
     if (err){
