@@ -14,7 +14,7 @@ In the directory you want to create the backend project in, run
 
 You can use the default options when prompted.  You will also need to install some dependencies with this command:
 
-> npm install express cors sqlite3 --save
+> npm install express cors sqlite3 body-parser --save
 
 Then, download /MyMCA-dist/backend/index.js from this repo and place it in the project folder.  Finally, you can run the following command to have the backend listening on port 3000:
 
