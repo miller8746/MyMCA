@@ -1,7 +1,10 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 app.use(cors())
+app.use(bodyParser.json());
+
 const port = 3000
 var router = express.Router();
 
@@ -38,6 +41,20 @@ app.get('/api/programs/', (req, res) => {
     res.send(programs);
   });
 });
+
+app.post(`/api/programs/`, (req, res) => {
+  let program = req.body;
+  console.log(program);
+
+
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, Instructor, Description, Location, Cost, Capacity) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
+  .all(`SELECT * FROM Programs WHERE Title = '${program.programTitle}'`, (err, rows) => {
+    if (err){
+      throw err;
+    }
+    res.send(rows);
+  });;
+}); 
 
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId GROUP BY p.ProgramId`;
