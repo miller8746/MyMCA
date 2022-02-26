@@ -42,7 +42,7 @@
 							offeringPeriod: this.programDate,
 							location: this.programLocation
 						};
-						Service.createProgram(this.$store.state.credentials.UserId, program);
+						Service.createProgram(program);
 					} else {
 						// Data is filled in, but not valid
 						this.showFormatError = true;

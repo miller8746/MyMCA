@@ -7,9 +7,8 @@ class ProfileService {
 	getPrograms() {
 		return http.get(`/api/programs`);
 	}
-	createProgram(userId, program) {
-		return http.post('/api/${userId}/createprogram', {
-			userId: userId,
+	createProgram(program) {
+		return http.post(`/api/programs/`, {
 			programTitle: program.title,
 			programDescription: program.description,
 			programCapacity: program.capacity,

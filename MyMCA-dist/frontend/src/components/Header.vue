@@ -16,19 +16,21 @@
 </script>
 
 <template>
-	<div class="header">
-		<img src="../assets/header-logo.png" />
-		<div v-if="this.credentials != null" class="userInfoContainer">
-			<div>Welcome, {{ credentials.Name }}</div>
-			<div @click="logOut" class="signOutText link">Sign out</div>
+	<div>
+		<div class="header">
+			<img src="../assets/header-logo.png" />
+			<div v-if="this.credentials != null" class="userInfoContainer">
+				<div>Welcome, {{ credentials.Name }}</div>
+				<div @click="logOut" class="signOutText link">Sign out</div>
+			</div>
 		</div>
-	</div>
-	<div v-if="credentials != null" class="pages">
-		<div class="pageLink">Profile</div>
-		<router-link to="/programs" class="pageLink">Programs</router-link>
-		<div class="pageLink">Enrollments</div>
-		<div v-if="credentials.Staff == true" class="pageLink">Users</div>
-		<router-link to="/create-program" v-if="credentials.Staff == true" class="pageLink">Create Program...</router-link>
+		<div v-if="credentials != null" class="pages">
+			<div class="pageLink">Profile</div>
+			<router-link to="/programs" class="pageLink">Programs</router-link>
+			<div class="pageLink">Enrollments</div>
+			<div v-if="credentials.Staff == true" class="pageLink">Users</div>
+			<router-link to="/create-program" v-if="credentials.Staff == true" class="pageLink">Create Program...</router-link>
+		</div>
 	</div>
 </template>
 
