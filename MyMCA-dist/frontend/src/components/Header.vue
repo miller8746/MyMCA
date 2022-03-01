@@ -17,19 +17,23 @@
 
 <template>
 	<div>
-		<div class="header">
-			<img src="../assets/header-logo.png" />
+		<div class="header p-2">
+			<router-link to="/">
+				<img src="../assets/header-logo.png" />
+			</router-link>			
 			<div v-if="this.credentials != null" class="userInfoContainer">
-				<div>Welcome, {{ credentials.Name }}</div>
-				<div @click="logOut" class="signOutText link">Sign out</div>
+				<span>{{ credentials.Name }}</span>
+				
 			</div>
 		</div>
-		<div v-if="credentials != null" class="pages">
+		<div v-if="credentials != null" class="pages mt-3">
 			<div class="pageLink">Profile</div>
 			<router-link to="/programs" class="pageLink">Programs</router-link>
 			<div class="pageLink">Enrollments</div>
 			<div v-if="credentials.Staff == true" class="pageLink">Users</div>
 			<router-link to="/create-program" v-if="credentials.Staff == true" class="pageLink">Create Program...</router-link>
+
+			<span @click="logOut" class="signOutText link">Sign out</span>
 		</div>
 	</div>
 </template>
@@ -38,8 +42,9 @@
 .header {
 	display: flex;
 	height: 50px;
-	background-color: #bafcff;
+	background-color: #ffffff;
 	justify-content: space-between;
+	margin-bottom: 10px;
 }
 
 img {
@@ -56,7 +61,10 @@ img {
 
 .signOutText {
 	font-size: 12pt;
-	color: dimgrey;
+	color: rgb(255, 255, 255);
+	margin-left: auto; 
+	margin-right: 15px;
+	margin-top: 9px;
 }
 
 .link {
@@ -81,9 +89,13 @@ img {
 }
 
 .pageLink:hover {
-	background-color: #7D00B7;
+	background-color: #292457;
 	cursor: pointer;
 	color: #FFFFFF;
+}
+
+.subtitle {
+	margin-left: -10px !important;
 }
 
 </style>

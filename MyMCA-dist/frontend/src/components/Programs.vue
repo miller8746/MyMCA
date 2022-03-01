@@ -46,7 +46,17 @@
 					});
 				}
 				return 0;
-			}
+			},
+			getCost(baseCost){
+				if( this.credentials != null ) {
+					if(this.credentials.Member == 1){
+						return baseCost / 2;
+					} else {
+						return baseCost;
+					}
+				}
+				return baseCost;
+			} 
 		}		
 	}
 </script>
@@ -59,7 +69,7 @@
 				<div v-for="program in this.programs" v-bind:key="program" class="card border-primary mt-3">
 					<div class="card-body">
 						<h3 class="card-title card-header">{{ program['Title'] }}</h3>
-						<p>{{ program['Description'] }} (${{ program['Cost'] }}/Person)</p>
+						<p>{{ program['Description'] }} (${{ getCost( program['Cost'] ) }}/Person)</p>
 
 						<a href="#" class="btn btn-primary btn-sm mb-3">Sign Up</a>	
 						<div class="card-footer footer">
