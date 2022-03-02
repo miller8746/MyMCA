@@ -11,7 +11,8 @@
 				programDescription: '',
 				programCapacity: 0,
 				programCost: 0.0,
-				programDate: '',
+				programStartDate: '',
+				programEndDate: '',
 				programLocation: '',
 				minDate: null,
 				showFormatError: false,
@@ -22,27 +23,34 @@
 			createProgram() {
 				this.showFormatError = false;
 				this.showDataError = false;
-				var date = new Date(this.programDate);
+				var startDate = new Date(this.programStartDate);
+				var endDate = new Date(this.programEndDate);
 				// Check if all data is filled in
 				if (this.programTitle != '' && 
 				    this.programDescription != '' && 
 				    this.programCapacity != 0 && 
 				    this.programCost != 0 && 
-				    this.programDate != '' && 
+				    this.programStartDate != '' && 
+				    this.programEndDate != '' && 
 				    this.programLocation != '') {
 					// Check if data is valid
 					if (this.programCapacity > 0 &&
                                             this.programCost > 0 &&
-					    date > Date.now()) {
+					    startDate > Date.now() && 
+					    endDate > Date.now() && 
+					    startDate < endDate) {
 						var program = {
 							title: this.programTitle,
 							description: this.programDescription,
 							capacity: this.programCapacity,
 							cost: this.programCost,
-							offeringPeriod: this.programDate,
+							offeringPeriod: this.programStartDate,
+							offeringPeriodEnd: this.programEndDate,
 							location: this.programLocation
 						};
-						Service.createProgram(program);
+						Service.createProgram(program).then((res) => {
+							this.$router.push('/programs');
+						});
 					} else {
 						// Data is filled in, but not valid
 						this.showFormatError = true;
@@ -72,7 +80,8 @@
 							<div class="inputLabel">Capacity: </div>
 							<div class="inputLabel">Cost ($): </div>
 							<div class="inputLabel">Location: </div>
-							<div class="inputLabel">Time: </div>
+							<div class="inputLabel">Start Time: </div>
+							<div class="inputLabel">End Time: </div>
 							<div class="inputLabel">Description: </div>
 						</div>
 						<div class="inputColumn">
@@ -80,7 +89,8 @@
 							<input type="number" v-model.number="programCapacity"/>
 							<input type="number" v-model.number="programCost"/>
 							<input v-model="programLocation"/>
-							<input type="datetime-local" :min="minDate" v-model="programDate"/>
+							<input type="datetime-local" :min="minDate" v-model="programStartDate"/>
+							<input type="datetime-local" :min="minDate" v-model="programEndDate"/>
 							<textarea v-model="programDescription" class="descriptionArea"/>
 						</div>
 					</div>
@@ -103,7 +113,7 @@
 
 .inputContainer {
 	display: flex;
-	height: 250px;
+	height: 285px;
 }
 
 .inputColumn {

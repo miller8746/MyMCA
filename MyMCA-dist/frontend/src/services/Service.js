@@ -14,6 +14,7 @@ class ProfileService {
 			programCapacity: program.capacity,
 			programCost: program.cost,
 			programOfferingPeriod: program.offeringPeriod,
+			programOfferingPeriodEnd: program.offeringPeriodEnd,
 			programLocation: program.location
 		});
 	}

@@ -26,14 +26,13 @@
 				
 			</div>
 		</div>
-		<div v-if="credentials != null" class="pages mt-3">
-			<div class="pageLink">Profile</div>
-			<router-link to="/programs" class="pageLink">Programs</router-link>
-			<div class="pageLink">Enrollments</div>
-			<div v-if="credentials.Staff == true" class="pageLink">Users</div>
-			<router-link to="/create-program" v-if="credentials.Staff == true" class="pageLink">Create Program...</router-link>
-
-			<span @click="logOut" class="signOutText link">Sign out</span>
+		<div class="pages mt-3">
+			<div v-if="credentials != null" class="pageLink">Profile</div>
+			<router-link to="/programs" v-if="credentials != null" class="pageLink">Programs</router-link>
+			<div v-if="credentials != null" class="pageLink">Enrollments</div>
+			<div v-if="credentials != null && credentials.Staff == true" class="pageLink">Users</div>
+			<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink">Create Program...</router-link>
+			<span @click="logOut" v-if="credentials != null" class="signOutText link">Sign out</span>
 		</div>
 	</div>
 </template>

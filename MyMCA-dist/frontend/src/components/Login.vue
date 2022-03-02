@@ -87,15 +87,13 @@
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
 				</div>
 			</div>
-			<div v-else>
-				<div class="banner-container">
-					<ul class="banner">
-						<li class="banner-item"> Welcoming </li>
-						<li class="banner-item"> Community Focused </li>
-						<li class="banner-item"> Mission Driven </li>
-					</ul>
-				</div>
-			</div>
+		</div>
+		<div class="banner-container">
+			<ul class="banner">
+				<li class="banner-item"> Welcoming </li>
+				<li class="banner-item"> Community Focused </li>
+				<li class="banner-item"> Mission Driven </li>
+			</ul>
 		</div>
 	</div>
 	
@@ -118,6 +116,8 @@
  	margin: 0 auto;
 	padding-left: 90px;
 	padding-right: 90px;
+	display: flex;
+	justify-content: center;
 }
 
 .banner-item {
@@ -128,7 +128,6 @@
 }
 
 .loginContainer {
-	margin-top: 20px;
 	display: flex;
 	justify-content: center;
 }
@@ -144,7 +143,7 @@
 	display: flex;
 	width: 300px;
 	height: 300px;
-	margin-top: -200px;
+	margin-top: -400px;
 	justify-content: space-around;
 	align-items: center;
 	flex-direction: column;

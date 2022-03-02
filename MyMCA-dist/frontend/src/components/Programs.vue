@@ -16,8 +16,10 @@
 			Service.getPrograms().then(response => {
 				this.programs = response.data;
 				this.programs.forEach(program => {
-					var date = new Date(program['offeringPeriod']);
-					program['OfferingDate'] = date.toLocaleString();
+					var startDate = new Date(program['OfferingPeriod']);
+					var endDate = new Date(program['OfferingPeriodEnd']);
+					program['OfferingDate'] = startDate.toLocaleString();
+					program['OfferingDateEnd'] = endDate.toLocaleString();
 				});
 			})
 			.catch(error => {
@@ -49,8 +51,9 @@
 			},
 			getCost(baseCost){
 				if( this.credentials != null ) {
-					if(this.credentials.Member == 1){
-						return baseCost / 2;
+					if(this.credentials.Member == 1) {
+						var d = baseCost / 2;
+						return d.toFixed(2);
 					} else {
 						return baseCost;
 					}
@@ -74,7 +77,8 @@
 						<a href="#" class="btn btn-primary btn-sm mb-3">Sign Up</a>	
 						<div class="card-footer footer">
 							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
-							<div class="text-muted" >02/2022 {{ program['OfferingDate']}}</div>
+							<div class="text-muted" >Start Time: {{ program['OfferingDate']}}</div>
+							<div class="text-muted" >End Time: {{ program['OfferingDateEnd']}}</div>
     						</div>
 					</div>
 				</div>
