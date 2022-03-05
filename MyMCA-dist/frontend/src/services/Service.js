@@ -21,5 +21,14 @@ class ProfileService {
 	getEnrollments() {
 		return http.get('/api/enrollments/');
 	}
+	createAccount(userInfo) {
+		return http.post('/api/create-account/', {
+			name: userInfo.name,
+			username: userInfo.username,
+			password: userInfo.password,
+			isMember: userInfo.isMember,
+			isStaff: userInfo.isStaff
+		});
+	}
 }
 export default new ProfileService();

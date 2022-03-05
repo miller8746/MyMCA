@@ -86,7 +86,11 @@
 					<div v-if="showLoginError" class="warningText">The credentials you have entered are not correct.</div>
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
 				</div>
-				<router-link to="/create-account" class="linkText">Create Account</router-link>
+				<div class="linkText">
+					<span class="userInputText">Don't have an account?</span>
+					<router-link to="/create-account">Create one</router-link>
+				</div>
+				
 			</div>
 		</div>
 		<div class="banner-container">

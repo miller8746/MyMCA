@@ -55,6 +55,29 @@ app.post(`/api/programs/`, (req, res) => {
   });;
 }); 
 
+app.post('/api/create-account/', (req,res) => {
+  let credentials = req.body;
+  console.log(credentials);
+
+  let sql = `SELECT Username FROM Credentials WHERE Username = '${credentials.username}';`
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+    
+    // Check for existing username
+    if (rows.length > 0) {
+      res.send({successful: false, userId: 0});
+    } else {
+      // Put values into Credentials and Users tables (unique UserId != 0)
+      // db.run(`INSERT INTO Credentials(Username, Password, UserId) VALUES ('${credentials.username}', '${credentials.password}', ???  )`);
+      // db.run(`INSERT INTO Users(UserId, Name, Member, Staff) VALUES (???, '${credentials.name}', '${credentials.isMember}', '${credentials.isStaff}')`);
+      // res.send({successful: true, userId: ???});
+    }
+  });
+})
+
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId GROUP BY p.ProgramId`;
   let enrollments = [];
