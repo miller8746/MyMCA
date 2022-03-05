@@ -86,6 +86,7 @@
 					<div v-if="showLoginError" class="warningText">The credentials you have entered are not correct.</div>
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
 				</div>
+				<router-link to="/create-account" class="linkText">Create Account</router-link>
 			</div>
 		</div>
 		<div class="banner-container">
@@ -171,5 +172,10 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.linkText {
+	font-size: 10pt;
+	cursor: pointer;
 }
 </style>
