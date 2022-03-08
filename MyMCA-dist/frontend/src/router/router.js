@@ -16,6 +16,10 @@ const routes =  [
   {
     path: "/create-account",
     component: () => import("../components/CreateAccount")
+  },
+  {
+    path: "/profile",
+    component: () => import("../components/Profile")
   }
 ];
 const router = createRouter({

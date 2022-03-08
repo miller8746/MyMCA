@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 const port = 3000
 var router = express.Router();
 
+// Log in with username and password
 app.get('/api/login/:user&:pass', (req, res) => {
   let username = req.params.user;
   let password = req.params.pass;
@@ -23,6 +24,7 @@ app.get('/api/login/:user&:pass', (req, res) => {
         });
 });
 
+// Get for Programs page
 app.get('/api/programs/', (req, res) => {
   let sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor FROM Programs ORDER BY OfferingPeriod ASC;`;
   let programs = [];
@@ -42,6 +44,7 @@ app.get('/api/programs/', (req, res) => {
   });
 });
 
+// Post for Create Programs page
 app.post(`/api/programs/`, (req, res) => {
   let program = req.body;
   console.log(program);
@@ -55,6 +58,7 @@ app.post(`/api/programs/`, (req, res) => {
   });;
 }); 
 
+// Post for Create Account page
 app.post('/api/create-account/', (req,res) => {
   let credentials = req.body;
   console.log(credentials);
@@ -71,13 +75,29 @@ app.post('/api/create-account/', (req,res) => {
       res.send({successful: false, userId: 0});
     } else {
       // Put values into Credentials and Users tables (unique UserId != 0)
-      // db.run(`INSERT INTO Credentials(Username, Password, UserId) VALUES ('${credentials.username}', '${credentials.password}', ???  )`);
-      // db.run(`INSERT INTO Users(UserId, Name, Member, Staff) VALUES (???, '${credentials.name}', '${credentials.isMember}', '${credentials.isStaff}')`);
-      // res.send({successful: true, userId: ???});
+      // --- WORK IN PROGRESS, NOT YET FUNCTIONAL ---
+      db.run(`INSERT INTO Credentials(Username, Password) VALUES ('${credentials.username}', '${credentials.password}')`)
+        .all(`SELECT * FROM Credentials WHERE Username = '${credentials.username}'`, (err, rows) => {
+          if (err) {
+            throw err;
+          }
+          if (rows == null) {
+            console.log('Credential was accessed before created.');
+          } else {
+	    // Create corresponding entry in Users table
+            db.run(`INSERT INTO Users(UserId, Name, Member, Staff) VALUES (rows[0].UserId, '${credentials.name}', '${credentials.isMember}', '${credentials.isStaff}')`, null, function(err) {
+              if (err) {
+                throw err;
+	      }
+              res.send({successful: true, userId: rows[0].UserId});
+            });
+          }
+      });
     }
   });
 })
 
+// Get enrollments for Programs page
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId GROUP BY p.ProgramId`;
   let enrollments = [];
@@ -94,6 +114,18 @@ app.get('/api/enrollments/', (req, res) => {
     });
 
     res.send(enrollments);
+  });
+});
+
+// Post for updating credentials on Profile page
+app.post('/api/save-account-info/', (req, res) => {
+  db.run(`UPDATE Users SET Member = '${req.body.isMember}', Staff = '${req.body.isStaff}' WHERE UserId = ${req.body.userId};`)
+  .all(`SELECT * FROM Users WHERE UserId = ${req.body.userId};`, (err, rows) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send({successful: true});
+    }
   });
 });
 

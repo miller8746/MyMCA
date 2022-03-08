@@ -30,5 +30,12 @@ class ProfileService {
 			isStaff: userInfo.isStaff
 		});
 	}
+	saveAccountInfo(isMember, isStaff, userId) {
+		return http.post('/api/save-account-info/', {
+			isMember: isMember,
+			isStaff: isStaff,
+			userId: userId
+		});
+	}
 }
 export default new ProfileService();

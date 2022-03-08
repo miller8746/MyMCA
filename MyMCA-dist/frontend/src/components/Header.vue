@@ -19,15 +19,18 @@
 	<div>
 		<div class="header p-2">
 			<router-link to="/">
-				<img src="../assets/header-logo.png" />
+				<img class="headerLogo" src="../assets/header-logo.png" />
 			</router-link>			
 			<div v-if="this.credentials != null" class="userInfoContainer">
-				<span>{{ credentials.Name }}</span>
-				
+				<div>{{ credentials.Name }}</div>
+				<div>
+					<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png"/>
+					<img v-if="credentials.Member == 1" src="../assets/memberIcon.png"/>
+				</div>
 			</div>
 		</div>
 		<div class="pages mt-3">
-			<div v-if="credentials != null" class="pageLink">Profile</div>
+			<router-link to="/profile" v-if="credentials != null" class="pageLink">Profile</router-link>
 			<router-link to="/programs" v-if="credentials != null" class="pageLink">Programs</router-link>
 			<div v-if="credentials != null" class="pageLink">Enrollments</div>
 			<div v-if="credentials != null && credentials.Staff == true" class="pageLink">Users</div>
@@ -46,8 +49,8 @@
 	margin-bottom: 10px;
 }
 
-img {
-	height: 50px;	
+.headerLogo {
+	height: 50px;
 }
 
 .userInfoContainer {
