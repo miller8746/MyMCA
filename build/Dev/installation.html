@@ -1,0 +1,172 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installing and Running MyMCA &#8212; MyMCA  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Publishing Steps" href="publishing.html" />
+    <link rel="prev" title="Developer Documentation" href="general.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="publishing.html" title="Publishing Steps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="general.html" title="Developer Documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="general.html" accesskey="U">Developer Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing and Running MyMCA</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="installing-and-running-mymca">
+<h1>Installing and Running MyMCA<a class="headerlink" href="#installing-and-running-mymca" title="Permalink to this headline">¶</a></h1>
+<section id="setting-up-a-development-environment">
+<h2>Setting Up a Development Environment<a class="headerlink" href="#setting-up-a-development-environment" title="Permalink to this headline">¶</a></h2>
+<p>First, you will need to install Node.js from <a href="https://nodejs.org/en/download/" target="_blank">here</a>.  Then you can set up the backend and frontend separately.</p>
+</section>
+<section id="backend">
+<h2>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h2>
+<p>In the directory you want to create the backend project in, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">init</span>
+</pre></div>
+</div>
+<p>You can use the default options when prompted.  You will also need to install some dependencies with this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="n">express</span> <span class="n">cors</span> <span class="n">sqlite3</span> <span class="n">body</span><span class="o">-</span><span class="n">parser</span> <span class="o">--</span><span class="n">save</span>
+</pre></div>
+</div>
+<p>Then, download <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist/backend/index.js</span></code> from this repo and place it in the project folder.  Finally, you can run the following command to have the backend listening on port 3000:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node</span> <span class="n">index</span><span class="o">.</span><span class="n">js</span>
+</pre></div>
+</div>
+</section>
+<section id="frontend">
+<h2>Frontend<a class="headerlink" href="#frontend" title="Permalink to this headline">¶</a></h2>
+<p>In the directory you created for the backend project, run the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="nd">@vue</span><span class="o">/</span><span class="n">cli</span>
+<span class="n">vue</span> <span class="n">create</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span>
+</pre></div>
+</div>
+<p>You can replace “project-name” with whatever you want the project to be named.  It is recommended to use something like “MyMCA”, as the project name will be visible in the browser tab.</p>
+<p>The create command will ask you for some inputs.  Use the third option, “Manually select features”.  Use the spacebar to check “Router”, check “Vuex”, and uncheck “Linter / Formatter” so that the only three features that are checked are “Babel”, “Router”, and “Vuex”.  Then hit Enter, and select the following in the next prompts: “Vue 3.x”, “Y”, “package.json”, and “N”.  This will scaffold the project.</p>
+<p>Next, install the frontend project dependencies by <strong>cd’ing into the frontend project folder</strong> and running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="n">axios</span> <span class="n">vuex</span><span class="o">-</span><span class="n">persistedstate</span> <span class="n">moment</span> <span class="o">--</span><span class="n">save</span>
+</pre></div>
+</div>
+<p>Finally, (re)place the contents of the project folder with the contents of <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist/frontend</span></code> in this repo.  There are some extra bits left over from the initial scaffolding that can be removed (but don’t have to be), including:</p>
+<ul class="simple">
+<li><p>src/views</p></li>
+<li><p>src/store</p></li>
+<li><p>src/router/index.js</p></li>
+<li><p>src/components/HelloWorld.vue</p></li>
+</ul>
+<p>Then, to run the project, run this command in the project folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">serve</span>
+</pre></div>
+</div>
+<p>You will now be able to access the project through <a href="http://localhost:8080" target="_blank">http://localhost:8080</a>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installing and Running MyMCA</a><ul>
+<li><a class="reference internal" href="#setting-up-a-development-environment">Setting Up a Development Environment</a></li>
+<li><a class="reference internal" href="#backend">Backend</a></li>
+<li><a class="reference internal" href="#frontend">Frontend</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="general.html"
+                          title="previous chapter">Developer Documentation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="publishing.html"
+                          title="next chapter">Publishing Steps</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Dev/installation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="publishing.html" title="Publishing Steps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="general.html" title="Developer Documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="general.html" >Developer Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing and Running MyMCA</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Heather Miller.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
