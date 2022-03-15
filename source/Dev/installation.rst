@@ -7,6 +7,8 @@ First, you will need to install Node.js from |node.js link|.  Then you can set u
 
 Backend
 -------
+Before you set up the server, it is recommended that you set up your database.  See :doc:`db` for more information.
+
 In the directory you want to create the backend project in, run::
 
 	npm init
@@ -18,6 +20,8 @@ You can use the default options when prompted.  You will also need to install so
 Then, download :code:`/MyMCA-dist/backend/index.js` from this repo and place it in the project folder.  Finally, you can run the following command to have the backend listening on port 3000::
 
 	node index.js
+
+Don't forget to edit :code:`index.js` to point to your up-to-date database file!
 
 Frontend
 --------

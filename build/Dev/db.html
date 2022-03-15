@@ -1,0 +1,142 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Setting Up Database &#8212; MyMCA  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Publishing Steps" href="publishing.html" />
+    <link rel="prev" title="Installing and Running MyMCA" href="installation.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="publishing.html" title="Publishing Steps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing and Running MyMCA"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="general.html" accesskey="U">Developer Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setting Up Database</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="setting-up-database">
+<h1>Setting Up Database<a class="headerlink" href="#setting-up-database" title="Permalink to this headline">¶</a></h1>
+<p>This page will guide you on setting up your local database to work with the most recent version of MyMCA.  This page will be edited periodically with any necessary changes.</p>
+<ul class="simple">
+<li><p>Download <a href="https://sqlitestudio.pl" target="_blank">SQLiteStudio</a> and <code class="code docutils literal notranslate"><span class="pre">cs341-ymca.db</span></code> from the <code class="code docutils literal notranslate"><span class="pre">init-db-model</span></code> branch of MyMCA.</p></li>
+<li><p>Add the database in SQLiteStudio by navigating to “Database &gt; Add Database”.</p></li>
+<li><dl class="simple">
+<dt>You will need to temporarily undo a foreign key constraint in order to do the next step.</dt><dd><ul>
+<li><p>While connected to the database in SQLiteStudio, go to the Enrollments table and select the Foreign Key icon in the ProgramId column.</p></li>
+<li><p>Undo the Foreign Key constraint by unchecking “Foreign Key” and hitting OK.</p></li>
+<li><p>Save your changes by hitting the green checkmark in the header of the table.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Download <code class="code docutils literal notranslate"><span class="pre">program-updates-3.sql</span></code> from the <code class="code docutils literal notranslate"><span class="pre">hannah/dbsetup-and-login</span></code> branch.</p></li>
+<li><p>Run the query on the database by right-clicking the database in the Databases view and selecting “Execute SQL from file”.</p></li>
+<li><dl class="simple">
+<dt>Now, you will need to re-add the Foreign Key to the Programs table.</dt><dd><ul>
+<li><p>In the Enrollments table, double-click the Foreign Key entry in the ProgramId column.</p></li>
+<li><p>Check “Foreign Key” and hit “Configure”.</p></li>
+<li><p>Set “Foreign table” to “Programs” and “Foreign column” to “ProgramId” and hit Apply.</p></li>
+<li><p>Return to the table view and save your changes by hitting the green checkmark in the header of the table.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Your database is now up-to-date and ready to interact with the server.  Don’t forget to edit <code class="code docutils literal notranslate"><span class="pre">index.js</span></code> to point to your database file!</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="installation.html"
+                          title="previous chapter">Installing and Running MyMCA</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="publishing.html"
+                          title="next chapter">Publishing Steps</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Dev/db.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="publishing.html" title="Publishing Steps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing and Running MyMCA"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="general.html" >Developer Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Setting Up Database</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Heather Miller.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
