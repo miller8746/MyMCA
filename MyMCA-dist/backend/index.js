@@ -26,7 +26,7 @@ app.get('/api/login/:user&:pass', (req, res) => {
 
 // Get for Programs page
 app.get('/api/programs/', (req, res) => {
-  let sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor FROM Programs ORDER BY OfferingPeriod ASC;`;
+  let sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Days, Instructor FROM Programs ORDER BY OfferingPeriod ASC;`;
   let programs = [];
 
   db.all(sql, [], (err, rows) => {
@@ -49,10 +49,10 @@ app.post(`/api/programs/`, (req, res) => {
   let program = req.body;
   console.log(program);
 
-  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity, Days) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity}, '${program.programDays}');`)
   .all(`SELECT * FROM Programs WHERE Title = '${program.programTitle}'`, (err, rows) => {
     if (err){
-      throw err;
+      console.log(err);
     }
     res.send(rows);
   });;

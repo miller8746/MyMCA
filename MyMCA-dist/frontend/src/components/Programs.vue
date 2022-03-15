@@ -20,6 +20,7 @@
 					var endDate = new Date(program['OfferingPeriodEnd']);
 					program['OfferingDate'] = startDate.toLocaleString();
 					program['OfferingDateEnd'] = endDate.toLocaleString();
+					program['RepeatDays'] = program['Days'].split(',');
 				});
 			})
 			.catch(error => {
@@ -73,12 +74,15 @@
 					<div class="card-body">
 						<h3 class="card-title card-header">{{ program['Title'] }}</h3>
 						<p>{{ program['Description'] }} (${{ getCost( program['Cost'] ) }}/Person)</p>
+						<p>Repeats on: 
+							<td v-for="day in program['RepeatDays']">{{day}}</td>
+						</p>
 
 						<a href="#" class="btn btn-primary btn-sm mb-3">Sign Up</a>	
 						<div class="card-footer footer">
 							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
-							<div class="text-muted" >Start Time: {{ program['OfferingDate']}}</div>
-							<div class="text-muted" >End Time: {{ program['OfferingDateEnd']}}</div>
+							<div class="text-muted" >Start Date: {{ program['OfferingDate']}}</div>
+							<div class="text-muted" >End Date: {{ program['OfferingDateEnd']}}</div>
     						</div>
 					</div>
 				</div>
@@ -93,5 +97,9 @@
 }
 .program-detail {
 	font-size: medium;
+}
+td {
+	padding: 4px 4px 4px 4px;
+	border: 1px solid black;
 }
 </style>

@@ -15,6 +15,8 @@
 				programEndDate: '',
 				programLocation: '',
 				minDate: null,
+				dayCount: 1,
+				days: [],
 				showFormatError: false,
 				showDataError: false
 			};
@@ -23,22 +25,16 @@
 			createProgram() {
 				this.showFormatError = false;
 				this.showDataError = false;
-				var startDate = new Date(this.programStartDate);
-				var endDate = new Date(this.programEndDate);
-				// Check if all data is filled in
-				if (this.programTitle != '' && 
-				    this.programDescription != '' && 
-				    this.programCapacity != 0 && 
-				    this.programCost != 0 && 
-				    this.programStartDate != '' && 
-				    this.programEndDate != '' && 
-				    this.programLocation != '') {
-					// Check if data is valid
-					if (this.programCapacity > 0 &&
-                                            this.programCost > 0 &&
-					    startDate > Date.now() && 
-					    endDate > Date.now() && 
-					    startDate < endDate) {
+				if (this.checkData()) {
+					if (this.checkValidity()) {
+						// Parse occurrence days into delimited string
+						var dayString = "";
+						for (var i = 1; i < this.days.length; i++) {
+							dayString += this.days[i];
+							if (i + 1 != this.days.length) {
+								dayString += ",";
+							}
+						}
 						var program = {
 							title: this.programTitle,
 							description: this.programDescription,
@@ -46,7 +42,8 @@
 							cost: this.programCost,
 							offeringPeriod: this.programStartDate,
 							offeringPeriodEnd: this.programEndDate,
-							location: this.programLocation
+							location: this.programLocation,
+							days: dayString
 						};
 						Service.createProgram(program).then((res) => {
 							this.$router.push('/programs');
@@ -59,6 +56,52 @@
 					// Some data is not filled in
 					this.showDataError = true;
 				}
+			},
+			addOccurrence() {
+				if (this.dayCount < 7) {
+					this.dayCount++;
+				}
+			},
+			checkData() {
+				// Check if all data in form is filled in
+				if (this.days.length - 1 != this.dayCount) {
+					return false;
+				} else {
+					for (var i = 1; i < this.days.length; i++) {
+						if (this.days[i] == null) {
+							return false;
+						}
+					}
+				}
+				if (this.programTitle != '' && 
+				    this.programDescription != '' && 
+				    this.programCapacity != 0 && 
+				    this.programCost != 0 && 
+				    this.programStartDate != '' && 
+				    this.programEndDate != '' && 
+				    this.programLocation != '') {
+					return true;
+				} else return false;
+			},
+			checkValidity() {
+				var dayExists = [];
+				for (var i = 1; i < this.days.length; i++) {
+					if (dayExists[this.days[i]]) {
+						return false;
+					} else {
+						dayExists[this.days[i]] = true;
+					}
+				}
+				var startDate = new Date(this.programStartDate);
+				var endDate = new Date(this.programEndDate);
+				// Check if data in form is valid
+				if (this.programCapacity > 0 &&
+                                    this.programCost > 0 &&
+				    startDate > Date.now() && 
+				    endDate > Date.now() && 
+				    startDate < endDate) {
+					return true;
+				} else return false;
 			}
 		},
 		mounted() {
@@ -75,22 +118,49 @@
 				<div class="card-body">
 					<h3 class="card-title card-header">Create Program</h3>
 					<div class="inputContainer">
-						<div class="textColumn">
+						<div class="option">
 							<div class="inputLabel">Title: </div>
-							<div class="inputLabel">Capacity: </div>
-							<div class="inputLabel">Cost ($): </div>
-							<div class="inputLabel">Location: </div>
-							<div class="inputLabel">Start Time: </div>
-							<div class="inputLabel">End Time: </div>
-							<div class="inputLabel">Description: </div>
-						</div>
-						<div class="inputColumn">
 							<input v-model="programTitle"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Capacity: </div>
 							<input type="number" v-model.number="programCapacity"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Cost ($): </div>
 							<input type="number" v-model.number="programCost"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Location: </div>
 							<input v-model="programLocation"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Start Date: </div>
 							<input type="datetime-local" :min="minDate" v-model="programStartDate"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">End Date: </div>
 							<input type="datetime-local" :min="minDate" v-model="programEndDate"/>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Occurrences:</div>
+							<div class="occurrenceContainer">
+								<div class="selectContainer">
+									<select v-for="dayOption in dayCount" v-model="days[dayOption]" class="daySelect">
+										<option value="Sunday">Sunday</option>
+										<option value="Monday">Monday</option>
+										<option value="Tuesday">Tuesday</option>
+										<option value="Wednesday">Wednesday</option>
+										<option value="Thursday">Thursday</option>
+										<option value="Friday">Friday</option>
+										<option value="Saturday">Saturday</option>
+									</select>
+								</div>
+								<div class="btn btn-primary btn-sm addButton" @click="addOccurrence">+</div>
+							</div>
+						</div>
+						<div class="option">
+							<div class="inputLabel">Description: </div>
 							<textarea v-model="programDescription" class="descriptionArea"/>
 						</div>
 					</div>
@@ -111,31 +181,22 @@
 	justify-content: center;
 }
 
-.inputContainer {
+.option {
 	display: flex;
-	height: 285px;
-}
-
-.inputColumn {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-evenly;
-}
-
-.textColumn {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
+	margin: 8px 0px 8px 0px;
 }
 
 .inputLabel {
+	width: 100px;
 	font-size: 12pt;
-	margin: 9px 5px 0px 0px;
+	text-align: right;
+	margin-right: 6px;
 }
 
 .descriptionArea {
 	font-size: 10pt;
 	height: 68px;
+	width: 200px;
 }
 
 .buttonContainer {
@@ -144,4 +205,22 @@
 	align-items: center;
 }
 
+.daySelect {
+	font-size: 12pt;
+}
+
+.selectContainer {
+	display: flex;
+	flex-direction: column;
+}
+
+.occurrenceContainer {
+	display: flex;
+	justify-content: space-between;
+	width: 200px;
+}
+
+.addButton {
+	height: 28px;
+}
 </style>
