@@ -36,4 +36,11 @@ input {
 	color: #fc0303;
 	font-size: 10pt;
 }
+
+/* Common setting for page content */
+.pageContent {
+	display: flex;
+	justify-content: center;
+}
+
 </style>

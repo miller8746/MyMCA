@@ -36,10 +36,10 @@ export default {
 							isMember: this.isMember,
 							isStaff: this.isStaff
 						}).then((res) => {
-							if (res.successful == true) {
+							if (res.data.successful == true) {
 								// Store credentials and redirect to login page
 								var credentials = {
-									UserId: res.userId,
+									UserId: res.data.userId,
 									Name: this.name,
 									Member: this.isMember,
 									Staff: this.isStaff
@@ -69,29 +69,29 @@ export default {
 			<div class="card border-primary mt-3">
 				<div class="card-body">
 					<h3 class="card-title card-header">Create Account</h3>
-					<div class="inputContainer">
-						<div class="textColumn">
-							<div class="inputLabel">Display Name: </div>
-							<div class="inputLabel">Username: </div>
-							<div class="inputLabel">Password: </div>
-							<div class="inputLabel">Confirm Password:</div>
+					<div class="accountInputContainer">
+						<div class="accountTextColumn">
+							<div class="accountInputLabel">Display Name: </div>
+							<div class="accountInputLabel">Username: </div>
+							<div class="accountInputLabel">Password: </div>
+							<div class="accountInputLabel">Confirm Password:</div>
 						</div>
-						<div class="inputColumn">
+						<div class="accountInputColumn">
 							<input v-model="name"/>
 							<input v-model="username"/>
 							<input type="password" v-model="password"/>
 							<input type="password" v-model="confirmPassword"/>
 						</div>
 					</div>
-					<div class="checkboxes">
-						<div class="checkboxContainer">
-							<div class="checkboxLabel">Member?</div>
+					<div class="accountCheckboxes">
+						<div class="accountCheckboxContainer">
+							<div class="accountCheckboxLabel">Member?</div>
 							<input type="checkbox" v-model="isMember"/></div>
-						<div class="checkboxContainer">
-							<div class="checkboxLabel">Staff?</div>
+						<div class="accountCheckboxContainer">
+							<div class="accountCheckboxLabel">Staff?</div>
 							<input type="checkbox" v-model="isStaff"/></div>
 					</div>
-					<div class="buttonContainer">
+					<div class="accountButtonContainer">
 						<div class="btn btn-primary btn-sm mt-3 mb-3" @click="createAccount">Submit</div>
 						<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
 						<div v-if="showPasswordError" class="warningText">The passwords do not match.</div>
@@ -104,50 +104,46 @@ export default {
 </template>
 
 <style>
-.pageContent {
-	display: flex;
-	justify-content: center;
-}
 
-.inputContainer {
+.accountInputContainer {
 	display: flex;
 	height: 142px;
 }
 
-.inputColumn {
+.accountInputColumn {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
 }
 
-.textColumn {
+.accountTextColumn {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
 }
 
-.inputLabel {
+.accountInputLabel {
 	font-size: 12pt;
 	margin: 9px 5px 0px 0px;
 }
 
-.buttonContainer {
+.accountButtonContainer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 }
 
-.checkboxes {
+.accountCheckboxes {
 	display: flex;
 	justify-content: space-evenly;
 	width: 300px;
 }
 
-.checkboxContainer {
+.accountCheckboxContainer {
 	display: flex;
 }
 
-.checkboxLabel {
+.accountCheckboxLabel {
 	font-size: 12pt;
 	margin-right: 6px;
 }

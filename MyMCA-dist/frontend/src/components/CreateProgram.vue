@@ -27,14 +27,6 @@
 				this.showDataError = false;
 				if (this.checkData()) {
 					if (this.checkValidity()) {
-						// Parse occurrence days into delimited string
-						var dayString = "";
-						for (var i = 1; i < this.days.length; i++) {
-							dayString += this.days[i];
-							if (i + 1 != this.days.length) {
-								dayString += ",";
-							}
-						}
 						var program = {
 							title: this.programTitle,
 							description: this.programDescription,
@@ -43,7 +35,7 @@
 							offeringPeriod: this.programStartDate,
 							offeringPeriodEnd: this.programEndDate,
 							location: this.programLocation,
-							days: dayString
+							days: this.days
 						};
 						Service.createProgram(program).then((res) => {
 							this.$router.push('/programs');
@@ -117,33 +109,33 @@
 			<div class="card border-primary mt-3">
 				<div class="card-body">
 					<h3 class="card-title card-header">Create Program</h3>
-					<div class="inputContainer">
+					<div class="programInputContainer">
 						<div class="option">
-							<div class="inputLabel">Title: </div>
+							<div class="programInputLabel">Title: </div>
 							<input v-model="programTitle"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Capacity: </div>
+							<div class="programInputLabel">Capacity: </div>
 							<input type="number" v-model.number="programCapacity"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Cost ($): </div>
+							<div class="programInputLabel">Cost ($): </div>
 							<input type="number" v-model.number="programCost"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Location: </div>
+							<div class="programInputLabel">Location: </div>
 							<input v-model="programLocation"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Start Date: </div>
+							<div class="programInputLabel">Start Date: </div>
 							<input type="datetime-local" :min="minDate" v-model="programStartDate"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">End Date: </div>
+							<div class="programInputLabel">End Date: </div>
 							<input type="datetime-local" :min="minDate" v-model="programEndDate"/>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Occurrences:</div>
+							<div class="programInputLabel">Occurrences:</div>
 							<div class="occurrenceContainer">
 								<div class="selectContainer">
 									<select v-for="dayOption in dayCount" v-model="days[dayOption]" class="daySelect">
@@ -160,11 +152,11 @@
 							</div>
 						</div>
 						<div class="option">
-							<div class="inputLabel">Description: </div>
+							<div class="programInputLabel">Description: </div>
 							<textarea v-model="programDescription" class="descriptionArea"/>
 						</div>
 					</div>
-					<div class="buttonContainer">
+					<div class="programButtonContainer">
 						<div class="btn btn-primary btn-sm mt-3 mb-3" @click="createProgram">Submit</div>
 						<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
 						<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
@@ -176,17 +168,12 @@
 </template>
 
 <style>
-.pageContent {
-	display: flex;
-	justify-content: center;
-}
-
 .option {
 	display: flex;
 	margin: 8px 0px 8px 0px;
 }
 
-.inputLabel {
+.programInputLabel {
 	width: 100px;
 	font-size: 12pt;
 	text-align: right;
@@ -199,7 +186,7 @@
 	width: 200px;
 }
 
-.buttonContainer {
+.programButtonContainer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;

@@ -48,19 +48,19 @@
 			<div class="card border-primary mt-3">
 				<div class="card-body">
 					<h3 class="card-title card-header">Profile - {{ credentials.Name }}</h3>
-					<div class="contentContainer">
+					<div class="profileContentContainer">
 						<div>Current bill: N/A</div>
-						<div class="checkboxes">
-							<div class="checkboxContainer">
-								<div class="checkboxLabel">Member?</div>
+						<div class="profileCheckboxes">
+							<div class="profileCheckboxContainer">
+								<div class="profileCheckboxLabel">Member?</div>
 								<input type="checkbox" v-model="isMember"/>
 							</div>
-							<div class="checkboxContainer">
-								<div class="checkboxLabel">Staff?</div>
+							<div class="profileCheckboxContainer">
+								<div class="profileCheckboxLabel">Staff?</div>
 								<input type="checkbox" v-model="isStaff"/>
 							</div>
 						</div>
-						<div class="buttonContainer">
+						<div class="profileButtonContainer">
 							<div class="btn btn-primary btn-sm mt-3 mb-3" @click="saveInfo">Save</div>
 							<div class="btn btn-primary btn-sm mt-3 mb-3 deleteButton" @click="deactivate">Deactivate Account</div>
 						</div>
@@ -75,18 +75,14 @@
 </template>
 
 <style>
-.pageContent {
-	display: flex;
-	justify-content: center;
-}
 
-.buttonContainer {
+.profileButtonContainer {
 	display: flex;
 	justify-content: space-around;
 	width: 240px;
 }
 
-.contentContainer {
+.profileContentContainer {
 	font-size: 12pt;
 	display: flex;
 	flex-direction: column;
@@ -95,17 +91,17 @@
 	justify-content: space-around;
 }
 
-.checkboxes {
+.profileCheckboxes {
 	display: flex;
 	justify-content: space-evenly;
 	width: 300px;
 }
 
-.checkboxContainer {
+.profileCheckboxContainer {
 	display: flex;
 }
 
-.checkboxLabel {
+.profileCheckboxLabel {
 	font-size: 12pt;
 	margin-right: 6px;
 }

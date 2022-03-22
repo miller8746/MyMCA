@@ -20,7 +20,10 @@
 					var endDate = new Date(program['OfferingPeriodEnd']);
 					program['OfferingDate'] = startDate.toLocaleString();
 					program['OfferingDateEnd'] = endDate.toLocaleString();
-					program['RepeatDays'] = program['Days'].split(',');
+					program['RepeatDays'] = [];
+					program['Days'].forEach((day) => {
+						program['RepeatDays'].push(day.Day);
+					});
 				});
 			})
 			.catch(error => {
