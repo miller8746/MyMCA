@@ -22,7 +22,6 @@
 							this.showLoginError = true;
 						} else {
 							this.credentials = response.data;
-							// Store credentials in VueX state
 							this.$store.commit('login', this.credentials);
 							
 						}

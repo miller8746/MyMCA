@@ -23,7 +23,7 @@ class ProfileService {
 		return http.get('/api/enrollments/');
 	}
 	createAccount(userInfo) {
-		return http.post('/api/create-account/', {
+		return http.post('/api/account/', {
 			name: userInfo.name,
 			username: userInfo.username,
 			password: userInfo.password,
@@ -31,12 +31,17 @@ class ProfileService {
 			isStaff: userInfo.isStaff
 		});
 	}
+
 	saveAccountInfo(isMember, isStaff, userId) {
-		return http.post('/api/save-account-info/', {
+		return http.post('/api/account-info/', {
 			isMember: isMember,
 			isStaff: isStaff,
 			userId: userId
 		});
+	}
+
+	enrollUser(userid, programId){
+		return http.post(`/api/users/${userid}/enrollments/${programId}/`, {});
 	}
 }
 export default new ProfileService();
