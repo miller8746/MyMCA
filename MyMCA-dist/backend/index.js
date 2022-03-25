@@ -17,15 +17,18 @@ app.get('/api/login/:user&:pass', (req, res) => {
   let username = req.params.user;
   let password = req.params.pass;
   
-  let sql = `SELECT u.UserId, Name, Member, Staff FROM Users u JOIN Credentials c ON u.UserId = c.UserId WHERE Username = '${username}' AND PASSWORD = '${password}';`
-        db.get(sql, [], (err, row) => {
-          if (err) {
-            console.log("oopsie");
-          }
-    // remove this for PROD
-	  console.log(row);
-	  res.send(row);
-        });
+  let sql = `SELECT u.UserId, Name, Member, Staff 
+                FROM Users u 
+                JOIN Credentials c ON u.UserId = c.UserId 
+                WHERE Username = '${username}' AND PASSWORD = '${password}';`
+
+  db.get(sql, [], (err, row) => {
+    if (err) {
+      console.log("oopsie");
+    }
+	  
+    res.send(row);
+  });
 });
 
 /* PROGRAMS - all apis */
@@ -41,14 +44,14 @@ app.get('/api/programs/', (req, res) => {
     if (err) {
       console.log(err);
     }
-    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => {
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => { // TODO: use a join here. something like
+      // SELECT d.Day, p.ProgramId FROM ProgramDays d JOIN Programs p ON d.ProgramId = p.ProgramId
       if (err) {
         console.log(err);
       }
       rows.forEach((row) => {
         row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
       });
-      console.log(rows);
       res.send(rows);
     });
   });
@@ -58,22 +61,16 @@ app.get('/api/programs/', (req, res) => {
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
                 FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
-                GROUP BY p.ProgramId`;
-  let enrollments = [];
+                GROUP BY p.ProgramId`
 
-  db.all(sql, [], (err, rows) => {
+  db.get(sql, [], (err, rows) => {
     if (err) {
-      console.log(err);
+    console.log("oopsie");
     }
 
-    let i = 0;
-    rows.forEach((row) => {
-      enrollments[i] = row;
-      i++
+    console.log(rows);
+    res.send(rows);
     });
-
-    res.send(enrollments);
-  });
 });
 
 /* POSTS */
@@ -98,7 +95,6 @@ app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
 // Post for Create Programs page
 app.post(`/api/programs/`, (req, res) => {
   let program = req.body;
-  console.log(program);
 
   db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
   .all(`SELECT ${allProgramAttributes} 
@@ -151,7 +147,6 @@ app.post('/api/account-info/', (req, res) => {
 // Post for Create Account page
 app.post('/api/account/', (req,res) => {
   let credentials = req.body;
-  console.log(credentials);
 
   let sql = `SELECT ${allCredentialAttributes} FROM Credentials WHERE Username = '${credentials.username}';`
 

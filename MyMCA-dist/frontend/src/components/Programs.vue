@@ -172,36 +172,8 @@
 									{{ getFormattedRepeatDays(program['RepeatDays']) }} 
 								</div>
 							</div>
-
-							<button type="button" class="btn btn-outline-primary mb-3 mt-1" data-bs-toggle="modal" :data-bs-target="'#signUpModal-' + program['ProgramId']">
-								Sign Up
-							</button>
-						</div>
-
-						<div :id="'signUpModal-' + program['ProgramId']" class="modal fade" tabindex="-1" role="dialog">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="signUpModalLabel">Sign Up</h5>
-									<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body">
-									<div class="mb-3 fw-light">Select the days you would like to attend</div>
-									<ul class="checkbox-list">
-										<li v-for="day in program['Days']" v-bind:key="day" class="list-group-item">
-											<input class="form-check-input me-1" type="checkbox">
-												{{day['Day']}}
-										</li>
-										
-									</ul>
-								</div>
-								<div class="modal-footer">
-									<span @click="enrollUser(program['ProgramId'])" data-bs-dismiss="modal" class="btn btn-primary btn-sm mb-3">Confirm</span>	
-								</div>
-								</div>
-							</div>
+							
+							<span @click="enrollUser(program['ProgramId'])" data-bs-dismiss="modal" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
 						</div>
 
 						<div class="card-footer footer">
