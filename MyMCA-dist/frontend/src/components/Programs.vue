@@ -173,12 +173,12 @@
 								</div>
 							</div>
 
-							<button type="button" class="btn btn-outline-primary mb-3 mt-1" data-bs-toggle="modal" data-bs-target="#signUpModal">
+							<button type="button" class="btn btn-outline-primary mb-3 mt-1" data-bs-toggle="modal" :data-bs-target="'#signUpModal-' + program['ProgramId']">
 								Sign Up
 							</button>
 						</div>
 
-						<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog">
+						<div :id="'signUpModal-' + program['ProgramId']" class="modal fade" tabindex="-1" role="dialog">
 							<div class="modal-dialog" role="document">
 								<div class="modal-content">
 								<div class="modal-header">
