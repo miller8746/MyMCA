@@ -32,8 +32,10 @@
 				console.log(error);
 			});
 			// Getting number of enrollments for all programs
-			Service.getEnrollments().then(response => {
-				this.enrollments = response.data;
+			Service.getEnrollments()
+				.then(response => {
+					this.enrollments = response.data;
+					console.log("enrollments =\n" + this.enrollments);
 			})
 			.catch(error => {
 				console.log("Something went wrong: ");
@@ -44,22 +46,23 @@
 			enrollUser(programId){
 				Service.enrollUser(this.credentials.UserId, programId)
 					.then(() => {
-						this.popUpSignUpAlert(programId);
+						this.popUpSignUpSuccessAlert(programId);
 					})
 					.catch(error => {
+						this.popUpSignUpFailureAlert(programId);
 						console.log("Something went wrong:");
 						console.log(error);
 					}
 				);
 			},
 			getCurrentEnrollments(programId) {
-				if(this.enrollments != null) {
-					this.enrollments.forEach(enrollment => {
-						if( enrollment['ProgramId'] == programId ){
-							return enrollment['NumOfEnrollments'];
-						}
-					});
-				}
+				// if(this.enrollments != null) {
+				// 	this.enrollments.forEach(enrollment => {
+				// 		if( enrollment['ProgramId'] == programId ){
+				// 			return enrollment['NumOfEnrollments'];
+				// 		}
+				// 	});
+				// }
 				return 0;
 			},
 			getCost(baseCost){
@@ -74,27 +77,27 @@
 				return baseCost;
 			}, 
 			getFormattedRepeatDays(repeatDays){
-				let formatted = '';
+				let formatted = 'Offered ';
 				repeatDays.forEach(day => {
 					if( day == "Monday"){
-						formatted += "Mon/";
+						formatted += "Monday, ";
 					} else if( day == "Tuesday"){
-						formatted += "Tue/";
+						formatted += "Tuesday, ";
 					} else if( day == "Wednesday"){
-						formatted += "Wed/";
+						formatted += "Wednesday, ";
 					} else if( day == "Thursday"){
-						formatted += "Thu/";
+						formatted += "Thursday, ";
 					} else if( day == "Friday"){
-						formatted += "Fri/";
+						formatted += "Friday, ";
 					} else if( day == "Saturday"){
-						formatted += "Sat/";
+						formatted += "Saturday, ";
 					} else if( day == "Sunday"){
-						formatted += "Sun/";
+						formatted += "Sunday, ";
 					}
 				});
 
 				if( formatted.length > 0 ){
-					formatted = formatted.substring(0, formatted.length-1);
+					formatted = formatted.substring(0, formatted.length-2);
 				} 
 				
 				return formatted;
@@ -107,12 +110,31 @@
 					return '';
 				}
 			},
-			popUpSignUpAlert(programId){
+			popUpSignUpSuccessAlert(programId){
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-success alert-dismissible fade show");
 				alert.setAttribute("role", "alert");
 
 				let alertMessage = document.createTextNode("You are now signed up for this program.");
+				alert.appendChild(alertMessage);
+
+				let alertExitButton = document.createElement("button");
+				alertExitButton.setAttribute("type", "button"); 
+				alertExitButton.setAttribute("class", "btn-close"); 
+				alertExitButton.setAttribute("data-bs-dismiss", "alert"); 
+				alertExitButton.setAttribute("aria-label", "Close"); 
+
+				alert.appendChild(alertExitButton);
+						
+				let card = document.getElementById("program-" + programId);
+				card.prepend(alert);
+			},
+			popUpSignUpFailureAlert(programId){
+				let alert = document.createElement("div"); 
+				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show");
+				alert.setAttribute("role", "alert");
+
+				let alertMessage = document.createTextNode("Something went wrong, try again later.");
 				alert.appendChild(alertMessage);
 
 				let alertExitButton = document.createElement("button");
@@ -133,24 +155,54 @@
 <template>
 	<div>
 		<Header :credentials="this.credentials"/>
-		<div>
-			<div class="container card-deck">
-				<div v-for="program in this.programs" v-bind:key="program" class="card border-primary mt-3">
+		<div class="body">
+			<div class="container card-deck pt-3">
+				<div v-for="program in this.programs" v-bind:key="program" class="program-card card shadow-sm bg-body rounded mb-3">
 					<div :id="'program-' + program['ProgramId']" class="card-body">
-						<h3 class="card-title card-header">{{ program['Title'] }}</h3>
-						<div>
-							{{ program['Description'] }}
-						</div>	
-						<div class="pt-2 pb-2 program-more-info">
+						<h3 class="program-card-title card-header">{{ program['Title'] }}</h3>
+						<div class="m-3">
 							<div>
-								${{ getCost( program['Cost'] ) }}/Person
+								{{ program['Description'] }}
+							</div>	
+							<div class="pt-2 pb-2 program-more-info">
+								<div>
+									${{ getCost( program['Cost'] ) }}/Person
+								</div>
+								<div>
+									{{ getFormattedRepeatDays(program['RepeatDays']) }} 
+								</div>
 							</div>
-							<div>
-								{{ getFormattedRepeatDays(program['RepeatDays']) }} 
-							</div>
+
+							<button type="button" class="btn btn-outline-primary mb-3 mt-1" data-bs-toggle="modal" data-bs-target="#signUpModal">
+								Sign Up
+							</button>
 						</div>
 
-						<span @click="enrollUser(program['ProgramId'])" class="btn btn-primary btn-sm mb-3">Sign Up</span>		
+						<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="signUpModalLabel">Sign Up</h5>
+									<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="mb-3 fw-light">Select the days you would like to attend</div>
+									<ul class="checkbox-list">
+										<li v-for="day in program['Days']" v-bind:key="day" class="list-group-item">
+											<input class="form-check-input me-1" type="checkbox">
+												{{day['Day']}}
+										</li>
+										
+									</ul>
+								</div>
+								<div class="modal-footer">
+									<span @click="enrollUser(program['ProgramId'])" data-bs-dismiss="modal" class="btn btn-primary btn-sm mb-3">Confirm</span>	
+								</div>
+								</div>
+							</div>
+						</div>
 
 						<div class="card-footer footer">
 							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
@@ -169,6 +221,16 @@
 .footer {
 	font-size: small;
 }
+
+.program-card:hover {
+    box-shadow: 0 8px 17px 0 rgba(119, 119, 119, 0.2), 0 6px 20px 0 rgba(85, 85, 85, 0.19) !important;
+	margin-left: 10px !important;
+    transition: all .3s ease-in-out;
+}
+
+.program-card-title {
+	color: rgb(70, 69, 69);
+}
 .program-detail {
 	font-size: medium;
 }
@@ -177,4 +239,13 @@
 	font-size: small;
 	color: rgb(87, 85, 85);
 }
+
+.checkbox-list {
+	margin-left: -30px !important;
+}
+
+.body {
+	background-color: rgb(240, 240, 240);
+}
+
 </style>

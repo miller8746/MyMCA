@@ -64,32 +64,30 @@
 			</div>
 		</div>
 
-		<div class="loginContainer">
+		<div class="loginContainer pl-3 pr-3">
 			<div v-if="credentials == null" class="loginModule">
 				<div>
-					<div class="centerText">Welcome to MyMCA.</div>
-					<div class="centerText">Please enter your credentials below to continue.</div>
+					<div class="centerText">Welcome to MyMCA</div>
 				</div>
 				<div class="userInputContainer">
 					<div class="userInputColumn">
-						<div class="userInputText">Username: </div>
-						<div class="userInputText">Password: </div>
+						<div class="userInputText mb-2">Username </div>
+						<div class="userInputText">Password </div>
 					</div>
 					<div class="userInputColumn">
-						<input v-model="username"/>
-						<input type="password" v-model="password"/>
+						<input class="form-control mb-2" v-model="username"/>
+						<input class="form-control" type="password" v-model="password"/>
 					</div>
 				</div>
 				<div class="confirmLoginContainer">
-					<div @click="submitCredentials" class="button">Log in</div>
+					<div @click="submitCredentials" class="btn btn-primary">Log in</div>
 					<div v-if="showLoginError" class="warningText">The credentials you have entered are not correct.</div>
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
 				</div>
 				<div class="linkText">
 					<span class="userInputText">Don't have an account?</span>
-					<router-link to="/create-account">Create one</router-link>
+					<router-link to="/create-account">Create one here</router-link>
 				</div>
-				
 			</div>
 		</div>
 		<div class="banner-container">

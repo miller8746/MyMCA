@@ -34,7 +34,7 @@
 			<router-link to="/programs" v-if="credentials != null" class="pageLink">Programs</router-link>
 			<div v-if="credentials != null" class="pageLink">Enrollments</div>
 			<div v-if="credentials != null && credentials.Staff == true" class="pageLink">Users</div>
-			<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink">Create Program...</router-link>
+			<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink">Create Program</router-link>
 			<span @click="logOut" v-if="credentials != null" class="signOutText link">Sign out</span>
 		</div>
 	</div>
