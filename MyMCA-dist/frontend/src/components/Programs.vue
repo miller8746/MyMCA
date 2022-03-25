@@ -34,8 +34,7 @@
 			// Getting number of enrollments for all programs
 			Service.getEnrollments()
 				.then(response => {
-					this.enrollments = response.data;
-					console.log("enrollments =\n" + this.enrollments);
+					this.enrollments = JSON.stringify(response.data);
 			})
 			.catch(error => {
 				console.log("Something went wrong: ");
@@ -56,10 +55,18 @@
 				);
 			},
 			getCurrentEnrollments(programId) {
+				// console.log("get current = " + this.enrollments);
+				// console.log("programid = " + programId);
 				// if(this.enrollments != null) {
+				// 	for(var i = 0; i < this.enrollments.length; i++){
+				// 		if( this.enrollment[i]['ProgramId'] == programId ){
+				// 			return this.enrollment[i]['NumOfEnrollments'] == null ? 0 : this.enrollment[i]['NumOfEmrollments'];
+				// 		}	
+				// 	}
+
 				// 	this.enrollments.forEach(enrollment => {
 				// 		if( enrollment['ProgramId'] == programId ){
-				// 			return enrollment['NumOfEnrollments'];
+				// 			return enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEmrollments'];
 				// 		}
 				// 	});
 				// }
@@ -103,7 +110,6 @@
 				return formatted;
 			},
 			getFormattedDate(value) {
-				console.log("value " + value);
 				if (value){
     				return moment(String(value)).format('MM/DD hh:mm A')
 				} else {
@@ -173,7 +179,7 @@
 								</div>
 							</div>
 							
-							<span @click="enrollUser(program['ProgramId'])" data-bs-dismiss="modal" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
+							<span @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
 						</div>
 
 						<div class="card-footer footer">

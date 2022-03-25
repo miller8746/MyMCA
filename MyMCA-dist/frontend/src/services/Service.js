@@ -20,7 +20,7 @@ class ProfileService {
 		});
 	}
 	getEnrollments() {
-		return http.get('/api/enrollments/');
+		return http.get('/api/enrollments/', {});
 	}
 	createAccount(userInfo) {
 		return http.post('/api/account/', {

@@ -67,20 +67,23 @@
 		<div class="loginContainer pl-3 pr-3">
 			<div v-if="credentials == null" class="loginModule">
 				<div>
-					<div class="centerText">Welcome to MyMCA</div>
+					<div class="modal-header text-center">
+						<h4 class="modal-title w-100 font-weight-bold">Welcome to MyMCA</h4>
+					</div>
 				</div>
 				<div class="userInputContainer">
 					<div class="userInputColumn">
-						<div class="userInputText mb-2">Username </div>
-						<div class="userInputText">Password </div>
+						<div class="material-icons">account_circle</div>
+						<div class="material-icons mt-3">lock</div>			
 					</div>
 					<div class="userInputColumn">
-						<input class="form-control mb-2" v-model="username"/>
-						<input class="form-control" type="password" v-model="password"/>
+
+						<input class="mb-4 user-input-box" placeholder="Username" v-model="username"/>
+						<input class="user-input-box" placeholder="Password" type="password" v-model="password"/>
 					</div>
 				</div>
 				<div class="confirmLoginContainer">
-					<div @click="submitCredentials" class="btn btn-primary">Log in</div>
+					<div @click="submitCredentials" class="button ">Log in</div>
 					<div v-if="showLoginError" class="warningText">The credentials you have entered are not correct.</div>
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
 				</div>
@@ -98,6 +101,8 @@
 			</ul>
 		</div>
 	</div>
+
+	
 	
 </template>
 
@@ -134,22 +139,20 @@
 	justify-content: center;
 }
 
-.centerText {
-	text-align: center;
-}
-
 .loginModule {
 	color: #000000;
-	background-color: lightgrey;
-	border-radius: 15px;
+	background-color: rgb(255, 255, 255);
+	border-radius: 8px;
 	display: flex;
-	width: 300px;
-	height: 300px;
-	margin-top: -400px;
+	width: 400px;
+	height: 400px;
+	margin-top: -450px;
 	justify-content: space-around;
 	align-items: center;
 	flex-direction: column;
 	position: fixed;
+	box-shadow: 0 .5rem 1rem rgb(43, 42, 42)
+
 }
 
 .userInputContainer {
@@ -159,6 +162,7 @@
 }
 
 .userInputColumn {
+	margin-right: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -166,17 +170,47 @@
 }
 
 .userInputText {
-	margin-right: 5px;
+	margin-right: 10px;
+	margin-bottom: 20px;
+}
+
+.user-input-box {
+	border: 0;
+    outline: 0;
+    border-bottom: 1px solid rgb(211, 211, 211);
 }
 
 .confirmLoginContainer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	border-radius: 0;
 }
 
 .linkText {
 	font-size: 10pt;
 	cursor: pointer;
+}
+
+.button {
+  background-color: #0d6efd;
+  color: white;
+
+  border: none;
+  
+  padding: 10px 20px;
+  width: 200px;
+
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+
+  border-radius: 25px;
+}
+
+.button:hover {
+	  background-color: #162adb;
 }
 </style>
