@@ -118,7 +118,7 @@
 			},
 			popUpSignUpSuccessAlert(programId){
 				let alert = document.createElement("div"); 
-				alert.setAttribute("class", "alert alert-success alert-dismissible fade show");
+				alert.setAttribute("class", "alert alert-success alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
 
 				let alertMessage = document.createTextNode("You are now signed up for this program.");
@@ -161,32 +161,34 @@
 <template>
 	<div>
 		<Header :credentials="this.credentials"/>
-		<div class="body">
-			<div class="container card-deck pt-3">
-				<div v-for="program in this.programs" v-bind:key="program" class="program-card card shadow-sm bg-body rounded mb-3">
-					<div :id="'program-' + program['ProgramId']" class="card-body">
-						<h3 class="program-card-title card-header">{{ program['Title'] }}</h3>
-						<div class="m-3">
-							<div>
-								{{ program['Description'] }}
-							</div>	
-							<div class="pt-2 pb-2 program-more-info">
-								<div>
-									${{ getCost( program['Cost'] ) }}/Person
+		<div class="body pt-3">
+			<div class="container">
+				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
+					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">
+						<div :id="'program-' + program['ProgramId']" class="card-body">
+							<h3 class="program-card-title card-header">{{ program['Title'] }}</h3>
+							<div class="m-3">
+								<div class="fs-6">
+									{{ program['Description'] }}
+								</div>	
+								<div class="pt-2 pb-2 program-more-info">
+									<div>
+										${{ getCost( program['Cost'] ) }}/Person
+									</div>
+									<div>
+										{{ getFormattedRepeatDays(program['RepeatDays']) }} 
+									</div>
 								</div>
-								<div>
-									{{ getFormattedRepeatDays(program['RepeatDays']) }} 
-								</div>
+								
+								<span @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
 							</div>
-							
-							<span @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
-						</div>
 
-						<div class="card-footer footer">
-							<div class="program-detail">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
-							<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
-							<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
-    					</div>
+							<div class="card-footer footer">
+								<div class="fs-6">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
+								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
+								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -196,21 +198,37 @@
 
 <style>
 
-.footer {
-	font-size: small;
+
+.body {
+	background-color: rgb(240, 240, 240);
+	width: 100vw;
+	min-height: 100vh;
+}
+
+.list-group-item {
+    width: 95%;
+    margin: 1% !important;
+}
+
+@media (min-width: 576px) {
+    .list-group-item {
+        width: 30%;
+        margin: 5px 1.5% !important;
+    }
+}
+
+.program-card {
+	margin-bottom: 15px !important;
 }
 
 .program-card:hover {
     box-shadow: 0 8px 17px 0 rgba(119, 119, 119, 0.2), 0 6px 20px 0 rgba(85, 85, 85, 0.19) !important;
-	margin-left: 10px !important;
+	margin-top: -2px !important; 
     transition: all .3s ease-in-out;
 }
 
 .program-card-title {
 	color: rgb(70, 69, 69);
-}
-.program-detail {
-	font-size: medium;
 }
 
 .program-more-info {
@@ -218,12 +236,12 @@
 	color: rgb(87, 85, 85);
 }
 
-.checkbox-list {
-	margin-left: -30px !important;
+.alert-font {
+	font-size: small;
 }
 
-.body {
-	background-color: rgb(240, 240, 240);
+.footer {
+	font-size: small;
 }
 
 </style>
