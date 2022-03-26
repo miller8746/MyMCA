@@ -35,11 +35,27 @@ app.get('/api/login/:user&:pass', (req, res) => {
 
 /* GETS */
 
-// Get for Programs page
-app.get('/api/programs/', (req, res) => {
-  let sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor 
-              FROM Programs 
+// Get for Programs, Enrollments pages
+// If a user id is specified, it will get enrolled programs, otherwise returns all programs
+app.get('/api/programs/:userId', (req, res) => {
+  let userId = req.params.userId;
+   let sql = ``;
+  if (userId == 'null') {
+    // Get all programs
+    console.log('Loading all programs');
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor 
+              FROM Programs
               ORDER BY OfferingPeriod ASC;`;
+  } else {
+    // Get user-enrolled programs
+    console.log('Loading user programs for id ' + userId);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor 
+              FROM Programs
+              INNER JOIN Enrollments ON
+              Enrollments.ProgramId = Programs.ProgramId
+              WHERE Enrollments.UserId = ${userId}
+              ORDER BY OfferingPeriod ASC;`;
+  }
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.log(err);
