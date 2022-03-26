@@ -7,7 +7,7 @@ const routes =  [
   },
   {
     path: "/programs",
-    component: () => import("../components/Programs")
+    component: () => import("../components/ProgramViewer")
   },
   {
     path: "/create-program",
@@ -20,6 +20,10 @@ const routes =  [
   {
     path: "/profile",
     component: () => import("../components/Profile")
+  },
+  {
+    path: "/enrollments",
+    component: () => import("../components/EnrollmentViewer")
   }
 ];
 const router = createRouter({

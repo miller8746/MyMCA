@@ -1,20 +1,19 @@
 <script>
-	import Header from './Header.vue'
 	import Service from '../services/Service.js'
 	import moment from 'moment'
 
 	export default {
-		components: { Header },
+		props: ['credentials', 'isUserOnly'],
 		data() {
 			return {
-				credentials: this.$store.state.credentials,
 				programs: null,
 				enrollments: null,
 			};
 		},
 		mounted() {
+			var id = this.isUserOnly ? this.credentials.UserId : 'null';
 			// Getting all available programs
-			Service.getPrograms().then(response => {
+			Service.getPrograms(id).then(response => {
 				this.programs = response.data;
 				this.programs.forEach(program => {
 					var startDate = new Date(program['OfferingPeriod']);
@@ -160,7 +159,6 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials"/>
 		<div class="body pt-3">
 			<div class="container">
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
@@ -172,15 +170,18 @@
 									{{ program['Description'] }}
 								</div>	
 								<div class="pt-2 pb-2 program-more-info">
-									<div>
+									<div v-if="!this.isUserOnly">
 										${{ getCost( program['Cost'] ) }}/Person
+									</div>
+									<div v-else>
+										You are paying ${{ getCost( program['Cost'] ) }} for this program.
 									</div>
 									<div>
 										{{ getFormattedRepeatDays(program['RepeatDays']) }} 
 									</div>
 								</div>
 								
-								<span @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
+								<span v-if="!this.isUserOnly" @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
 							</div>
 
 							<div class="card-footer footer">
