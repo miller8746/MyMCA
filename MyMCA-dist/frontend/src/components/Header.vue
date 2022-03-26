@@ -25,14 +25,16 @@
 
 			</div>
 			<div class="pages mt-3">
-				<router-link to="/profile" v-if="credentials != null" class="pageLink">Profile</router-link>
-				<router-link to="/programs" v-if="credentials != null" class="pageLink">Programs</router-link>
+				<router-link to="/programs" class="pageLink">Programs</router-link>
 				<div v-if="credentials != null" class="pageLink">Enrollments</div>
 				<div v-if="credentials != null && credentials.Staff == true" class="pageLink">Users</div>
 				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink">Create Program</router-link>
 				
 				<span @click="logOut" v-if="credentials != null" class="signOutText link">Sign out</span>
-				<span v-if="credentials != null" class="material-icons face">person</span>
+				<router-link to="/profile" v-if="credentials != null">
+					<span v-if="credentials != null" class="material-icons face">person</span>
+				</router-link>
+				
 			</div>
 		</nav>
 
@@ -98,6 +100,7 @@
 
 .link {
 	cursor: pointer;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .pages {
@@ -124,6 +127,7 @@
 	text-decoration: none;
 
 	font-size: medium;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .pageLink:hover {

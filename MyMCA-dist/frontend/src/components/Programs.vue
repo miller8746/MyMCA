@@ -34,12 +34,17 @@
 			// Getting number of enrollments for all programs
 			Service.getEnrollments()
 				.then(response => {
-					this.enrollments = JSON.stringify(response.data);
-			})
+					this.enrollments = response.data;
+				})
 			.catch(error => {
 				console.log("Something went wrong: ");
 				console.log(error);
 			});	
+		},
+		computed: {
+			isSignUpEnabled: function () {
+				return this.credentials !== null;
+			}
 		},
 		methods: {
 			enrollUser(programId){
@@ -55,15 +60,8 @@
 				);
 			},
 			getCurrentEnrollments(programId) {
-				// console.log("get current = " + this.enrollments);
-				// console.log("programid = " + programId);
+				// console.log(this.enrollments);
 				// if(this.enrollments != null) {
-				// 	for(var i = 0; i < this.enrollments.length; i++){
-				// 		if( this.enrollment[i]['ProgramId'] == programId ){
-				// 			return this.enrollment[i]['NumOfEnrollments'] == null ? 0 : this.enrollment[i]['NumOfEmrollments'];
-				// 		}	
-				// 	}
-
 				// 	this.enrollments.forEach(enrollment => {
 				// 		if( enrollment['ProgramId'] == programId ){
 				// 			return enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEmrollments'];
@@ -179,8 +177,9 @@
 										{{ getFormattedRepeatDays(program['RepeatDays']) }} 
 									</div>
 								</div>
-								
-								<span @click="enrollUser(program['ProgramId'])" :disabled="getCurrentEnrollments(program['ProgramId']) === program['Capacity']" class="btn btn-outline-primary btn mb-3">Sign Up</span>  
+
+								<button v-if="isSignUpEnabled" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
+								<router-link v-else to="/" class="btn btn-outline-secondary btn mb-3">Sign Up</router-link>
 							</div>
 
 							<div class="card-footer footer">
@@ -200,7 +199,7 @@
 
 
 .body {
-	background-color: rgb(240, 240, 240);
+	background-color: rgb(233, 233, 233);
 	width: 100vw;
 	min-height: 100vh;
 }
@@ -219,10 +218,12 @@
 
 .program-card {
 	margin-bottom: 15px !important;
+	background-color: rgb(252, 252, 252) !important;
 }
 
 .program-card:hover {
     box-shadow: 0 8px 17px 0 rgba(119, 119, 119, 0.2), 0 6px 20px 0 rgba(85, 85, 85, 0.19) !important;
+	background-color: white !important;
 	margin-top: -2px !important; 
     transition: all .3s ease-in-out;
 }

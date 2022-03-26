@@ -45,22 +45,22 @@
 		<div id="carouselExampleControls" class="carousel slide " data-bs-ride="carousel">
 			<div class="carousel-inner">
 				<div id="image1" class="carousel-item active">
-					<img src="../assets/bikes.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Bikers">
+					<img src="../assets/kids-playing.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Kids playing">
 				</div>
 				<div id="image2" class="carousel-item">
-					<img src="../assets/football.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Kids playing football">
+					<img src="../assets/running.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Kids playing running">
 				</div>
 				<div id="image3" class="carousel-item">
-					<img src="../assets/kids.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Kids playing soccer">
+					<img src="../assets/soccer-team.jpg" class="d-block w-100" style="object-fit:cover; height: 500px;" alt="Soccer Team">
 				</div>
-				  	<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-   						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    					<span class="visually-hidden">Previous</span>
-  					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-						<span class="carousel-control-next-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Next</span>
-					</button>
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    				<span class="visually-hidden">Previous</span>
+  				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
 			</div>
 		</div>
 
@@ -93,12 +93,44 @@
 				</div>
 			</div>
 		</div>
-		<div class="banner-container">
-			<ul class="banner">
-				<li class="banner-item"> Welcoming </li>
-				<li class="banner-item"> Community Focused </li>
-				<li class="banner-item"> Mission Driven </li>
-			</ul>
+		
+		<div class="body">
+			<div class="banner-container">
+				<ul class="banner">
+					<li class="banner-item"> Welcoming </li>
+					<li class="banner-item"> Community Focused </li>
+					<li class="banner-item"> Mission Driven </li>
+				</ul>
+			</div>
+
+			<div class="container">
+				<div class="mt-4 row">
+					<div class="col">
+						<div class="card">
+							<img src="../assets/dinner.jpg" class="card-img-top">
+							<div class="card-body">
+								<p class="card-text">Here at the Y, we support you and your family in all aspects of health.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<img src="../assets/child-running.jpg" class="card-img-top">
+							<div class="card-body">
+								<p class="card-text">We offer a variety of sports education to the whole community.</p>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<img src="../assets/man-and-woman.jpg" class="card-img-top">
+							<div class="card-body">
+								<p class="card-text">With our highly trained staff, we can help no matter your circumstance.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -107,6 +139,11 @@
 </template>
 
 <style>
+.body {
+	background-color: rgb(233, 233, 233);
+	width: 100vw;
+	min-height: 65vh;
+}
 
 .banner-container {
 	display: block;
@@ -213,4 +250,13 @@
 .button:hover {
 	  background-color: #162adb;
 }
+
+.card-body {
+	font-family: 'Montserrat', sans-serif;
+}
+
+.card-image-top {
+	height: 50px !important;
+}
+
 </style>
