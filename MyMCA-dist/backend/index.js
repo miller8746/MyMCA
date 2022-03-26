@@ -73,20 +73,20 @@ app.get('/api/programs/:userId', (req, res) => {
   });
 });
 
-// Get enrollments for Programs page
+// Get number of enrollments for each program
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
-                FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
-                GROUP BY p.ProgramId`
+              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+              GROUP BY p.ProgramId`
 
-  db.get(sql, [], (err, rows) => {
+  db.all(sql, [], (err, rows) => {
     if (err) {
-    console.log("oopsie");
-    }
-
-    console.log(rows);
-    res.send(rows);
-    });
+      console.log("oopsie");
+    } 
+    
+    console.log("here are the enrollment counts = " + rows);
+    res.status(200).json(rows)
+  });
 });
 
 /* POSTS */
@@ -100,6 +100,7 @@ app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
     .all(`SELECT EnrollmentId 
             FROM Enrollments 
             WHERE UserId = ${userId} AND ProgramId = ${programId};`, (err, rows) => {
+              console.log("this is the response = " + rows);
               if( err ){
                 console.log(error);
               } else {
