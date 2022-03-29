@@ -22,6 +22,9 @@ class ProfileService {
 	getEnrollments() {
 		return http.get('/api/enrollments/', {});
 	}
+	getUserEnrollments(userId) {
+		return http.get(`/api/user-enrollments/${userId}`);
+	}
 	createAccount(userInfo) {
 		return http.post('/api/account/', {
 			name: userInfo.name,

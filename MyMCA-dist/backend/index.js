@@ -84,7 +84,24 @@ app.get('/api/enrollments/', (req, res) => {
       console.log("oopsie");
     } 
     
-    //console.log("here are the enrollment counts = " + rows);
+    console.log("here are the enrollment counts = " + rows);
+    res.status(200).json(rows)
+  });
+});
+
+// Get number of user enrollments for each program
+app.get('/api/user-enrollments/:userId', (req, res) => {
+  let userId = req.params.userId;
+  let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
+              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId WHERE e.UserId = ${userId} 
+              GROUP BY p.ProgramId`
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log("oopsie");
+    } 
+    
+    console.log("here are the enrollment counts = " + rows);
     res.status(200).json(rows)
   });
 });

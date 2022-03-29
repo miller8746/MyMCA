@@ -7,7 +7,8 @@
 		data() {
 			return {
 				programs: null,
-				enrollments: null
+				enrollments: null,
+				userEnrollments: null
 			};
 		},
 		mounted() {
@@ -26,9 +27,17 @@
 						program['Days'].forEach((day) => {
 							program['RepeatDays'].push(day.Day);
 						});
-						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
+						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
 						program['RepeatDays'] = this.getFormattedRepeatDays(program['RepeatDays']);
 					});
+					if (this.isUserOnly) {
+						Service.getUserEnrollments(this.credentials.UserId).then(response => {
+							this.userEnrollments = response.data;
+							this.programs.forEach(program => {
+								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+							});
+						});
+					}
 				}).catch(error => {
 					console.log("Something went wrong: ");
 					console.log(error);
@@ -63,9 +72,9 @@
 					}
 				);
 			},
-			getCurrentEnrollments(programId) {
+			getCurrentEnrollments(programId, enrollments) {
 					var numOfEnrollments = 0;
-				 	this.enrollments.forEach(enrollment => {
+				 	enrollments.forEach(enrollment => {
 				 		if( enrollment['ProgramId'] == programId ){
 				 			numOfEnrollments = enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEnrollments'];
 							return;
@@ -84,6 +93,18 @@
 				}
 				return baseCost;
 			}, 
+			getUserCost(program) {
+				var baseCost = program['Cost'];
+				if( this.credentials != null ) {
+					if(this.credentials.Member == 1) {
+						var d = baseCost / 2;
+						return (d * program['UserEnrollments']).toFixed(2);
+					} else {
+						return baseCost;
+					}
+				}
+				return baseCost;
+			},
 			getFormattedRepeatDays(repeatDays){
 				let formatted = 'Offered ';
 				repeatDays.forEach(day => {
@@ -172,11 +193,11 @@
 									{{ program['Description'] }}
 								</div>	
 								<div class="pt-2 pb-2 program-more-info">
-									<div v-if="!this.isUserOnly">
-										${{ getCost( program['Cost'] ) }}/Person
+									<div>
+										${{ getCost(program['Cost']) }}/Person
 									</div>
-									<div v-else>
-										You are paying ${{ getCost( program['Cost'] ) }} for this program.
+									<div v-if="this.isUserOnly">
+										You are paying ${{ getUserCost(program) }} for this program.
 									</div>
 									<div>
 										{{ program['RepeatDays'] }} 
@@ -188,6 +209,7 @@
 							</div>
 
 							<div class="card-footer footer">
+								<div class="fs-6" v-if="this.isUserOnly">You have {{ program['UserEnrollments'] }} spot(s) reserved.</div>
 								<div class="fs-6">{{ program['Enrollments'] }} / {{ program['Capacity'] }} Slots filled</div>
 								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
 								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
