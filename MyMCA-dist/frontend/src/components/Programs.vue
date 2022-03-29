@@ -7,38 +7,37 @@
 		data() {
 			return {
 				programs: null,
-				enrollments: null,
+				enrollments: null
 			};
 		},
 		mounted() {
 			var id = this.isUserOnly ? this.credentials.UserId : 'null';
-			// Getting all available programs
 			Service.getPrograms(id).then(response => {
 				this.programs = response.data;
-				this.programs.forEach(program => {
-					var startDate = new Date(program['OfferingPeriod']);
-					var endDate = new Date(program['OfferingPeriodEnd']);
-					program['OfferingDate'] = startDate.toLocaleString();
-					program['OfferingDateEnd'] = endDate.toLocaleString();
-					program['RepeatDays'] = [];
-					program['Days'].forEach((day) => {
-						program['RepeatDays'].push(day.Day);
+				// Getting number of enrollments for all programs
+				Service.getEnrollments().then(response => {
+					this.enrollments = response.data;
+					this.programs.forEach(program => {
+						var startDate = new Date(program['OfferingPeriod']);
+						var endDate = new Date(program['OfferingPeriodEnd']);
+						program['OfferingDate'] = startDate.toLocaleString();
+						program['OfferingDateEnd'] = endDate.toLocaleString();
+						program['RepeatDays'] = [];
+						program['Days'].forEach((day) => {
+							program['RepeatDays'].push(day.Day);
+						});
+						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
+						program['RepeatDays'] = this.getFormattedRepeatDays(program['RepeatDays']);
 					});
+				}).catch(error => {
+					console.log("Something went wrong: ");
+					console.log(error);
 				});
 			})
 			.catch(error => {
 				console.log("Something went wrong: ");
 				console.log(error);
 			});
-			// Getting number of enrollments for all programs
-			Service.getEnrollments()
-				.then(response => {
-					this.enrollments = response.data;
-				})
-			.catch(error => {
-				console.log("Something went wrong: ");
-				console.log(error);
-			});	
 		},
 		computed: {
 			isSignUpEnabled: function () {
@@ -49,6 +48,12 @@
 			enrollUser(programId){
 				Service.enrollUser(this.credentials.UserId, programId)
 					.then(() => {
+						this.programs.forEach(program => {
+							if (program['ProgramId'] == programId) {
+								program['Enrollments']++;
+								return;
+							}
+						});
 						this.popUpSignUpSuccessAlert(programId);
 					})
 					.catch(error => {
@@ -59,15 +64,14 @@
 				);
 			},
 			getCurrentEnrollments(programId) {
-				// console.log(this.enrollments);
-				// if(this.enrollments != null) {
-				// 	this.enrollments.forEach(enrollment => {
-				// 		if( enrollment['ProgramId'] == programId ){
-				// 			return enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEmrollments'];
-				// 		}
-				// 	});
-				// }
-				return 0;
+					var numOfEnrollments = 0;
+				 	this.enrollments.forEach(enrollment => {
+				 		if( enrollment['ProgramId'] == programId ){
+				 			numOfEnrollments = enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEnrollments'];
+							return;
+				 		}
+				 	});
+					return numOfEnrollments;
 			},
 			getCost(baseCost){
 				if( this.credentials != null ) {
@@ -175,16 +179,16 @@
 										You are paying ${{ getCost( program['Cost'] ) }} for this program.
 									</div>
 									<div>
-										{{ getFormattedRepeatDays(program['RepeatDays']) }} 
+										{{ program['RepeatDays'] }} 
 									</div>
 								</div>
 
-								<button v-if="isSignUpEnabled" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
-								<router-link v-else to="/" class="btn btn-outline-secondary btn mb-3">Sign Up</router-link>
+								<button v-if="isSignUpEnabled && !isUserOnly" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
+								<router-link v-else-if="!isUserOnly" to="/" class="btn btn-outline-secondary btn mb-3">Sign Up</router-link>
 							</div>
 
 							<div class="card-footer footer">
-								<div class="fs-6">{{ getCurrentEnrollments( program['ProgramId'] ) }} / {{ program['Capacity'] }} Slots filled</div>
+								<div class="fs-6">{{ program['Enrollments'] }} / {{ program['Capacity'] }} Slots filled</div>
 								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
 								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
 							</div>

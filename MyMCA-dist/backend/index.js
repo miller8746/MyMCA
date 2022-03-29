@@ -84,7 +84,7 @@ app.get('/api/enrollments/', (req, res) => {
       console.log("oopsie");
     } 
     
-    console.log("here are the enrollment counts = " + rows);
+    //console.log("here are the enrollment counts = " + rows);
     res.status(200).json(rows)
   });
 });

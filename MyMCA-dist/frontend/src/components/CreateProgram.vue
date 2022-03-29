@@ -174,7 +174,7 @@
 }
 
 .programInputLabel {
-	width: 100px;
+	width: 105px;
 	font-size: 12pt;
 	text-align: right;
 	margin-right: 6px;
