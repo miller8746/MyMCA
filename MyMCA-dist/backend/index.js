@@ -92,7 +92,7 @@ app.get('/api/enrollments/', (req, res) => {
 // Get number of user enrollments for each program
 app.get('/api/user-enrollments/:userId', (req, res) => {
   let userId = req.params.userId;
-  let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
+  let sql = `SELECT p.ProgramId, p.Title, Count(e.programId) AS NumOfEnrollments 
               FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId WHERE e.UserId = ${userId} 
               GROUP BY p.ProgramId`
 
@@ -163,6 +163,15 @@ app.post(`/api/programs/`, (req, res) => {
 /* USERS - all apis */
 
 /* GETS */
+
+// Get for Users page
+app.get('/api/users/', (req, res) => {
+  let sql = `SELECT ${allUserAttributes} FROM Users`;
+  db.all(sql, [], (err, rows) => {
+    if (err) { console.log(err); }
+    res.send(rows);
+  });
+});
 
 /* POSTS */
 

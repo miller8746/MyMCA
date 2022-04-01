@@ -34,7 +34,6 @@ class ProfileService {
 			isStaff: userInfo.isStaff
 		});
 	}
-
 	saveAccountInfo(isMember, isStaff, userId) {
 		return http.post('/api/account-info/', {
 			isMember: isMember,
@@ -42,9 +41,11 @@ class ProfileService {
 			userId: userId
 		});
 	}
-
 	enrollUser(userid, programId){
 		return http.post(`/api/users/${userid}/enrollments/${programId}/`, {});
+	}
+	getUsers() {
+		return http.get('/api/users/', {});
 	}
 }
 export default new ProfileService();

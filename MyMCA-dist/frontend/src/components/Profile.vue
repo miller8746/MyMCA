@@ -49,7 +49,6 @@
 				<div class="card-body">
 					<h3 class="card-title card-header">Profile - {{ credentials.Name }}</h3>
 					<div class="profileContentContainer">
-						<div>Current bill: N/A</div>
 						<div class="profileCheckboxes">
 							<div class="profileCheckboxContainer">
 								<div class="profileCheckboxLabel">Member?</div>

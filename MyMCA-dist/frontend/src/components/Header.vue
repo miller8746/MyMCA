@@ -25,16 +25,14 @@
 
 			</div>
 			<div class="pages mt-3">
-				<router-link to="/programs" class="pageLink">Programs</router-link>
-				<router-link to="/enrollments" v-if="credentials != null" class="pageLink">Enrollments</router-link>
-				<div v-if="credentials != null && credentials.Staff == true" class="pageLink">Users</div>
-				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink">Create Program</router-link>
-				
-				<span @click="logOut" v-if="credentials != null" class="signOutText link">Sign out</span>
+				<router-link to="/programs" class="pageLink fs-5">Programs</router-link>
+				<router-link to="/enrollments" v-if="credentials != null" class="pageLink fs-5">Enrollments</router-link>
+				<router-link to="/users" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Users</router-link>
+				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Create Program</router-link>
+				<span @click="logOut" v-if="credentials != null" class="signOutText link fs-5">Sign out</span>
 				<router-link to="/profile" v-if="credentials != null">
 					<span v-if="credentials != null" class="material-icons face">person</span>
 				</router-link>
-				
 			</div>
 		</nav>
 
@@ -121,7 +119,7 @@
 	align-items: center;
 
 	margin-top: 25px;
-	padding: 0px 30px 0px 50px;
+	padding: 0px 50px 0px 50px;
 	transition: background-color 0.5s;
 	color: #FFFFFF;
 	text-decoration: none;

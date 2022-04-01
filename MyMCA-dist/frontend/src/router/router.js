@@ -24,6 +24,10 @@ const routes =  [
   {
     path: "/enrollments",
     component: () => import("../components/EnrollmentViewer")
+  },
+  {
+    path: "/users",
+    component: () => import("../components/UserViewer")
   }
 ];
 const router = createRouter({
