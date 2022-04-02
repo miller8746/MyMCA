@@ -14,7 +14,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials"/>
+		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/enrollmentviewing.html'"/>
 		<Programs :credentials="this.credentials" :isUserOnly="true"/>
 	</div>
 </template>

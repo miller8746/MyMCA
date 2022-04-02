@@ -104,7 +104,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials"/>
+		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/programcreation.html'"/>
 		<div class="pageContent">
 			<div class="card border-primary mt-3">
 				<div class="card-body">

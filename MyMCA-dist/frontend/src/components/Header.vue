@@ -1,7 +1,7 @@
 <script>
 	import Service from '../services/Service.js'
 	export default {
-		props: ['credentials', 'isLoginPage'],
+		props: ['credentials', 'isLoginPage', 'helpLink'],
 		methods: {
 			logOut() {
 				this.$store.commit('logout');
@@ -29,15 +29,24 @@
 				<router-link to="/enrollments" v-if="credentials != null" class="pageLink fs-5">Enrollments</router-link>
 				<router-link to="/users" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Users</router-link>
 				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Create Program</router-link>
+				<a v-if="this.isLoginPage" href="https://miller8746.github.io/MyMCA/build/UserManual/general.html" target="_blank" class="pageLink fs-5">User Manual</a>
 				<div v-if="credentials != null" class="signOutText">
-					<div>
-						<div>{{ credentials.Name }}</div>
-						<!-- div>
-							<img v-if="credentials.Member == 1" src="../assets/memberIcon.png" class="headerCredentialImage"/>
-							<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png" class="headerCredentialImage"/>
-						</div -->
+					<div class="signOutText">
+						<a :href="this.helpLink" target="_blank" class="link"><img src="../assets/help.png"/></a>
 					</div>
-					<div @click="logOut" class="link">Sign out</div>
+					<div>
+						<div>
+							<div>{{ credentials.Name }}</div>
+							<!-- div>
+								<img v-if="credentials.Member == 1" src="../assets/memberIcon.png" class="headerCredentialImage"/>
+								<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png" class="headerCredentialImage"/>
+							</div -->
+						</div>
+						<div @click="logOut" class="link">Sign out</div>
+					</div>
+				</div>
+				<div v-else class="signOutText">
+					<a :href="this.helpLink" target="_blank" class="link"><img src="../assets/help.png"/></a>
 				</div>
 				<router-link to="/profile">
 					<span v-if="credentials != null" class="material-icons face">person</span>
@@ -103,6 +112,7 @@
 	margin-left: auto; 
 	margin-right: 15px;
 	margin-top: 12px;
+	display: flex;
 }
 
 .link {

@@ -26,7 +26,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials"/>
+		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/userviewing.html'"/>
 		<div class="body pt-3">
 			<h4 class="userPageHeader">Currently Viewing All Users</h4>
 			<div class="list-group list-group-vertical align-items-stretch">

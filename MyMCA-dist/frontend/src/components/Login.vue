@@ -41,7 +41,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials" :isLoginPage="true"/>
+		<Header :credentials="this.credentials" :isLoginPage="true" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/login.html'"/>
 		<div id="carouselExampleControls" class="carousel slide " data-bs-ride="carousel">
 			<div class="carousel-inner">
 				<div id="image1" class="carousel-item active">

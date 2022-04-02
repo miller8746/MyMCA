@@ -64,7 +64,7 @@ export default {
 
 <template>
 	<div>
-		<Header :credentials="null"/>
+		<Header :credentials="null" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/accountcreation.html'"/>
 		<div class="pageContent">
 			<div class="card border-primary mt-3">
 				<div class="card-body">

@@ -44,7 +44,7 @@
 
 <template>
 	<div>
-		<Header :credentials="credentials"/>
+		<Header :credentials="credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/profile.html'"/>
 		<div class="pageContent">
 			<div class="card border-primary mt-3">
 				<div class="card-body">
