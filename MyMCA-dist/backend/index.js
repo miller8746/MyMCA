@@ -107,11 +107,10 @@ app.get('/api/user-enrollments/:userId', (req, res) => {
 });
 
 /* POSTS */
-
+// Post for enrolling a user in a program
 app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
   const userId = req.params.userId;
-  const programId = req.params.programId; 
-
+  const programId = req.params.programId;
   db.run(`INSERT INTO Enrollments(UserId, ProgramId) 
           VALUES(${userId}, ${programId});`)
     .all(`SELECT EnrollmentId 
@@ -123,7 +122,7 @@ app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
               } else {
                 res.send(rows);
               }
-            });
+    });
 }); 
 
 // Post for Create Programs page

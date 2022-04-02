@@ -29,8 +29,17 @@
 				<router-link to="/enrollments" v-if="credentials != null" class="pageLink fs-5">Enrollments</router-link>
 				<router-link to="/users" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Users</router-link>
 				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Create Program</router-link>
-				<span @click="logOut" v-if="credentials != null" class="signOutText link fs-5">Sign out</span>
-				<router-link to="/profile" v-if="credentials != null">
+				<div v-if="credentials != null" class="signOutText">
+					<div>
+						<div>{{ credentials.Name }}</div>
+						<!-- div>
+							<img v-if="credentials.Member == 1" src="../assets/memberIcon.png" class="headerCredentialImage"/>
+							<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png" class="headerCredentialImage"/>
+						</div -->
+					</div>
+					<div @click="logOut" class="link">Sign out</div>
+				</div>
+				<router-link to="/profile">
 					<span v-if="credentials != null" class="material-icons face">person</span>
 				</router-link>
 			</div>
@@ -93,7 +102,7 @@
 	color: rgb(255, 255, 255);
 	margin-left: auto; 
 	margin-right: 15px;
-	margin-top: 20px;
+	margin-top: 12px;
 }
 
 .link {
@@ -151,6 +160,10 @@
 
 .subtitle {
 	margin-left: -10px !important;
+}
+
+.headerCredentialImage {
+	padding: 5px;
 }
 
 </style>

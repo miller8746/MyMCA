@@ -9,7 +9,8 @@
 				isStaff: false,
 				isMember: false,
 				deleteClicked: false,
-				showSaved: false
+				showSaved: false,
+				dev: false
 			};
 		},
 		mounted() {
@@ -61,7 +62,7 @@
 						</div>
 						<div class="profileButtonContainer">
 							<div class="btn btn-primary btn-sm mt-3 mb-3" @click="saveInfo">Save</div>
-							<div class="btn btn-primary btn-sm mt-3 mb-3 deleteButton" @click="deactivate">Deactivate Account</div>
+							<div v-if="dev" class="btn btn-primary btn-sm mt-3 mb-3 deleteButton" @click="deactivate">Deactivate Account</div>
 						</div>
 						<div v-if="showSaved">Saved.</div>
 						<div v-if="deleteClicked" class="warningText">Are you sure you want to deactivate your account?  You will not be able to reactivate it.</div>

@@ -54,23 +54,27 @@
 			}
 		},
 		methods: {
-			enrollUser(programId){
-				Service.enrollUser(this.credentials.UserId, programId)
-					.then(() => {
-						this.programs.forEach(program => {
-							if (program['ProgramId'] == programId) {
-								program['Enrollments']++;
-								return;
-							}
-						});
+			enrollUser(programId) {
+				var selectedProgram = null;
+				this.programs.forEach(program => {
+					if (program['ProgramId'] == programId) {
+						selectedProgram = program;
+						return;
+					}
+				});
+				if (selectedProgram.Capacity == selectedProgram.Enrollments) {
+					this.popUpSignUpFailureAlert(programId, "This program is at full capacity.");
+				} else {
+					Service.enrollUser(this.credentials.UserId, programId).then(() => {
 						this.popUpSignUpSuccessAlert(programId);
-					})
-					.catch(error => {
-						this.popUpSignUpFailureAlert(programId);
+						selectedProgram.Enrollments++;
+					}).catch(error => {
+						this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
 						console.log("Something went wrong:");
 						console.log(error);
-					}
-				);
+					});
+				}
+				
 			},
 			getCurrentEnrollments(programId, enrollments) {
 					var numOfEnrollments = 0;
@@ -157,12 +161,12 @@
 				let card = document.getElementById("program-" + programId);
 				card.prepend(alert);
 			},
-			popUpSignUpFailureAlert(programId){
+			popUpSignUpFailureAlert(programId, message){
 				let alert = document.createElement("div"); 
-				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show");
+				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
 
-				let alertMessage = document.createTextNode("Something went wrong, try again later.");
+				let alertMessage = document.createTextNode(message);
 				alert.appendChild(alertMessage);
 
 				let alertExitButton = document.createElement("button");
