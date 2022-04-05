@@ -29,8 +29,8 @@
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/userviewing.html'"/>
 		<div class="body pt-3">
 			<h4 class="userPageHeader">Currently Viewing All Users</h4>
-			<div class="list-group list-group-vertical align-items-stretch">
-				<div v-for="user in this.users" class="list-group-item program-card card shadow-sm bg-body rounded">
+			<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
+				<div v-for="user in this.users" v-bind:key="user" class="list-group-item program-card card shadow-sm bg-body rounded">
 					<div class="card-body">
 						<div class="program-card-title card-header">
 							<span class="fs-4">{{ user.Name }}</span>
@@ -42,7 +42,7 @@
 						<div v-if="user.Enrollments != null">
 							<div class="pt-3">Enrollments</div>
 							<div v-if="user.Enrollments.length != 0">
-								<div v-for="enrollment in user.Enrollments" class="fs-6 pt-3">This user has {{ enrollment.NumOfEnrollments }} spot(s) reserved for the {{ enrollment.Title }} program.
+								<div v-for="enrollment in user.Enrollments" v-bind:key="enrollment" class="fs-6 pt-3">This user has {{ enrollment.NumOfEnrollments }} spot(s) reserved for the {{ enrollment.Title }} program.
 								</div>
 							</div>
 							<div v-else class="fs-6 pt-3">This user has no current enrollments.</div>
@@ -74,6 +74,10 @@
 	min-height: 100vh;
 }
 
+.users {
+	margin-left: 10vw !important;
+}
+
 .list-group-item {
     width: 95%;
     margin: 1% !important;
@@ -81,7 +85,7 @@
 
 @media (min-width: 576px) {
     .list-group-item {
-        width: 30%;
+        width: 40%;
         margin: 5px 1.5% !important;
     }
 }

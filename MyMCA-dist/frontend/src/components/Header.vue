@@ -29,38 +29,28 @@
 				<router-link to="/enrollments" v-if="credentials != null" class="pageLink fs-5">Enrollments</router-link>
 				<router-link to="/users" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Users</router-link>
 				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Create Program</router-link>
-				<a v-if="this.isLoginPage" href="https://miller8746.github.io/MyMCA/build/UserManual/general.html" target="_blank" class="pageLink fs-5">User Manual</a>
 				<div v-if="credentials != null" class="signOutText">
-					<div class="signOutText">
-						<a :href="this.helpLink" target="_blank" class="link"><img src="../assets/help.png"/></a>
-					</div>
-					<div>
-						<div>
-							<div>{{ credentials.Name }}</div>
-							<!-- div>
-								<img v-if="credentials.Member == 1" src="../assets/memberIcon.png" class="headerCredentialImage"/>
-								<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png" class="headerCredentialImage"/>
-							</div -->
-						</div>
-						<div @click="logOut" class="link">Sign out</div>
+					<div class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							{{ credentials.Name }}
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><router-link class="link" to="/profile">Profile</router-link></li>
+							<li><a href="https://miller8746.github.io/MyMCA/build/UserManual/general.html" target="_blank" class="link">Help</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a @click="logOut" class="link">Sign out</a></li>
+						</ul>
 					</div>
 				</div>
-				<div v-else class="signOutText">
-					<a :href="this.helpLink" target="_blank" class="link"><img src="../assets/help.png"/></a>
-				</div>
+
 				<router-link to="/profile">
 					<span v-if="credentials != null" class="material-icons face">person</span>
 				</router-link>
+				<a :href="this.helpLink" class="help">
+					<span target="_blank" class="material-icons">help_outline</span>
+				</a>
 			</div>
 		</nav>
-
-		<!-- <div v-if="this.credentials != null" class="userInfoContainer">
-			<div>{{ credentials.Name }}</div>
-			<div>
-				<img v-if="credentials.Staff == 1" src="../assets/staffIcon.png"/>
-				<img v-if="credentials.Member == 1" src="../assets/memberIcon.png"/>
-			</div>
-		</div> -->
 	</div>
 </template>
 
@@ -72,6 +62,7 @@
 	justify-content: space-between;
 	padding-bottom: 30px;
 	margin-bottom: 15px;
+	position: relative;
 }
 
 .pages:after {
@@ -92,10 +83,29 @@
 	margin-left: 20px;
 }
 
+.dropdown-toggle {
+	color: white;
+}
+
+.dropdown-toggle:hover {
+	color: white;
+}
+
 .face {
 	color: white;
 	margin-top: 20px;
-	margin-right: 20px;
+	margin-right: 60px;
+}
+
+.help {
+	color: white;
+	margin-top: 20px;
+	margin-left: 81vw;
+	position: absolute;
+}
+
+.help:hover {
+	color:white;
 }
 
 .userInfoContainer {
@@ -118,6 +128,8 @@
 .link {
 	cursor: pointer;
 	font-family: 'Montserrat', sans-serif;
+	text-decoration: none;
+	margin-left: 9px;
 }
 
 .pages {

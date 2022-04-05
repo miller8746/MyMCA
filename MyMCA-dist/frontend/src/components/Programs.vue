@@ -23,13 +23,9 @@
 						var endDate = new Date(program['OfferingPeriodEnd']);
 						program['OfferingDate'] = startDate.toLocaleString();
 						program['OfferingDateEnd'] = endDate.toLocaleString();
-						program['RepeatDays'] = [];
-						program['Days'].forEach((day) => {
-							program['RepeatDays'].push(day.Day);
-						});
 						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
-						program['RepeatDays'] = this.getFormattedRepeatDays(program['RepeatDays']);
 					});
+
 					if (this.isUserOnly) {
 						Service.getUserEnrollments(this.credentials.UserId).then(response => {
 							this.userEnrollments = response.data;
@@ -50,32 +46,25 @@
 		},
 		methods: {
 			enrollUser(programId) {
-				var selectedProgram = null;
-				this.programs.forEach(program => {
-					if (program['ProgramId'] == programId) {
-						selectedProgram = program;
-						return;
-					}
+				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
+					this.popUpSignUpSuccessAlert(programId);
+					this.enrollments = response.data;
+				}).catch(error => {
+					this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
+					console.log("Something went wrong:");
+					console.log(error);
 				});
-				if (selectedProgram.Capacity == selectedProgram.Enrollments) {
-					this.popUpSignUpFailureAlert(programId, "This program is at full capacity.");
-				} else {
-					Service.enrollUser(this.credentials.UserId, programId).then(() => {
-						this.popUpSignUpSuccessAlert(programId);
-						selectedProgram.Enrollments++;
-					}).catch(error => {
-						this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
-						console.log("Something went wrong:");
-						console.log(error);
-					});
-				}
-				
 			},
 			getCurrentEnrollments(program) {
 				if(this.enrollments != null) {
-					return this.enrollments.filter(  e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
+					let num = this.enrollments.filter( e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
+					console.log("num = " + num);
+					if( num !== undefined && num !== null ){
+						return num;
+					} else {
+						return 0;
+					}
 				}
-				return 0;
 			},
 			isSignUpEnabled: function (program) {
 				return this.credentials !== null && 
@@ -92,34 +81,35 @@
 				}
 				return baseCost;
 			}, 
-			getUserCost(program) {
-				var baseCost = program['Cost'];
-				if( this.credentials != null ) {
-					if(this.credentials.Member == 1) {
-						var d = baseCost / 2;
-						return (d * program['UserEnrollments']).toFixed(2);
-					} else {
-						return baseCost;
-					}
-				}
-				return baseCost;
-			},
-			getFormattedRepeatDays(repeatDays){
+			// getUserCost(program) {
+			// 	var baseCost = program['Cost'];
+			// 	if( this.credentials != null ) {
+			// 		if(this.credentials.Member == 1) {
+			// 			var d = baseCost / 2;
+			// 			return (d * program['UserEnrollments']).toFixed(2);
+			// 		} else {
+			// 			return baseCost;
+			// 		}
+			// 	}
+			// 	return baseCost;
+			// },
+			getFormattedDays(days){
 				let formatted = 'Offered ';
-				repeatDays.forEach(day => {
-					if( day == "Monday"){
+
+				days.forEach((day) => {						
+					if( day.Day == "Monday"){
 						formatted += "Monday, ";
-					} else if( day == "Tuesday"){
+					} else if( day.Day == "Tuesday"){
 						formatted += "Tuesday, ";
-					} else if( day == "Wednesday"){
+					} else if( day.Day == "Wednesday"){
 						formatted += "Wednesday, ";
-					} else if( day == "Thursday"){
+					} else if( day.Day == "Thursday"){
 						formatted += "Thursday, ";
-					} else if( day == "Friday"){
+					} else if( day.Day == "Friday"){
 						formatted += "Friday, ";
-					} else if( day == "Saturday"){
+					} else if( day.Day == "Saturday"){
 						formatted += "Saturday, ";
-					} else if( day == "Sunday"){
+					} else if( day.Day == "Sunday"){
 						formatted += "Sunday, ";
 					}
 				});
@@ -195,11 +185,11 @@
 									<div>
 										${{ getCost(program['Cost']) }}/Person
 									</div>
-									<div v-if="this.isUserOnly">
+									<!-- <div v-if="this.isUserOnly">
 										You are paying ${{ getUserCost(program) }} for this program.
-									</div>
+									</div> -->
 									<div>
-										{{ program['RepeatDays'] }} 
+										{{ getFormattedDays(program['Days']) }} 
 									</div>
 								</div>
 
