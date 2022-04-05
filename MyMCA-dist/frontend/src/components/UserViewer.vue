@@ -29,8 +29,8 @@
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/userviewing.html'"/>
 		<div class="body pt-3">
 			<h4 class="userPageHeader">Currently Viewing All Users</h4>
-			<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
-				<div v-for="user in this.users" v-bind:key="user" class="list-group-item program-card card shadow-sm bg-body rounded">
+			<div class="list-group list-group-horizontal align-items-stretch flex-wrap user-group">
+				<div v-for="user in this.users" v-bind:key="user" class="list-group-item program-card card shadow-sm bg-body rounded user-item">
 					<div class="card-body">
 						<div class="program-card-title card-header">
 							<span class="fs-4">{{ user.Name }}</span>
@@ -74,18 +74,20 @@
 	min-height: 100vh;
 }
 
-.users {
-	margin-left: 10vw !important;
+.user-group {
+	margin-left: 120px;
 }
 
-.list-group-item {
-    width: 95%;
+.user-item {
+    min-width: 40%;
+	max-width: 40%;
     margin: 1% !important;
 }
 
 @media (min-width: 576px) {
-    .list-group-item {
-        width: 40%;
+    .user-item {
+        min-width: 40%;	
+		max-width: 40%;
         margin: 5px 1.5% !important;
     }
 }
