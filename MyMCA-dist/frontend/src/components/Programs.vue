@@ -48,11 +48,6 @@
 				console.log(error);
 			});
 		},
-		computed: {
-			isSignUpEnabled: function () {
-				return this.credentials !== null;
-			}
-		},
 		methods: {
 			enrollUser(programId) {
 				var selectedProgram = null;
@@ -76,15 +71,15 @@
 				}
 				
 			},
-			getCurrentEnrollments(programId, enrollments) {
-					var numOfEnrollments = 0;
-				 	enrollments.forEach(enrollment => {
-				 		if( enrollment['ProgramId'] == programId ){
-				 			numOfEnrollments = enrollment['NumOfEnrollments'] == null ? 0 : enrollment['NumOfEnrollments'];
-							return;
-				 		}
-				 	});
-					return numOfEnrollments;
+			getCurrentEnrollments(program) {
+				if(this.enrollments != null) {
+					return this.enrollments.filter(  e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
+				}
+				return 0;
+			},
+			isSignUpEnabled: function (program) {
+				return this.credentials !== null && 
+						this.getCurrentEnrollments(program) < program['Capacity'];
 			},
 			getCost(baseCost){
 				if( this.credentials != null ) {
@@ -208,13 +203,12 @@
 									</div>
 								</div>
 
-								<button v-if="isSignUpEnabled && !isUserOnly" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
-								<router-link v-else-if="!isUserOnly" to="/" class="btn btn-outline-secondary btn mb-3">Sign Up</router-link>
+								<button v-if="isSignUpEnabled(program)" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
+								<button v-else class="disabled btn btn-outline-secondary btn mb-3">Sign Up</button>
 							</div>
 
 							<div class="card-footer footer">
-								<div class="fs-6" v-if="this.isUserOnly">You have {{ program['UserEnrollments'] }} spot(s) reserved.</div>
-								<div class="fs-6">{{ program['Enrollments'] }} / {{ program['Capacity'] }} Slots filled</div>
+								<div class="fs-6">{{ getCurrentEnrollments( program ) }} / {{ program['Capacity'] }} Slots filled</div>
 								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
 								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
 							</div>

@@ -113,10 +113,9 @@ app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
   const programId = req.params.programId;
   db.run(`INSERT INTO Enrollments(UserId, ProgramId) 
           VALUES(${userId}, ${programId});`)
-    .all(`SELECT EnrollmentId 
-            FROM Enrollments 
-            WHERE UserId = ${userId} AND ProgramId = ${programId};`, (err, rows) => {
-              console.log("this is the response = " + rows);
+    .all(`SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
+            FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+            GROUP BY p.ProgramId`, (err, rows) => {
               if( err ){
                 console.log(error);
               } else {
