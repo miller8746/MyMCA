@@ -52,29 +52,9 @@
 <h1>Setting Up Database<a class="headerlink" href="#setting-up-database" title="Permalink to this headline">¶</a></h1>
 <p>This page will guide you on setting up your local database to work with the most recent version of MyMCA.  This page will be edited periodically with any necessary changes.</p>
 <ul class="simple">
-<li><p>Download <a href="https://sqlitestudio.pl" target="_blank">SQLiteStudio</a> and <code class="code docutils literal notranslate"><span class="pre">cs341-ymca.db</span></code> from the <code class="code docutils literal notranslate"><span class="pre">init-db-model</span></code> branch of MyMCA.</p></li>
-<li><p>Add the database in SQLiteStudio by navigating to “Database &gt; Add Database”.</p></li>
-<li><dl class="simple">
-<dt>You will need to temporarily undo a foreign key constraint in order to do the next step.</dt><dd><ul>
-<li><p>While connected to the database in SQLiteStudio, go to the Enrollments table and select the Foreign Key icon in the ProgramId column.</p></li>
-<li><p>Undo the Foreign Key constraint by unchecking “Foreign Key” and hitting OK.</p></li>
-<li><p>Save your changes by hitting the green checkmark in the header of the table.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Download <code class="code docutils literal notranslate"><span class="pre">program-updates-3.sql</span></code> from the <code class="code docutils literal notranslate"><span class="pre">hannah/dbsetup-and-login</span></code> branch.</p></li>
-<li><p>Run the query on the database by right-clicking the database in the Databases view and selecting “Execute SQL from file”.</p></li>
-<li><dl class="simple">
-<dt>Now, you will need to re-add the Foreign Key to the Programs table.</dt><dd><ul>
-<li><p>In the Enrollments table, double-click the Foreign Key entry in the ProgramId column.</p></li>
-<li><p>Check “Foreign Key” and hit “Configure”.</p></li>
-<li><p>Set “Foreign table” to “Programs” and “Foreign column” to “ProgramId” and hit Apply.</p></li>
-<li><p>Return to the table view and save your changes by hitting the green checkmark in the header of the table.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
+<li><p>Download <a href="https://sqlitestudio.pl" target="_blank">SQLiteStudio</a> and the contents from the <code class="code docutils literal notranslate"><span class="pre">init-db-model</span></code> branch of MyMCA.</p></li>
+<li><p>Add the <code class="code docutils literal notranslate"><span class="pre">cs341-ymca.db</span></code> database in SQLiteStudio by navigating to “Database &gt; Add Database”.</p></li>
+<li><p>Run the <code class="code docutils literal notranslate"><span class="pre">create-and-populate.sql</span></code> query on the database by right-clicking the database in the Databases view and selecting “Execute SQL from file”.</p></li>
 </ul>
 <p>Your database is now up-to-date and ready to interact with the server.  Don’t forget to edit <code class="code docutils literal notranslate"><span class="pre">index.js</span></code> to point to your database file!</p>
 </section>
