@@ -14,6 +14,7 @@
 				programStartDate: '',
 				programEndDate: '',
 				programLocation: '',
+				programRepetitions: 1,
 				minDate: null,
 				dayCount: 1,
 				days: [],
@@ -31,12 +32,14 @@
 							title: this.programTitle,
 							description: this.programDescription,
 							capacity: this.programCapacity,
+							repetitions: this.programRepetitions,
 							cost: this.programCost,
 							offeringPeriod: this.programStartDate,
 							offeringPeriodEnd: this.programEndDate,
 							location: this.programLocation,
 							days: this.days
 						};
+
 						Service.createProgram(program).then((res) => {
 							this.$router.push('/programs');
 						});
@@ -65,13 +68,14 @@
 						}
 					}
 				}
-				if (this.programTitle != '' && 
-				    this.programDescription != '' && 
-				    this.programCapacity != 0 && 
-				    this.programCost != 0 && 
-				    this.programStartDate != '' && 
-				    this.programEndDate != '' && 
-				    this.programLocation != '') {
+				if (this.programTitle 		!= '' 	&& 
+				    this.programDescription != '' 	&& 
+				    this.programCapacity 	!= 0 	&& 
+					this.programRepetitions != 0 	&&
+				    this.programCost 		!= 0 	&& 
+				    this.programStartDate 	!= '' 	&& 
+				    this.programEndDate 	!= '' 	&& 
+				    this.programLocation 	!= '') {
 					return true;
 				} else return false;
 			},
@@ -87,11 +91,12 @@
 				var startDate = new Date(this.programStartDate);
 				var endDate = new Date(this.programEndDate);
 				// Check if data in form is valid
-				if (this.programCapacity > 0 &&
-                                    this.programCost > 0 &&
-				    startDate > Date.now() && 
-				    endDate > Date.now() && 
-				    startDate < endDate) {
+				if (this.programCapacity 	> 0 			&&
+                    this.programCost 		> 0 			&&
+					this.programRepetitions > 0 			&&
+				    startDate 				> Date.now() 	&& 
+				    endDate 				> Date.now() 	&& 
+				    startDate 				< endDate) {
 					return true;
 				} else return false;
 			}
@@ -116,6 +121,11 @@
 					</div>
 
 					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Location </label>
+						<input class="form-control" style="height:38px;" v-model="programLocation"/>
+					</div>
+
+					<div class="input-group mb-2">
 						<label class="input-group-text program-create-label">Capacity </label>
 						<input class="form-control" style="height:38px;" type="number" v-model.number="programCapacity"/>
 					</div>
@@ -125,11 +135,6 @@
 						<input class="form-control" style="height:38px;" type="number" v-model.number="programCost"/>
 					</div>
 					
-					<div class="input-group mb-2">
-						<label class="input-group-text program-create-label">Location </label>
-						<input class="form-control" style="height:38px;" v-model="programLocation"/>
-					</div>
-
 					<div class="input-group mb-2">
 						<label class="input-group-text program-create-label">Start Date </label>
 						<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programStartDate"/>
@@ -153,10 +158,16 @@
 							</div>
 							<div class="btn btn-primary input-group-text" @click="addOccurrence">+</div>
 						</div>
-						<div class="input-group mb-2">
-							<div class="input-group-text program-create-label">Description: </div>
-							<textarea class="form-control" style="height:50px;" v-model="programDescription"/>
-						</div>
+
+					<div class="input-group mb-2">
+						<span class="input-group-text program-create-label">Repeats for </span>
+						<input class="form-control" style="height:38px;" type="number" v-model="programRepetitions"/>
+						<span class="input-group-text program-create-label"> week(s)</span>
+					</div>
+					<div class="input-group mb-2">
+						<div class="input-group-text program-create-label">Description </div>
+						<textarea class="form-control" style="height:50px;" v-model="programDescription"/>
+					</div>
 					</div>
 					<div class="programButtonContainer">
 						<div class="button" @click="createProgram">Submit</div>
@@ -170,7 +181,7 @@
 
 <style>
 .create-card {
-	margin-top: 5%;
+	margin-top: 3%;
 	margin-bottom: 20%;
 	padding: 2% 10% 3% 10%;
 

@@ -16,7 +16,8 @@ class ProfileService {
 			programOfferingPeriod: program.offeringPeriod,
 			programOfferingPeriodEnd: program.offeringPeriodEnd,
 			programLocation: program.location,
-			programDays: program.days
+			programDays: program.days,
+			programRepetitions: program.repetitions
 		});
 	}
 	getEnrollments() {

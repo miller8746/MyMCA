@@ -81,6 +81,10 @@
 	margin-left: 20px;
 }
 
+.dropdown {
+	margin-top: 5px;
+}
+
 .dropdown-toggle {
 	color: white;
 }
@@ -91,13 +95,13 @@
 
 .face {
 	color: white;
-	margin-top: 20px;
+	margin-top: 25px;
 	margin-right: 20px;
 }
 
 .help {
 	color: white;
-	margin-top: 20px;
+	margin-top: 25px;
 	margin-right: 20px;
 }
 

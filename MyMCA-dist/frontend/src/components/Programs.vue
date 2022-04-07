@@ -94,7 +94,7 @@
 			// 	return baseCost;
 			// },
 			getFormattedDays(days){
-				let formatted = 'Offered ';
+				let formatted = '';
 
 				days.forEach((day) => {						
 					if( day.Day == "Monday"){
@@ -189,7 +189,8 @@
 										You are paying ${{ getUserCost(program) }} for this program.
 									</div> -->
 									<div>
-										{{ getFormattedDays(program['Days']) }} 
+										Offered on {{ getFormattedDays(program['Days']) }} for {{ program['Repetitions'] }} 
+										week(s) at the {{program['Location']}}.
 									</div>
 								</div>
 
@@ -215,7 +216,7 @@
 
 .body {
 	background-color: rgb(233, 233, 233);
-	width: 100vw;
+	min-width: 100vw;
 	min-height: 100vh;
 }
 
