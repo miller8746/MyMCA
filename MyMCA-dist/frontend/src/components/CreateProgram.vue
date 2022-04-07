@@ -105,69 +105,84 @@
 <template>
 	<div>
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/programcreation.html'"/>
-		<div class="pageContent">
-			<div class="card border-primary mt-3">
+		<div class="pageContent create-page">
+			<div class="card create-card shadow-lg">
 				<div class="card-body">
-					<h3 class="card-title card-header">Create Program</h3>
-					<div class="programInputContainer">
-						<div class="option">
-							<div class="programInputLabel">Title: </div>
-							<input v-model="programTitle"/>
+					<h3 class="header-text">Create Program</h3>
+
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Title </label>
+						<input class="form-control" style="height:38px;" v-model="programTitle"/>
+					</div>
+
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Capacity </label>
+						<input class="form-control" style="height:38px;" type="number" v-model.number="programCapacity"/>
+					</div>
+
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Cost ($) </label>
+						<input class="form-control" style="height:38px;" type="number" v-model.number="programCost"/>
+					</div>
+					
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Location </label>
+						<input class="form-control" style="height:38px;" v-model="programLocation"/>
+					</div>
+
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Start Date </label>
+						<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programStartDate"/>
+					</div>
+						<div class="input-group mb-2">
+							<label class="input-group-text program-create-label">End Date </label>
+							<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programEndDate"/>
 						</div>
-						<div class="option">
-							<div class="programInputLabel">Capacity: </div>
-							<input type="number" v-model.number="programCapacity"/>
-						</div>
-						<div class="option">
-							<div class="programInputLabel">Cost ($): </div>
-							<input type="number" v-model.number="programCost"/>
-						</div>
-						<div class="option">
-							<div class="programInputLabel">Location: </div>
-							<input v-model="programLocation"/>
-						</div>
-						<div class="option">
-							<div class="programInputLabel">Start Date: </div>
-							<input type="datetime-local" :min="minDate" v-model="programStartDate"/>
-						</div>
-						<div class="option">
-							<div class="programInputLabel">End Date: </div>
-							<input type="datetime-local" :min="minDate" v-model="programEndDate"/>
-						</div>
-						<div class="option">
-							<div class="programInputLabel">Occurrences:</div>
-							<div class="occurrenceContainer">
-								<div class="selectContainer">
-									<select v-for="dayOption in dayCount" v-model="days[dayOption]" class="daySelect">
-										<option value="Sunday">Sunday</option>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-									</select>
-								</div>
-								<div class="btn btn-primary btn-sm addButton" @click="addOccurrence">+</div>
+						<div class="input-group mb-2">
+							<label class="input-group-text program-create-label">Days </label>
+							<div class="selectContainer">
+								<select v-for="dayOption in dayCount" v-bind:key=dayOption v-model="days[dayOption]" class="daySelect" style="height:38px;">
+									<option value="Sunday">Sunday</option>
+									<option value="Monday">Monday</option>
+									<option value="Tuesday">Tuesday</option>
+									<option value="Wednesday">Wednesday</option>
+									<option value="Thursday">Thursday</option>
+									<option value="Friday">Friday</option>
+									<option value="Saturday">Saturday</option>
+								</select>
 							</div>
+							<div class="btn btn-primary input-group-text" @click="addOccurrence">+</div>
 						</div>
-						<div class="option">
-							<div class="programInputLabel">Description: </div>
-							<textarea v-model="programDescription" class="descriptionArea"/>
+						<div class="input-group mb-2">
+							<div class="input-group-text program-create-label">Description: </div>
+							<textarea class="form-control" style="height:50px;" v-model="programDescription"/>
 						</div>
 					</div>
 					<div class="programButtonContainer">
-						<div class="btn btn-primary btn-sm mt-3 mb-3" @click="createProgram">Submit</div>
+						<div class="button" @click="createProgram">Submit</div>
 						<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
 						<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
 					</div>
 				</div>
-			</div>
 		</div>
 	</div>
 </template>
 
 <style>
+.create-card {
+	margin-top: 5%;
+	margin-bottom: 20%;
+	padding: 2% 10% 3% 10%;
+
+	border-top-color: #44a1e4;
+	border-top-width: 10px;
+}
+
+.header-text {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
 .option {
 	display: flex;
 	margin: 8px 0px 8px 0px;
@@ -207,7 +222,36 @@
 	width: 200px;
 }
 
-.addButton {
-	height: 28px;
+.create-page {
+	background-color: rgb(233, 233, 233);
+	width: 100vw;
+	min-height: 100vh;
 }
+
+.program-create-label {
+	width: 150px;
+}
+
+.button {
+  background-color: #0d6efd;
+  color: white;
+
+  border: none;
+  
+  padding: 10px 20px;
+  width: 200px;
+
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+
+  border-radius: 25px;
+}
+
+.button:hover {
+	background-color: #154a99;
+}
+
 </style>

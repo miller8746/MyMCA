@@ -59,10 +59,8 @@
 	display: flex;
 	height: 50px;
 	background-color: #ffffff;
-	justify-content: space-between;
 	padding-bottom: 30px;
 	margin-bottom: 15px;
-	position: relative;
 }
 
 .pages:after {
@@ -94,14 +92,13 @@
 .face {
 	color: white;
 	margin-top: 20px;
-	margin-right: 60px;
+	margin-right: 20px;
 }
 
 .help {
 	color: white;
 	margin-top: 20px;
-	margin-left: 81vw;
-	position: absolute;
+	margin-right: 20px;
 }
 
 .help:hover {
