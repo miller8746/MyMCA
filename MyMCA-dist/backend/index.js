@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 const port = 3000
 var router = express.Router();
 
-const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity"
+const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity, Repetitions"
 const allUserAttributes = "UserId, Name,Member, Staff"
 const allCredentialAttributes = "Username, Password, UserId";
 
@@ -42,14 +42,13 @@ app.get('/api/programs/:userId', (req, res) => {
    let sql = ``;
   if (userId == 'null') {
     // Get all programs
-    console.log('Loading all programs');
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor 
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
               FROM Programs
               ORDER BY OfferingPeriod ASC;`;
   } else {
     // Get user-enrolled programs
     console.log('Loading user programs for id ' + userId);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Instructor 
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
               FROM Programs
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
@@ -84,7 +83,6 @@ app.get('/api/enrollments/', (req, res) => {
       console.log("oopsie");
     } 
     
-    console.log("here are the enrollment counts = " + rows);
     res.status(200).json(rows)
   });
 });
@@ -92,7 +90,7 @@ app.get('/api/enrollments/', (req, res) => {
 // Get number of user enrollments for each program
 app.get('/api/user-enrollments/:userId', (req, res) => {
   let userId = req.params.userId;
-  let sql = `SELECT p.ProgramId, p.Title, Count(e.programId) AS NumOfEnrollments 
+  let sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, Count(e.programId) AS NumOfEnrollments 
               FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId WHERE e.UserId = ${userId} 
               GROUP BY p.ProgramId`
 
@@ -101,8 +99,55 @@ app.get('/api/user-enrollments/:userId', (req, res) => {
       console.log("oopsie");
     } 
     
-    console.log("here are the enrollment counts = " + rows);
-    res.status(200).json(rows)
+    res.status(200).json(rows);
+  });
+});
+
+// Get time conflict
+app.get('api/timeConflict/:programId/:userId', (req, res) => {
+  let programId = req.params.programId;
+  let userId = req.params.userId;
+  let hasConflict = false;
+
+  let sql = `SELECT ${allProgramAttributes}
+              FROM Programs 
+              WHERE ProgramId = ${programId}`;
+
+  db.all(sql, [], (err, newProgram) => {
+      if( er ){
+        console.log("Something happened.");
+      }
+
+     sql = `SELECT p.ProgramId, OfferingPeriod, OfferingPeriodEnd, Repetitions
+              FROM Programs p JOIN Enrollments e 
+                ON e.ProgramId = p.ProgramId 
+              WHERE e.UserId = ${userId};`;
+
+      db.all(sql, [], (err, allEnrollments) => {
+        
+        allEnrollments.forEach(program => { 
+            for(let i = 0; i < program['Repetitions']; i++){
+                var newProgramDateStart = new Date(newProgram['OfferingPeriod']);
+                newProgramDateStart.setDate(newProgramDateStart.getDate() + i);
+
+                var newProgramDateEnd = new Date(newProgram['OfferingPeriodEnd']);
+                newProgramDateEnd.setDate(newProgramDateEnd.getDate() + i);
+
+                var currentProgramDateStart = new Date(program['OfferingPeriod']);
+                currentProgramDateStart.setDate(currentProgramDateStart.getDate() + i);
+
+                var currentProgramDateEnd = new Date(program['OfferingPeriodEnd']);
+                currentProgramDateEnd.setDate(currentProgramDateStart.getDate() + i);
+
+                hasConflict = newProgramDateStart == currentProgramDateStart &&
+                        newProgramDateStart.getHours() >= currentProgramDateStart.getHours() && newProgramDateStart <= currentProgramDateEnd &&
+                        currentProgramDateStart.getHours >= newProgramDateStart.getHours() && currentProgramDateStart <= newProgramDateEnd;
+
+            }
+        });
+
+        return hasConflict;
+      });
   });
 });
 
@@ -128,12 +173,16 @@ app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
 app.post(`/api/programs/`, (req, res) => {
   let program = req.body;
 
-  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity) VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', 2, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
+  console.log(program);
+
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Instructor, Description, Location, Cost, Capacity) 
+            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, 0, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
   .all(`SELECT ${allProgramAttributes} 
           FROM Programs 
           WHERE Title = '${program.programTitle}' AND 
                 OfferingPeriod = '${program.programOfferingPeriod}' AND 
                 OfferingPeriodEnd = '${program.programOfferingPeriodEnd}' AND 
+                Repetitions = '${program.programRepetitions}' AND
                 Description = '${program.programDescription}' AND 
                 Location = '${program.programLocation}' AND 
                 Cost = ${program.programCost} AND 
