@@ -33,6 +33,7 @@ CREATE TABLE Programs (
     Location          STRING  NOT NULL,
     Cost              DOUBLE  NOT NULL,
     Capacity          INT     NOT NULL,
+    Repetitions       INT     NOT NULL,
     Instructor        INTEGER NOT NULL
                               REFERENCES Users
 );
@@ -66,10 +67,10 @@ INSERT INTO Credentials(Username, Password, UserId) VALUES ('bobby', 'abc', 2);
 INSERT INTO Credentials(Username, Password, UserId) VALUES ('jdoe', 'jdoe', 3);
 INSERT INTO Credentials(Username, Password, UserId) VALUES ('landerson', 'landerson', 4);
 
-INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location)
-VALUES ('X-treme Cycling', '2022-07-06T07:00', '2022-07-06T08:00', 2, 'Hour long super intense workout!', 15.0, 10, 'Onalaska YMCA');
-INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location)
-VALUES ('Yoga Flow', '2022-07-07T07:00', '2022-07-07T08:00', 2, '45 min relaxing yoga session.', 12.0, 8, 'Dahl YMCA');
+INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
+VALUES ('X-treme Cycling', '2022-07-06T07:00', '2022-07-06T08:00', 2, 'Hour long super intense workout!', 15.0, 10, 'Onalaska YMCA', 1);
+INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
+VALUES ('Yoga Flow', '2022-07-07T07:00', '2022-07-07T08:00', 2, '45 min relaxing yoga session.', 12.0, 8, 'Dahl YMCA', 1);
 
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (1, 'Monday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (2, 'Monday');
