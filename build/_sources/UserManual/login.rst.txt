@@ -15,6 +15,6 @@ If you are unable to log into your account using your information, please contac
 Logging out of your Account
 ---------------------------
 
-1. After you are logged in, you will see your information in the top-right corner of the application.  Click "Sign out" to log out of your account.
+1. After you are logged in, you will see your information in the top-right corner of the application.  Access the dropdown menu next to your name and click "Sign out" to log out of your account.
 
 .. image:: img/login2.png
