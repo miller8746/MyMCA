@@ -47,6 +47,6 @@ class ProfileService {
 	}
 	getUsers() {
 		return http.get('/api/users/', {});
-	}
+	} 
 }
 export default new ProfileService();

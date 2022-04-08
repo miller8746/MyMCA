@@ -8,13 +8,22 @@
 			return {
 				programs: null,
 				enrollments: null,
-				userEnrollments: null
+				userEnrollments: null,
 			};
+		},
+		beforeMount(){
+			Service.getUserEnrollments(this.credentials.UserId).then(response => {
+				this.userEnrollments = response.data;
+			}).catch(error => {
+					console.log("Something went wrong: ");
+					console.log(error);
+			});
 		},
 		mounted() {
 			var id = this.isUserOnly ? this.credentials.UserId : 'null';
 			Service.getPrograms(id).then(response => {
 				this.programs = response.data;
+
 				// Getting number of enrollments for all programs
 				Service.getEnrollments().then(response => {
 					this.enrollments = response.data;
@@ -27,38 +36,53 @@
 					});
 
 					if (this.isUserOnly) {
-						Service.getUserEnrollments(this.credentials.UserId).then(response => {
-							this.userEnrollments = response.data;
-							this.programs.forEach(program => {
-								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
-							});
+						this.programs.forEach(program => {
+							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
 						});
 					}
 				}).catch(error => {
 					console.log("Something went wrong: ");
 					console.log(error);
 				});
-			})
-			.catch(error => {
-				console.log("Something went wrong: ");
-				console.log(error);
 			});
 		},
+
 		methods: {
 			enrollUser(programId) {
 				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
 					this.popUpSignUpSuccessAlert(programId);
 					this.enrollments = response.data;
-				}).catch(error => {
+
+					Service.getUserEnrollments(this.credentials.UserId).then(response => {
+						this.userEnrollments = response.data;
+						this.programs.forEach(program => {
+							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+						});
+					});
+				}).catch(() => {
 					this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
-					console.log("Something went wrong:");
-					console.log(error);
 				});
+			},
+			hasTimeConflict(programOfferingDate){	
+				let d1 = new Date(programOfferingDate);
+				let res = false;
+
+				this.userEnrollments.forEach(enrollment => {
+					let d2 = new Date(enrollment.OfferingPeriod);
+
+					console.log(d1);
+					console.log(d2);
+					
+					if( d1.getDay() == d2.getDay() && d1.getTime() == d2.getTime() ){
+						res = true;
+					}
+				});
+
+				return res;
 			},
 			getCurrentEnrollments(program) {
 				if(this.enrollments != null) {
 					let num = this.enrollments.filter( e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
-					console.log("num = " + num);
 					if( num !== undefined && num !== null ){
 						return num;
 					} else {
@@ -176,7 +200,8 @@
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
 					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">
 						<div :id="'program-' + program['ProgramId']" class="card-body">
-							<h3 class="program-card-title card-header">{{ program['Title'] }}</h3>
+							<h3 class="program-card-title card-header">{{ program['Title'] }}
+							</h3>
 							<div class="m-3">
 								<div class="fs-6">
 									{{ program['Description'] }}
@@ -192,12 +217,15 @@
 										Offered on {{ getFormattedDays(program['Days']) }} for {{ program['Repetitions'] }} 
 										week(s) at the {{program['Location']}}.
 									</div>
+									
+									<div v-if="hasTimeConflict(program['OfferingPeriod'])" class="info">
+										<span>This program conflicts with another program you are enrolled in</span>
+									</div>
 								</div>
 
 								<button v-if="isSignUpEnabled(program)" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
-								<button v-else class="disabled btn btn-outline-secondary btn mb-3">Sign Up</button>
+								<button v-if="!isSignUpEnabled(program)" class="disabled btn btn-outline-secondary btn mb-3">Sign Up</button>
 							</div>
-
 							<div class="card-footer footer">
 								<div class="fs-6">{{ getCurrentEnrollments( program ) }} / {{ program['Capacity'] }} Slots filled</div>
 								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
@@ -255,6 +283,14 @@
 
 .alert-font {
 	font-size: small;
+}
+
+.info {
+	color: #006FBF;
+	font-size: small;
+	font-style: italic;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .footer {

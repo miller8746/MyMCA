@@ -170,7 +170,7 @@
 					</div>
 					</div>
 					<div class="programButtonContainer">
-						<div class="button" @click="createProgram">Submit</div>
+						<div class="button" @click="createProgram()">Submit</div>
 						<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
 						<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
 					</div>
