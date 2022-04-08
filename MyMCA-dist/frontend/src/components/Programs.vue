@@ -12,12 +12,14 @@
 			};
 		},
 		beforeMount(){
-			Service.getUserEnrollments(this.credentials.UserId).then(response => {
-				this.userEnrollments = response.data;
-			}).catch(error => {
-					console.log("Something went wrong: ");
-					console.log(error);
-			});
+			if(this.isUserOnly){
+				Service.getUserEnrollments(this.credentials.UserId).then(response => {
+					this.userEnrollments = response.data;
+				}).catch(error => {
+						console.log("Something went wrong: ");
+						console.log(error);
+				});
+			}
 		},
 		mounted() {
 			var id = this.isUserOnly ? this.credentials.UserId : 'null';
@@ -218,7 +220,7 @@
 										week(s) at the {{program['Location']}}.
 									</div>
 									
-									<div v-if="hasTimeConflict(program['OfferingPeriod'])" class="info">
+									<div v-if="this.isUserOnly && hasTimeConflict(program['OfferingPeriod'])" class="info">
 										<span>This program conflicts with another program you are enrolled in</span>
 									</div>
 								</div>
