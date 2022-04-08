@@ -187,7 +187,7 @@
 	display: flex;
 	width: 400px;
 	height: 400px;
-	margin-top: -450px;
+	margin-top: -545px;
 	justify-content: space-around;
 	align-items: center;
 	flex-direction: column;

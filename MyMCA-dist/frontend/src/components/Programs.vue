@@ -11,8 +11,9 @@
 				userEnrollments: null,
 			};
 		},
-		beforeMount(){
-			Service.getUserEnrollments(this.credentials.UserId).then(response => {
+		beforeMount() {
+			var id = this.isUserOnly ? this.credentials.UserId : 'null';
+			Service.getUserEnrollments(id).then(response => {
 				this.userEnrollments = response.data;
 			}).catch(error => {
 					console.log("Something went wrong: ");
