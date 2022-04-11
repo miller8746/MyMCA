@@ -71,8 +71,22 @@ INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Descr
 VALUES ('X-treme Cycling', '2022-07-06T07:00', '2022-07-06T08:00', 2, 'Hour long super intense workout!', 15.0, 10, 'Onalaska YMCA', 1);
 INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
 VALUES ('Yoga Flow', '2022-07-07T07:00', '2022-07-07T08:00', 2, '45 min relaxing yoga session.', 12.0, 8, 'Dahl YMCA', 1);
+INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
+VALUES ('Shark', '2022-04-17T17:00', '2022-05-15T17:40', 2, 'This program requires the pike level to be passed.', 96.0, 8, 'YMCA Onalaska Pool', 4);
+INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
+VALUES ('Shark', '2022-04-17T18:00', '2022-05-15T18:40', 2, 'This program requires the pike level to be passed.', 130.0, 8, 'YMCA Onalaska Pool', 4);
+INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Cost, Capacity, Location, Repetitions)
+VALUES ('Log Rolling', '2022-04-17T17:00', '2022-05-15T17:40', 2, 'No prerequisites.  Learn the technique of log rolling!', 200.0, 1, 'YMCA Onalaska Pool', 4);
 
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (1, 'Monday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (2, 'Monday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (2, 'Wednesday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (2, 'Friday');
+INSERT INTO ProgramDays(ProgramId, Day) VALUES (3, 'Thursday');
+INSERT INTO ProgramDays(ProgramId, Day) VALUES (4, 'Monday');
+INSERT INTO ProgramDays(ProgramId, Day) VALUES (4, 'Wednesday');
+INSERT INTO ProgramDays(ProgramId, Day) VALUES (5, 'Thursday');
+
+INSERT INTO Enrollments(UserId, ProgramId) VALUES (3, 3);
+INSERT INTO Enrollments(UserId, ProgramId) VALUES (3, 5);
+INSERT INTO Enrollments(UserId, ProgramId) VALUES (4, 4);
