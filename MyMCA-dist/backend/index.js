@@ -212,8 +212,18 @@ app.post(`/api/programs/`, (req, res) => {
 /* GETS */
 
 // Get for Users page
-app.get('/api/users/', (req, res) => {
-  let sql = `SELECT ${allUserAttributes} FROM Users`;
+app.get('/api/users/:searchTerm', (req, res) => {
+  let searchTerm = req.params.searchTerm;
+  let sql = ``;
+  if (searchTerm == 'null') {
+    // Get all users
+    console.log('Getting all users');
+    sql = `SELECT ${allUserAttributes} FROM Users`;
+  } else {
+    // Get users that match the search term
+    console.log(`Getting users that match ${searchTerm}`);
+    sql = `SELECT ${allUserAttributes} FROM Users WHERE Name LIKE '${searchTerm}%'`;
+  }
   db.all(sql, [], (err, rows) => {
     if (err) { console.log(err); }
     res.send(rows);

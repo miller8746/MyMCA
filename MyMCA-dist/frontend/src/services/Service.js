@@ -45,8 +45,8 @@ class ProfileService {
 	enrollUser(userid, programId){
 		return http.post(`/api/users/${userid}/enrollments/${programId}/`, {});
 	}
-	getUsers() {
-		return http.get('/api/users/', {});
+	getUsers(searchTerm) {
+		return http.get(`/api/users/${searchTerm}`, {});
 	} 
 }
 export default new ProfileService();
