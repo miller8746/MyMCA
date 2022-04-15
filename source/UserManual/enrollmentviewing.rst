@@ -13,4 +13,14 @@ After you have signed up for programs, you will be able to see them from within 
 
 .. image:: img/enrollmentviewing2.png
 
+You can also search for a specific enrollment by entering the name of the program in the search bar and clicking the "Search" button.
+
+.. image:: img/enrollmentviewing3.png
+
+.. image:: img/enrollmentviewing4.png
+
+If you would like to clear your search, simply click the "Clear" button.
+
+.. image:: img/enrollmentviewing5.png
+
 If you would like to cancel one or more of your current enrollments, please contact a Staff member and they will assist you.
