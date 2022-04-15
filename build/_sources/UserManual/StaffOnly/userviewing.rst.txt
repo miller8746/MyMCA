@@ -11,4 +11,14 @@ As a Staff member, you will likely need to periodically check on MyMCA users and
 
 .. image:: img/userviewing2.png
 
+You can also search for users by name by entering a term in the search bar and clicking the "Search" button.
+
+.. image:: img/userviewing3.png
+
+.. image:: img/userviewing4.png
+
+To clear your search, simply hit the "Clear" button.
+
+.. image:: img/userviewing5.png
+
 Please ensure that the user information is consistent with the records of your assigned users.  If information looks out of place, please contact your senior Staff for further instructions.
