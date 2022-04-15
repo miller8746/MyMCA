@@ -36,11 +36,11 @@
 			</div>
 		</div>
 		<div v-if="isSearching" class="searchContainer userSearchBarSize">
-			<div class="fs-4 userSearchLabel">Currently Viewing Users "{{ lastSearch }}"</div>
+			<div class="fs-4 userSearchLabel">Currently Viewing {{term}} "{{ lastSearch }}"</div>
 			<button @click="clearSearch" class="btn btn-outline-primary mb-2">Clear</button>
 		</div>
 		<div v-else class="searchContainer userSearchBarSize">
-			<div class="fs-4">Currently Viewing All Users</div>
+			<div class="fs-4">Currently Viewing All {{term}}</div>
 		</div>
 </template>
 

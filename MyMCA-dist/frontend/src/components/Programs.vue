@@ -1,8 +1,10 @@
 <script>
+	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
 	import moment from 'moment'
 
 	export default {
+		components: { SearchBar },
 		props: ['credentials', 'isUserOnly'],
 		data() {
 			return {
@@ -21,34 +23,37 @@
 			});
 		},
 		mounted() {
-			var id = this.isUserOnly ? this.credentials.UserId : 'null';
-			Service.getPrograms(id).then(response => {
-				this.programs = response.data;
-
-				// Getting number of enrollments for all programs
-				Service.getEnrollments().then(response => {
-					this.enrollments = response.data;
-					this.programs.forEach(program => {
-						var startDate = new Date(program['OfferingPeriod']);
-						var endDate = new Date(program['OfferingPeriodEnd']);
-						program['OfferingDate'] = startDate.toLocaleString();
-						program['OfferingDateEnd'] = endDate.toLocaleString();
-						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
-					});
-
-					if (this.isUserOnly) {
-						this.programs.forEach(program => {
-							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
-						});
-					}
-				}).catch(error => {
-					console.log("Something went wrong: ");
-					console.log(error);
-				});
-			});
+			this.queryPrograms(null);
 		},
 
 		methods: {
+			queryPrograms(searchTerm) {
+				var id = this.isUserOnly ? this.credentials.UserId : 'null';
+				Service.getPrograms(id, searchTerm).then(response => {
+					this.programs = response.data;
+
+					// Getting number of enrollments for all programs
+					Service.getEnrollments().then(response => {
+						this.enrollments = response.data;
+						this.programs.forEach(program => {
+							var startDate = new Date(program['OfferingPeriod']);
+							var endDate = new Date(program['OfferingPeriodEnd']);
+							program['OfferingDate'] = startDate.toLocaleString();
+							program['OfferingDateEnd'] = endDate.toLocaleString();
+							program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
+						});
+
+						if (this.isUserOnly) {
+							this.programs.forEach(program => {
+								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+							});
+						}
+					}).catch(error => {
+						console.log("Something went wrong: ");
+						console.log(error);
+					});
+				});
+			},
 			enrollUser(programId) {
 				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
 					this.popUpSignUpSuccessAlert(programId);
@@ -197,6 +202,7 @@
 <template>
 	<div>
 		<div class="body pt-3">
+			<SearchBar @search="this.queryPrograms" :term="'Programs'"/>
 			<div class="container">
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
 					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">

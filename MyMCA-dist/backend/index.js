@@ -37,15 +37,18 @@ app.get('/api/login/:user&:pass', (req, res) => {
 
 // Get for Programs, Enrollments pages
 // If a user id is specified, it will get enrolled programs, otherwise returns all programs
-app.get('/api/programs/:userId', (req, res) => {
+app.get('/api/programs/:userId/:searchTerm', (req, res) => {
+  // TODO: Maybe should split these into separate API calls
   let userId = req.params.userId;
+  let searchTerm = req.params.searchTerm;
    let sql = ``;
-  if (userId == 'null') {
+  if (userId == 'null' && searchTerm == 'null') {
     // Get all programs
+    console.log('Loading all programs')
     sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
               FROM Programs
               ORDER BY OfferingPeriod ASC;`;
-  } else {
+  } else if (searchTerm == 'null'){
     // Get user-enrolled programs
     console.log('Loading user programs for id ' + userId);
     sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
@@ -53,6 +56,23 @@ app.get('/api/programs/:userId', (req, res) => {
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
               WHERE Enrollments.UserId = ${userId}
+              ORDER BY OfferingPeriod ASC;`;
+  } else if (userId == 'null') {
+    // Loading all programs with search term
+    console.log('Loading all programs with search term ' + searchTerm);
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+              FROM Programs
+              WHERE Title LIKE '${searchTerm}%'
+              ORDER BY OfferingPeriod ASC;`;
+  } else {
+    // Loading user-enrolled programs with search term
+    console.log('Loading user-enrolled programs with search term ' + searchTerm);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+              FROM Programs
+              INNER JOIN Enrollments ON
+              Enrollments.ProgramId = Programs.ProgramId
+              WHERE Enrollments.UserId = ${userId} AND
+              Programs.Title LIKE '${searchTerm}%'
               ORDER BY OfferingPeriod ASC;`;
   }
   db.all(sql, [], (err, rows) => {

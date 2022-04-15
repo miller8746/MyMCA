@@ -4,8 +4,8 @@ class ProfileService {
 		return http.get('/api/login/' + username + '&' + password);
 		// TODO: put params in request body?
 	}
-	getPrograms(userId) {
-		return http.get(`/api/programs/${userId}`);
+	getPrograms(userId, searchTerm) {
+		return http.get(`/api/programs/${userId}/${searchTerm}`);
 	}
 	createProgram(program) {
 		return http.post(`/api/programs/`, {
