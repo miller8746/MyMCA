@@ -10,7 +10,8 @@ CREATE TABLE Users (
                    NOT NULL,
     Name   STRING,
     Member BOOLEAN NOT NULL,
-    Staff  BOOLEAN NOT NULL
+    Staff  BOOLEAN NOT NULL,
+    Active BOOLEAN NOT NULL
 );
 
 CREATE TABLE Credentials (
@@ -57,10 +58,10 @@ CREATE TABLE Enrollments (
     Active          BOOLEAN     NOT NULL
 );
 
-INSERT INTO Users(UserId, Name, Member, Staff) VALUES (1, 'Susan', 1, 0);
-INSERT INTO Users(UserId, Name, Member, Staff) VALUES (2, 'Bob H.', 1, 1);
-INSERT INTO Users(UserId, Name, Member, Staff) VALUES (3, 'Jane Doe', 1, 0);
-INSERT INTO Users(UserId, Name, Member, Staff) VALUES (4, 'Luke Anderson', 1, 0);
+INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (1, 'Susan', 1, 0, 1);
+INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (2, 'Bob H.', 1, 1, 1);
+INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (3, 'Jane Doe', 1, 0, 1);
+INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (4, 'Luke Anderson', 1, 0, 1);
 
 INSERT INTO Credentials(Username, Password, UserId) VALUES ('susan', '123', 1);
 INSERT INTO Credentials(Username, Password, UserId) VALUES ('bobby', 'abc', 2);
@@ -86,7 +87,7 @@ VALUES ('Shark', '2022-05-22T18:00', '2022-06-26T18:40', 'This program requires 
 INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Location, Repetitions, Active)
 VALUES ('Log Rolling', '2022-05-22T17:00', '2022-06-26T17:40', 'No prerequisites.', 200.0, 1, 'YMCA Onalaska Pool', 5, 1);
 INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Location, Repetitions, Active)
-VALUES ('Log Rolling', '2022-05-22T18:00', '2022-06-26T18:40', 'No prerequisites.', 200.0, 1, 'YMCA Onalaska Pool', 5, 1);
+VALUES ('Log Rolling', '2022-05-22T18:00', '2022-06-26T18:40', 'No prerequisites.', 200.0, 2, 'YMCA Onalaska Pool', 5, 1);
 
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (1, 'Monday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (2, 'Monday');
