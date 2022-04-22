@@ -1,3 +1,11 @@
+/*
+* File name: UserViewer.vue
+* Purpose: Component for staff members to view users and their enrollments
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 4/1/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import SearchBar from './SearchBar.vue'
@@ -15,6 +23,11 @@
 			this.queryUsers(null);
 		},
 		methods: {
+			/*
+			* Name: queryUsers
+			* Purpose: Filters the users shown based on the search query
+			* Parameters: searchTerm (string; null if no search)
+			*/
 			queryUsers(searchTerm) {
 				Service.getUsers(searchTerm).then(response => {
 					this.users = response.data;

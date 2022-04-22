@@ -1,3 +1,11 @@
+/*
+* File name: Programs.vue
+* Purpose: Shows programs based on user/search criteria
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/20/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
@@ -27,11 +35,16 @@
 		},
 
 		methods: {
+			/*
+			* Name: queryPrograms
+			* Purpose: Filters the programs shown based on the search query
+			* Parameters: searchTerm (string; null if no search)
+			*/
 			queryPrograms(searchTerm) {
 				var id = this.isUserOnly ? this.credentials.UserId : 'null';
 				Service.getPrograms(id, searchTerm).then(response => {
 					this.programs = response.data;
-
+					
 					// Getting number of enrollments for all programs
 					Service.getEnrollments().then(response => {
 						this.enrollments = response.data;
@@ -54,11 +67,17 @@
 					});
 				});
 			},
+			/*
+			* Name: enrollUser
+			* Purpose: Attempts to enroll the user in the specified program
+			* Parameters: programId (integer)
+			*/
 			enrollUser(programId) {
 				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
 					this.popUpSignUpSuccessAlert(programId);
 					this.enrollments = response.data;
-
+					
+					// Update the user enrollments in the view
 					Service.getUserEnrollments(this.credentials.UserId).then(response => {
 						this.userEnrollments = response.data;
 						this.programs.forEach(program => {
@@ -69,7 +88,12 @@
 					this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
 				});
 			},
-			hasTimeConflict(programOfferingDate){	
+			/*
+			* Name: hasTimeConflict
+			* Purpose: Determines if a program conflicts with a user's enrollments
+			* Parameters: programOfferingDate (string; the database-parsed start date of the program)
+			*/
+			hasTimeConflict(programOfferingDate) {
 				let d1 = new Date(programOfferingDate);
 				let res = false;
 
@@ -86,6 +110,11 @@
 
 				return res;
 			},
+			/*
+			* Name: getCurrentEnrollments
+			* Purpose: Gets the total number of enrollments in the specified program
+			* Parameters: program (Object; contains the program's information)
+			*/
 			getCurrentEnrollments(program) {
 				if(this.enrollments != null) {
 					let num = this.enrollments.filter( e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
@@ -96,10 +125,20 @@
 					}
 				}
 			},
+			/*
+			* Name: isSignUpEnabled
+			* Purpose: Determines if the "Sign Up" button is valid for use
+			* Parameters: program (Object; contains the program's information)
+			*/
 			isSignUpEnabled: function (program) {
 				return this.credentials !== null && 
 						this.getCurrentEnrollments(program) < program['Capacity'];
 			},
+			/*
+			* Name: getCost
+			* Purpose: Gets the cost of the program, including member discounts
+			* Parameters: baseCost (double; the cost of the program before discounts)
+			*/
 			getCost(baseCost){
 				if( this.credentials != null ) {
 					if(this.credentials.Member == 1) {
@@ -110,19 +149,12 @@
 					}
 				}
 				return baseCost;
-			}, 
-			// getUserCost(program) {
-			// 	var baseCost = program['Cost'];
-			// 	if( this.credentials != null ) {
-			// 		if(this.credentials.Member == 1) {
-			// 			var d = baseCost / 2;
-			// 			return (d * program['UserEnrollments']).toFixed(2);
-			// 		} else {
-			// 			return baseCost;
-			// 		}
-			// 	}
-			// 	return baseCost;
-			// },
+			},
+			/*
+			* Name: getFormattedDays
+			* Purpose: Formats the program occurrence days for display
+			* Parameters: days (Array of Objects; a program's occurrence days)
+			*/
 			getFormattedDays(days){
 				let formatted = '';
 
@@ -150,13 +182,23 @@
 				
 				return formatted;
 			},
+			/*
+			* Name: getFormattedDate
+			* Purpose: Formats the start and end dates of a program
+			* Parameters: value (string; a program's start or end date as parsed in the database)
+			*/
 			getFormattedDate(value) {
-				if (value){
-    				return moment(String(value)).format('MM/DD hh:mm A')
+				if (value) {
+    					return moment(String(value)).format('MM/DD hh:mm A')
 				} else {
 					return '';
 				}
 			},
+			/*
+			* Name: popUpSignUpSuccessAlert
+			* Purpose: Creates a popup message for successfully registering for a program
+			* Parameters: programId (integer; the id of the program that was signed up for)
+			*/
 			popUpSignUpSuccessAlert(programId){
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-success alert-dismissible fade show alert-font");
@@ -176,6 +218,11 @@
 				let card = document.getElementById("program-" + programId);
 				card.prepend(alert);
 			},
+			/*
+			* Name: popUpSignUpFailureAlert
+			* Purpose: Creates a popup message for failing to register for a program
+			* Parameters: programId (integer; the id of the program that was signed up for), message (string; the failure message to display)
+			*/
 			popUpSignUpFailureAlert(programId, message){
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show alert-font");

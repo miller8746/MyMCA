@@ -1,8 +1,21 @@
+/*
+* File name: Header.vue
+* Purpose: Header for the application; contains page links and logout functionality
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/18/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Service from '../services/Service.js'
 	export default {
 		props: ['credentials', 'isLoginPage', 'helpLink'],
 		methods: {
+			/*
+			* Name: logOut
+			* Purpose: Logs the user out of the application
+			* Parameters: none
+			*/
 			logOut() {
 				this.$store.commit('logout');
 				if (!this.isLoginPage) {

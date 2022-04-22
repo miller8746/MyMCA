@@ -1,3 +1,11 @@
+/*
+* File name: App.vue
+* Purpose: Handles the router for directing the control of the application
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/17/22
+* Last Modified: 3/22/22
+*/
+
 <template>
   <router-view/>
 </template>

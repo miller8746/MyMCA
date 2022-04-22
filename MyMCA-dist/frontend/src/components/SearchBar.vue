@@ -1,5 +1,12 @@
-<script>
+/*
+* File name: SearchBar.vue
+* Purpose: Component responsible for managing user searches
+* Authors: Heather Miller
+* Date Created: 4/14/22
+* Last Modified: 4/22/22
+*/
 
+<script>
 	export default {
 		props: ['term'],
 		emits: ['search'],
@@ -11,6 +18,11 @@
 			};
 		},
 		methods: {
+			/*
+			* Name: trySearch
+			* Purpose: Attempts to emit a search event if there is content in the search bar
+			* Parameters: none
+			*/
 			trySearch() {
 				if (this.searchQuery.trim() != '') {
 					this.isSearching = true;
@@ -18,6 +30,11 @@
 					this.$emit('search', this.lastSearch);
 				}
 			},
+			/*
+			* Name: clearSearch
+			* Purpose: Emits a clear search event to reset the search status
+			* Parameters: username (string), password (string)
+			*/
 			clearSearch() {
 				this.isSearching = false;
 				this.lastSearch = '';
@@ -36,11 +53,11 @@
 			</div>
 		</div>
 		<div v-if="isSearching" class="searchContainer userSearchBarSize">
-			<div class="fs-4 userSearchLabel">Currently Viewing {{term}} "{{ lastSearch }}"</div>
+			<div class="fs-4 userSearchLabel">Currently Viewing {{ term }} "{{ lastSearch }}"</div>
 			<button @click="clearSearch" class="btn btn-outline-primary mb-2">Clear</button>
 		</div>
 		<div v-else class="searchContainer userSearchBarSize">
-			<div class="fs-4">Currently Viewing All {{term}}</div>
+			<div class="fs-4">Currently Viewing All {{ term }}</div>
 		</div>
 </template>
 

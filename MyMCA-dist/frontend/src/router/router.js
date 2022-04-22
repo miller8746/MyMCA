@@ -1,3 +1,11 @@
+/*
+* File name: router.js
+* Purpose: Creates and manages the links between Vue components
+* Authors: Heather Miller, Chloe McQuin
+* Date Created: 2/20/22
+* Last Modified: 4/22/22
+*/
+
 import { createRouter, createWebHistory } from "vue-router";
 const routes =  [
   {

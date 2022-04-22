@@ -1,3 +1,12 @@
+/*
+* File name: index.js
+* Purpose: Runs the server and executes database queries
+* Authors: Hannah Hunt, Heather Miller
+* Date Created: 2/21/22
+* Last Modified: 4/22/22
+*/
+
+// Import requirements
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -5,9 +14,11 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json());
 
+// Set port to localhost:3000
 const port = 3000
 var router = express.Router();
 
+// Common attributes for selection
 const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity, Repetitions"
 const allUserAttributes = "UserId, Name,Member, Staff"
 const allCredentialAttributes = "Username, Password, UserId";
@@ -84,6 +95,7 @@ app.get('/api/programs/:userId/:searchTerm', (req, res) => {
       if (err) {
         console.log(err);
       }
+      // Match programs with their occurrence days
       rows.forEach((row) => {
         row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
       });
@@ -176,8 +188,8 @@ app.get('api/timeConflict/:programId/:userId', (req, res) => {
 app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
   const userId = req.params.userId;
   const programId = req.params.programId;
-  db.run(`INSERT INTO Enrollments(UserId, ProgramId) 
-          VALUES(${userId}, ${programId});`)
+  db.run(`INSERT INTO Enrollments(UserId, ProgramId, Active) 
+          VALUES(${userId}, ${programId}, 1);`)
     .all(`SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
             FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
             GROUP BY p.ProgramId`, (err, rows) => {
@@ -195,8 +207,8 @@ app.post(`/api/programs/`, (req, res) => {
 
   console.log(program);
 
-  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Instructor, Description, Location, Cost, Capacity) 
-            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, 0, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Instructor, Description, Location, Cost, Capacity, Active) 
+            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, 0, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity}, 1);`)
   .all(`SELECT ${allProgramAttributes} 
           FROM Programs 
           WHERE Title = '${program.programTitle}' AND 
@@ -280,7 +292,7 @@ app.post('/api/account/', (req,res) => {
       res.send({successful: false, userId: 0});
     } else {
       // Put values into Users and Credentials tables (unique UserId != 0)
-      db.run(`INSERT INTO Users(Name, Member, Staff) VALUES ('${credentials.name}', ${credentials.isMember}, ${credentials.isStaff})`)
+      db.run(`INSERT INTO Users(Name, Member, Staff, Active) VALUES ('${credentials.name}', ${credentials.isMember}, ${credentials.isStaff}, 1)`)
         .all(`SELECT ${allUserAttributes} FROM Users WHERE Name = '${credentials.name}' AND Member = ${credentials.isMember} AND Staff = ${credentials.isStaff}`, (err, rows) => {
           // TODO: Better way to select row after creation?
           if (err) {

@@ -1,3 +1,11 @@
+/*
+* File name: CreateProgram.vue
+* Purpose: Component responsible for creating a program
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/25/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
@@ -23,10 +31,17 @@
 			};
 		},
 		methods: {
+			/*
+			* Name: createProgram
+			* Purpose: Attempts to create the program with the entered information, redirects to Programs page
+			* Parameters: none
+			*/
 			createProgram() {
 				this.showFormatError = false;
 				this.showDataError = false;
+				// Check that all necessary information has been entered
 				if (this.checkData()) {
+					// Check that the entered data is valid
 					if (this.checkValidity()) {
 						var program = {
 							title: this.programTitle,
@@ -52,13 +67,23 @@
 					this.showDataError = true;
 				}
 			},
+			/*
+			* Name: addOccurrence
+			* Purpose: Adds a week day occurrence when the user hits the + button
+			* Parameters: none
+			*/
 			addOccurrence() {
 				if (this.dayCount < 7) {
 					this.dayCount++;
 				}
 			},
+			/*
+			* Name: checkData
+			* Purpose: Checks that all the necessary data has been filled in
+			* Parameters: none
+			*/
 			checkData() {
-				// Check if all data in form is filled in
+				// Make sure all occurrence day dropdowns are filled in
 				if (this.days.length - 1 != this.dayCount) {
 					return false;
 				} else {
@@ -68,19 +93,26 @@
 						}
 					}
 				}
-				if (this.programTitle 		!= '' 	&& 
-				    this.programDescription != '' 	&& 
-				    this.programCapacity 	!= 0 	&& 
-					this.programRepetitions != 0 	&&
-				    this.programCost 		!= 0 	&& 
-				    this.programStartDate 	!= '' 	&& 
-				    this.programEndDate 	!= '' 	&& 
-				    this.programLocation 	!= '') {
+				// Make sure all other information is filled in
+				if (this.programTitle != '' && 
+				    this.programDescription != '' && 
+				    this.programCapacity != 0 && 
+				    this.programRepetitions != 0 &&
+				    this.programCost != 0 && 
+				    this.programStartDate != '' && 
+				    this.programEndDate != '' && 
+				    this.programLocation != '') {
 					return true;
 				} else return false;
 			},
+			/*
+			* Name: checkValidity
+			* Purpose: Checks that the entered data is valid
+			* Parameters: none
+			*/
 			checkValidity() {
 				var dayExists = [];
+				// Makes sure occurrence days are not entered multiple times
 				for (var i = 1; i < this.days.length; i++) {
 					if (dayExists[this.days[i]]) {
 						return false;
@@ -90,13 +122,13 @@
 				}
 				var startDate = new Date(this.programStartDate);
 				var endDate = new Date(this.programEndDate);
-				// Check if data in form is valid
-				if (this.programCapacity 	> 0 			&&
-                    this.programCost 		> 0 			&&
-					this.programRepetitions > 0 			&&
-				    startDate 				> Date.now() 	&& 
-				    endDate 				> Date.now() 	&& 
-				    startDate 				< endDate) {
+				// Check if other data in form is valid
+				if (this.programCapacity > 0 &&
+                    		    this.programCost > 0 &&
+				    this.programRepetitions > 0 &&
+				    startDate > Date.now() && 
+				    endDate > Date.now() && 
+				    startDate < endDate) {
 					return true;
 				} else return false;
 			}
