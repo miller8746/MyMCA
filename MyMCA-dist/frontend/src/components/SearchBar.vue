@@ -33,7 +33,7 @@
 			/*
 			* Name: clearSearch
 			* Purpose: Emits a clear search event to reset the search status
-			* Parameters: username (string), password (string)
+			* Parameters: none
 			*/
 			clearSearch() {
 				this.isSearching = false;
