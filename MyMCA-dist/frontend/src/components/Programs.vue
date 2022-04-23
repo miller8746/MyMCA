@@ -3,7 +3,7 @@
 * Purpose: Shows programs based on user/search criteria
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/22/22
+* Last Modified: 4/23/22
 */
 
 <script>
@@ -199,7 +199,7 @@
 			* Purpose: Creates a popup message for successfully registering for a program
 			* Parameters: programId (integer; the id of the program that was signed up for)
 			*/
-			popUpSignUpSuccessAlert(programId){
+			popUpSignUpSuccessAlert(programId) {
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-success alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
@@ -223,7 +223,7 @@
 			* Purpose: Creates a popup message for failing to register for a program
 			* Parameters: programId (integer; the id of the program that was signed up for), message (string; the failure message to display)
 			*/
-			popUpSignUpFailureAlert(programId, message){
+			popUpSignUpFailureAlert(programId, message) {
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
@@ -241,6 +241,14 @@
 						
 				let card = document.getElementById("program-" + programId);
 				card.prepend(alert);
+			},
+			/*
+			* Name: editProgram
+			* Purpose: Redirects to the Edit Program page for the specified program
+			* Parameters: programId (integer; the id of the program to edit)
+			*/
+			editProgram(programId) {
+				this.$router.push({name: 'edit-program', params: { programId: programId }});
 			}
 		}
 	}
@@ -254,7 +262,9 @@
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
 					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">
 						<div :id="'program-' + program['ProgramId']" class="card-body">
-							<h3 class="program-card-title card-header">{{ program['Title'] }}
+							<h3 class="program-card-title card-header">
+								<span class="programViewerTitle">{{ program['Title'] }}</span>
+								<button v-if="!isUserOnly && this.credentials.Staff == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
 							</h3>
 							<div class="m-3">
 								<div class="fs-6">
@@ -349,6 +359,10 @@
 
 .footer {
 	font-size: small;
+}
+
+.programViewerTitle {
+	margin-right: 10px;
 }
 
 </style>

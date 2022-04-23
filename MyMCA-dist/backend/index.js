@@ -3,7 +3,7 @@
 * Purpose: Runs the server and executes database queries
 * Authors: Hannah Hunt, Heather Miller
 * Date Created: 2/21/22
-* Last Modified: 4/22/22
+* Last Modified: 4/23/22
 */
 
 // Import requirements
@@ -19,7 +19,7 @@ const port = 3000
 var router = express.Router();
 
 // Common attributes for selection
-const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity, Repetitions"
+const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Location, Cost, Capacity, Repetitions"
 const allUserAttributes = "UserId, Name,Member, Staff"
 const allCredentialAttributes = "Username, Password, UserId";
 
@@ -183,6 +183,20 @@ app.get('api/timeConflict/:programId/:userId', (req, res) => {
   });
 });
 
+// Get a single program and its days for use in the Edit Program tool
+app.get('/api/edit-program/:programId', (req, res) => {
+  let programId = req.params.programId;
+  let sql = `SELECT * FROM Programs WHERE ProgramId = ${programId}`;
+  db.get(sql, [], (err, row) => {
+    if (err) { console.log(err); }
+    db.all(`SELECT * FROM ProgramDays WHERE ProgramId = ${programId}`, (err, days) => {
+      if (err) { console.log(err); }
+      row.Days = days;
+      res.send(row);
+    });
+  });
+});
+
 /* POSTS */
 // Post for enrolling a user in a program
 app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
@@ -207,8 +221,8 @@ app.post(`/api/programs/`, (req, res) => {
 
   console.log(program);
 
-  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Instructor, Description, Location, Cost, Capacity, Active) 
-            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, 0, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity}, 1);`)
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Description, Location, Cost, Capacity, Active) 
+            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity}, 1);`)
   .all(`SELECT ${allProgramAttributes} 
           FROM Programs 
           WHERE Title = '${program.programTitle}' AND 
@@ -237,7 +251,42 @@ app.post(`/api/programs/`, (req, res) => {
   });;
 }); 
 
+// Post for Edit Program page
+app.post(`/api/edit-program/`, (req, res) => {
+  let program = req.body;
 
+  console.log(program);
+  console.log('saving program');
+  db.run(`UPDATE Programs SET Title = '${program.programTitle}', OfferingPeriod = '${program.programOfferingPeriod}', OfferingPeriodEnd = '${program.programOfferingPeriodEnd}', Repetitions = ${program.programRepetitions}, Description = '${program.programDescription}', Location = '${program.programLocation}', Cost = ${program.programCost}, Capacity = ${program.programCapacity} WHERE ProgramId = ${program.programId};`)
+  .all(`SELECT ${allProgramAttributes} 
+          FROM Programs 
+          WHERE Title = '${program.programTitle}' AND 
+                OfferingPeriod = '${program.programOfferingPeriod}' AND 
+                OfferingPeriodEnd = '${program.programOfferingPeriodEnd}' AND 
+                Repetitions = '${program.programRepetitions}' AND
+                Description = '${program.programDescription}' AND 
+                Location = '${program.programLocation}' AND 
+                Cost = ${program.programCost} AND 
+                Capacity = ${program.programCapacity}`, (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+    res.send(rows);
+    // TODO: Save program days
+    //db.serialize(() => {
+    //  var i = 1;
+    //  for (i = 1; i < program.programDays.length; i++) {
+    //    db.run(`UPDATE ProgramDays(ProgramId, Day) VALUES (${rows[0].ProgramId}, '${program.programDays[i]}');`);
+    //  }
+    //  db.all(`SELECT ProgramDayId, Day FROM ProgramDays WHERE ProgramId = ${rows[0].ProgramId}`, (err, days) => {
+    //    if (err) {
+    //      console.log(err);
+    //    }
+    //    res.send(rows);
+    //  });
+    //});
+  });
+});
 
 /* USERS - all apis */
 

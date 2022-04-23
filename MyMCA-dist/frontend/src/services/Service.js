@@ -3,7 +3,7 @@
 * Purpose: Sends gets/posts between the Vue application and the server
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/22/22
+* Last Modified: 4/23/22
 */
 
 // Sends the gets/posts via axios
@@ -43,6 +43,33 @@ class ProfileService {
 			programDays: program.days,
 			programRepetitions: program.repetitions
 		});
+	}
+	/*
+	* Name: saveProgram
+	* Purpose: Saves a program in the system after being edited
+	* Parameters: program (Object; contains all the program information)
+	*/
+	saveProgram(program) {
+		return http.post(`/api/edit-program/`, {
+			programTitle: program.title,
+			programDescription: program.description,
+			programCapacity: program.capacity,
+			programCost: program.cost,
+			programOfferingPeriod: program.offeringPeriod,
+			programOfferingPeriodEnd: program.offeringPeriodEnd,
+			programLocation: program.location,
+			programDays: program.days,
+			programRepetitions: program.repetitions,
+			programId: program.id
+		});
+	}
+	/*
+	* Name: getProgram
+	* Purpose: Gets a single program's information
+	* Parameters: programId (integer; the program's id)
+	*/
+	getProgram(programId) {
+		return http.get(`/api/edit-program/${programId}`);
 	}
 	/*
 	* Name: getEnrollments
@@ -101,6 +128,6 @@ class ProfileService {
 	*/
 	getUsers(searchTerm) {
 		return http.get(`/api/users/${searchTerm}`, {});
-	} 
+	}
 }
 export default new ProfileService();
