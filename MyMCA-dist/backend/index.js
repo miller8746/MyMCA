@@ -3,7 +3,7 @@
 * Purpose: Runs the server and executes database queries
 * Authors: Hannah Hunt, Heather Miller
 * Date Created: 2/21/22
-* Last Modified: 4/23/22
+* Last Modified: 4/24/22
 */
 
 // Import requirements
@@ -251,7 +251,7 @@ app.post(`/api/programs/`, (req, res) => {
   });;
 }); 
 
-// Post for Edit Program page
+// Post for Edit Program page (save)
 app.post(`/api/edit-program/`, (req, res) => {
   let program = req.body;
 
@@ -272,6 +272,19 @@ app.post(`/api/edit-program/`, (req, res) => {
     console.log('Should be finished');
     res.status(200).send(true);
   });
+});
+
+// Post for Edit Program page (deactivation)
+app.post(`/api/deactivate-program/:programId`, (req, res) => {
+  let programId = req.params.programId;
+
+  console.log('Deactivating program ' + programId);
+  // Set Program Active to false
+  db.run(`UPDATE Programs SET Active = 0 WHERE ProgramId = ${programId}`);
+  // Set Enrollments Active to false
+  db.run(`UPDATE Enrollments SET Active = 0 WHERE ProgramId = ${programId}`);
+
+  res.status(200).send(true);
 });
 
 /* USERS - all apis */

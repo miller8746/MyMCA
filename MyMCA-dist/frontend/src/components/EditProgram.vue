@@ -3,7 +3,7 @@
 * Purpose: Component responsible for editing/canceling a program
 * Authors: Heather Miller
 * Date Created: 4/23/22
-* Last Modified: 4/23/22
+* Last Modified: 4/24/22
 */
 
 <script>
@@ -32,7 +32,17 @@
 				Service.saveProgram(program).then((res) => {
 					this.saved = true;
 				});
-			}
+			},
+			/*
+			* Name: deactivateProgram
+			* Purpose: Sets the program to an inactive state and redirects to the Programs page
+			* Parameters: none
+			*/
+			deactivateProgram() {
+				Service.deactivateProgram(this.programId).then((res) => {
+					this.$router.push('/programs');
+				});
+			},
 		},
 		mounted() {
 			if (this.programId == null) {
@@ -52,7 +62,7 @@
 <template>
 	<div>
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/programcreation.html'"/>
-		<ProgramEditor @submitProgram="this.saveProgram" :program="this.program" :saved="this.saved" ref="editor"/>
+		<ProgramEditor @submitProgram="this.saveProgram" @deactivateProgram="this.deactivateProgram" :program="this.program" :saved="this.saved" ref="editor"/>
 	</div>
 </template>
 

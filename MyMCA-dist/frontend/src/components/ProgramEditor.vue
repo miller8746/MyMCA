@@ -3,13 +3,16 @@
 * Purpose: Component responsible for taking inputs for program information
 * Authors: Heather Miller
 * Date Created: 2/23/22
-* Last Modified: 4/23/22
+* Last Modified: 4/24/22
 */
 
 <script>
+	import DialogPrompt from './DialogPrompt.vue'
+
 	export default {
+		components: { DialogPrompt },
 		props: ['program', 'saved'],
-		emits: ['submitProgram'],
+		emits: ['submitProgram', 'deactivateProgram'],
 		data() {
 			return {
 				programTitle: '',
@@ -24,7 +27,8 @@
 				dayCount: 1,
 				days: [],
 				showFormatError: false,
-				showDataError: false
+				showDataError: false,
+				showDeactivateDialog: false
 			};
 		},
 		methods: {
@@ -67,6 +71,17 @@
 				} else {
 					// Some data is not filled in
 					this.showDataError = true;
+				}
+			},
+			/*
+			* Name: deactivateProgram
+			* Purpose: If confirmed, emits a deactivate event to the parent component
+			* Parameters: isConfirmed (boolean; true if the user confirms the deactivation from the prompt)
+			*/
+			deactivateProgram(isConfirmed) {
+				this.showDeactivateDialog = false;
+				if (isConfirmed) {
+					this.$emit('deactivateProgram');
 				}
 			},
 			/*
@@ -171,6 +186,7 @@
 
 <template>
 	<div>
+		<DialogPrompt @exitPrompt="this.deactivateProgram" v-if="program != null" :isShown="this.showDeactivateDialog" :headerMessage="'Deactivate Program'" :bodyMessage="'Are you sure you would like to deactivate this program?  There is no undoing this action.'" />
 		<div class="pageContent create-page">
 			<div class="card create-card shadow-lg">
 				<div class="card-body">
@@ -218,7 +234,7 @@
 							</select>
 						</div>
 						<div class="btn btn-primary input-group-text dayOccurrenceButton" @click="addOccurrence">+</div>
-						<div class="btn input-group-text dayOccurrenceButton dayRemoveButton" @click="removeOccurrence">-</div>
+						<div class="btn input-group-text dayOccurrenceButton editProgramRemoveButton" @click="removeOccurrence">-</div>
 					</div>
 					<div class="input-group mb-2">
 						<span class="input-group-text program-create-label">Repeats for </span>
@@ -231,7 +247,10 @@
 					</div>
 				</div>
 				<div class="programButtonContainer">
-					<div class="button" @click="submitProgram()">Save</div>
+					<div>
+						<div class="button" @click="submitProgram()">Save</div>
+						<div v-if="program != null" class="button editProgramRemoveButton" @click="this.showDeactivateDialog = true">Deactivate</div>
+					</div>
 					<div v-if="this.saved">Saved.</div>
 					<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
 					<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
@@ -288,14 +307,14 @@
 	height: 38px;
 }
 
-.dayRemoveButton {
-	background-color: #ff5454;
+.editProgramRemoveButton {
+	background-color: #ff5454 !important;
 	color: #FFFFFF;
 	transition: background-color 0.5s fade;
 }
 
-.dayRemoveButton:hover {
-	background-color: #de4949;
+.editProgramRemoveButton:hover {
+	background-color: #de4949 !important;
 	color: #FFFFFF;
 }
 

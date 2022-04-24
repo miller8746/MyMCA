@@ -3,7 +3,7 @@
 * Purpose: Sends gets/posts between the Vue application and the server
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/23/22
+* Last Modified: 4/24/22
 */
 
 // Sends the gets/posts via axios
@@ -70,6 +70,14 @@ class ProfileService {
 	*/
 	getProgram(programId) {
 		return http.get(`/api/edit-program/${programId}`);
+	}
+	/*
+	* Name: deactivateProgram
+	* Purpose: Deactivates the program with the given id
+	* Parameters: programId (integer; the program's id)
+	*/
+	deactivateProgram(programId) {
+		return http.post(`/api/deactivate-program/${programId}`);
 	}
 	/*
 	* Name: getEnrollments
