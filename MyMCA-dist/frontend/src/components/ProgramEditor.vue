@@ -40,6 +40,12 @@
 				if (this.checkData()) {
 					// Check that the entered data is valid
 					if (this.checkValidity()) {
+						// Standardize the days array to 0 index
+						var programDays = [];
+						var i = 0;
+						for (i = 0; i < this.dayCount; i++) {
+							programDays[i] = this.days[i+1];
+						}
 						var program = {
 							title: this.programTitle,
 							description: this.programDescription,
@@ -49,7 +55,7 @@
 							offeringPeriod: this.programStartDate,
 							offeringPeriodEnd: this.programEndDate,
 							location: this.programLocation,
-							days: this.days,
+							days: programDays,
 							id: this.program ? this.program.ProgramId : null
 						};
 
@@ -74,19 +80,25 @@
 				}
 			},
 			/*
+			* Name: removeOccurrence
+			* Purpose: Removes a week day occurrence when the user hits the - button
+			* Parameters: none
+			*/
+			removeOccurrence() {
+				if (this.dayCount > 1) {
+					this.dayCount--;
+				}
+			},
+			/*
 			* Name: checkData
 			* Purpose: Checks that all the necessary data has been filled in
 			* Parameters: none
 			*/
 			checkData() {
 				// Make sure all occurrence day dropdowns are filled in
-				if (this.days.length - 1 != this.dayCount) {
-					return false;
-				} else {
-					for (var i = 1; i < this.days.length; i++) {
-						if (this.days[i] == null) {
-							return false;
-						}
+				for (var i = 1; i <= this.dayCount; i++) {
+					if (this.days[i] == null) {
+						return false;
 					}
 				}
 				// Make sure all other information is filled in
@@ -119,11 +131,11 @@
 				var startDate = new Date(this.programStartDate);
 				var endDate = new Date(this.programEndDate);
 				// Check if other data in form is valid
+				var datesValid = startDate > Date.now() && endDate > Date.now() || this.program != null;
 				if (this.programCapacity > 0 &&
                     		    this.programCost > 0 &&
 				    this.programRepetitions > 0 &&
-				    startDate > Date.now() && 
-				    endDate > Date.now() && 
+				    datesValid && 
 				    startDate < endDate) {
 					return true;
 				} else return false;
@@ -188,26 +200,26 @@
 						<label class="input-group-text program-create-label">Start Date </label>
 						<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programStartDate"/>
 					</div>
-						<div class="input-group mb-2">
-							<label class="input-group-text program-create-label">End Date </label>
-							<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programEndDate"/>
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">End Date </label>
+						<input class="form-control" style="height:38px;" type="datetime-local" :min="minDate" v-model="programEndDate"/>
+					</div>
+					<div class="input-group mb-2">
+						<label class="input-group-text program-create-label">Days </label>
+						<div class="selectContainer">
+							<select v-for="dayOption in dayCount" v-bind:key=dayOption v-model="days[dayOption]" class="daySelect" style="height:38px;">
+								<option value="Sunday">Sunday</option>
+								<option value="Monday">Monday</option>
+								<option value="Tuesday">Tuesday</option>
+								<option value="Wednesday">Wednesday</option>
+								<option value="Thursday">Thursday</option>
+								<option value="Friday">Friday</option>
+								<option value="Saturday">Saturday</option>
+							</select>
 						</div>
-						<div class="input-group mb-2">
-							<label class="input-group-text program-create-label">Days </label>
-							<div class="selectContainer">
-								<select v-for="dayOption in dayCount" v-bind:key=dayOption v-model="days[dayOption]" class="daySelect" style="height:38px;">
-									<option value="Sunday">Sunday</option>
-									<option value="Monday">Monday</option>
-									<option value="Tuesday">Tuesday</option>
-									<option value="Wednesday">Wednesday</option>
-									<option value="Thursday">Thursday</option>
-									<option value="Friday">Friday</option>
-									<option value="Saturday">Saturday</option>
-								</select>
-							</div>
-							<div class="btn btn-primary input-group-text" @click="addOccurrence">+</div>
-						</div>
-
+						<div class="btn btn-primary input-group-text dayOccurrenceButton" @click="addOccurrence">+</div>
+						<div class="btn input-group-text dayOccurrenceButton dayRemoveButton" @click="removeOccurrence">-</div>
+					</div>
 					<div class="input-group mb-2">
 						<span class="input-group-text program-create-label">Repeats for </span>
 						<input class="form-control" style="height:38px;" type="number" v-model="programRepetitions"/>
@@ -217,14 +229,14 @@
 						<div class="input-group-text program-create-label">Description </div>
 						<textarea class="form-control" style="height:50px;" v-model="programDescription"/>
 					</div>
-					</div>
-					<div class="programButtonContainer">
-						<div class="button" @click="submitProgram()">Save</div>
-						<div v-if="this.saved">Saved.</div>
-						<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
-						<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
-					</div>
 				</div>
+				<div class="programButtonContainer">
+					<div class="button" @click="submitProgram()">Save</div>
+					<div v-if="this.saved">Saved.</div>
+					<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
+					<div v-if="showDataError" class="warningText">Please fill in all fields.</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -270,6 +282,21 @@
 
 .daySelect {
 	font-size: 12pt;
+}
+
+.dayOccurrenceButton {
+	height: 38px;
+}
+
+.dayRemoveButton {
+	background-color: #ff5454;
+	color: #FFFFFF;
+	transition: background-color 0.5s fade;
+}
+
+.dayRemoveButton:hover {
+	background-color: #de4949;
+	color: #FFFFFF;
 }
 
 .selectContainer {

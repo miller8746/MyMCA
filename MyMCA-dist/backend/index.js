@@ -237,8 +237,8 @@ app.post(`/api/programs/`, (req, res) => {
       console.log(err);
     }
     db.serialize(() => {
-      var i = 1;
-      for (i = 1; i < program.programDays.length; i++) {
+      var i = 0;
+      for (i = 0; i < program.programDays.length; i++) {
         db.run(`INSERT INTO ProgramDays(ProgramId, Day) VALUES (${rows[0].ProgramId}, '${program.programDays[i]}');`);
       }
       db.all(`SELECT ProgramDayId, Day FROM ProgramDays WHERE ProgramId = ${rows[0].ProgramId}`, (err, days) => {
@@ -256,35 +256,21 @@ app.post(`/api/edit-program/`, (req, res) => {
   let program = req.body;
 
   console.log(program);
-  console.log('saving program');
-  db.run(`UPDATE Programs SET Title = '${program.programTitle}', OfferingPeriod = '${program.programOfferingPeriod}', OfferingPeriodEnd = '${program.programOfferingPeriodEnd}', Repetitions = ${program.programRepetitions}, Description = '${program.programDescription}', Location = '${program.programLocation}', Cost = ${program.programCost}, Capacity = ${program.programCapacity} WHERE ProgramId = ${program.programId};`)
-  .all(`SELECT ${allProgramAttributes} 
-          FROM Programs 
-          WHERE Title = '${program.programTitle}' AND 
-                OfferingPeriod = '${program.programOfferingPeriod}' AND 
-                OfferingPeriodEnd = '${program.programOfferingPeriodEnd}' AND 
-                Repetitions = '${program.programRepetitions}' AND
-                Description = '${program.programDescription}' AND 
-                Location = '${program.programLocation}' AND 
-                Cost = ${program.programCost} AND 
-                Capacity = ${program.programCapacity}`, (err, rows) => {
-    if (err) {
-      console.log(err);
+  console.log('Saving program');
+  // Force queries to run sequentially
+  db.serialize(() => {
+    db.run(`UPDATE Programs SET Title = '${program.programTitle}', OfferingPeriod = '${program.programOfferingPeriod}', OfferingPeriodEnd = '${program.programOfferingPeriodEnd}', Repetitions = ${program.programRepetitions}, Description = '${program.programDescription}', Location = '${program.programLocation}', Cost = ${program.programCost}, Capacity = ${program.programCapacity} WHERE ProgramId = ${program.programId};`).run(`DELETE FROM ProgramDays WHERE ProgramId = ${program.programId};`);
+    
+    console.log('Updated program and deleted old days');
+    
+    // Add new program days
+    var i = 0;
+    for (i = 0; i < program.programDays.length; i++) {
+      console.log('Adding day ' + program.programDays[i]);
+      db.run(`INSERT INTO ProgramDays(ProgramId, Day) VALUES (${program.programId}, '${program.programDays[i]}');`);
     }
-    res.send(rows);
-    // TODO: Save program days
-    //db.serialize(() => {
-    //  var i = 1;
-    //  for (i = 1; i < program.programDays.length; i++) {
-    //    db.run(`UPDATE ProgramDays(ProgramId, Day) VALUES (${rows[0].ProgramId}, '${program.programDays[i]}');`);
-    //  }
-    //  db.all(`SELECT ProgramDayId, Day FROM ProgramDays WHERE ProgramId = ${rows[0].ProgramId}`, (err, days) => {
-    //    if (err) {
-    //      console.log(err);
-    //    }
-    //    res.send(rows);
-    //  });
-    //});
+    console.log('Should be finished');
+    res.status(200).send(true);
   });
 });
 
