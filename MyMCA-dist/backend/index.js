@@ -3,7 +3,7 @@
 * Purpose: Runs the server and executes database queries
 * Authors: Hannah Hunt, Heather Miller
 * Date Created: 2/21/22
-* Last Modified: 4/24/22
+* Last Modified: 4/25/22
 */
 
 // Import requirements
@@ -56,13 +56,13 @@ app.get('/api/programs/:userId/:searchTerm', (req, res) => {
   if (userId == 'null' && searchTerm == 'null') {
     // Get all programs
     console.log('Loading all programs')
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
               FROM Programs
               ORDER BY OfferingPeriod ASC;`;
   } else if (searchTerm == 'null'){
     // Get user-enrolled programs
     console.log('Loading user programs for id ' + userId);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
@@ -71,14 +71,14 @@ app.get('/api/programs/:userId/:searchTerm', (req, res) => {
   } else if (userId == 'null') {
     // Loading all programs with search term
     console.log('Loading all programs with search term ' + searchTerm);
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
               FROM Programs
               WHERE Title LIKE '${searchTerm}%'
               ORDER BY OfferingPeriod ASC;`;
   } else {
     // Loading user-enrolled programs with search term
     console.log('Loading user-enrolled programs with search term ' + searchTerm);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
@@ -108,6 +108,7 @@ app.get('/api/programs/:userId/:searchTerm', (req, res) => {
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
               FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+              WHERE e.Active == 1
               GROUP BY p.ProgramId`
 
   db.all(sql, [], (err, rows) => {
@@ -123,7 +124,8 @@ app.get('/api/enrollments/', (req, res) => {
 app.get('/api/user-enrollments/:userId', (req, res) => {
   let userId = req.params.userId;
   let sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, Count(e.programId) AS NumOfEnrollments 
-              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId WHERE e.UserId = ${userId} 
+              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+              WHERE e.UserId = ${userId} AND e.Active == 1
               GROUP BY p.ProgramId`
 
   db.all(sql, [], (err, rows) => {

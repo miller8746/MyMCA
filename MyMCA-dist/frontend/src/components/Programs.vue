@@ -3,7 +3,7 @@
 * Purpose: Shows programs based on user/search criteria
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/23/22
+* Last Modified: 4/25/22
 */
 
 <script>
@@ -132,7 +132,8 @@
 			*/
 			isSignUpEnabled: function (program) {
 				return this.credentials !== null && 
-						this.getCurrentEnrollments(program) < program['Capacity'];
+						this.getCurrentEnrollments(program) < program['Capacity'] && 
+						program['Active'] == 1;
 			},
 			/*
 			* Name: getCost
@@ -264,12 +265,16 @@
 						<div :id="'program-' + program['ProgramId']" class="card-body">
 							<h3 class="program-card-title card-header">
 								<span class="programViewerTitle">{{ program['Title'] }}</span>
-								<button v-if="!isUserOnly && this.credentials.Staff == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
+								<button v-if="!isUserOnly && this.credentials.Staff == 1 && program['Active'] == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
+								<button v-else-if="!isUserOnly && this.credentials.Staff == 1" class="disabled btn btn-outline-secondary">Edit...</button>
 							</h3>
 							<div class="m-3">
-								<div class="fs-6">
-									{{ program['Description'] }}
-								</div>	
+								<div class="fs-6">{{ program['Description'] }}</div>
+								<div v-if="program['Active'] == 0">
+									<div class="fs-6 programDeactivationText">This program has been deactivated.</div>
+									<div v-if="!this.isUserOnly" class="fs-6 programDeactivationText">You cannot sign up for this program.</div>
+									<div v-else class="fs-6 programDeactivationText">Your enrollments have been canceled.</div>
+								</div>
 								<div class="pt-2 pb-2 program-more-info">
 									<div>
 										${{ getCost(program['Cost']) }}/Person
@@ -363,6 +368,11 @@
 
 .programViewerTitle {
 	margin-right: 10px;
+}
+
+
+.programDeactivationText {
+	color: #ff5454;
 }
 
 </style>
