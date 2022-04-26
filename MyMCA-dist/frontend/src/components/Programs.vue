@@ -3,7 +3,7 @@
 * Purpose: Shows programs based on user/search criteria
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/25/22
+* Last Modified: 4/26/22
 */
 
 <script>
@@ -265,8 +265,8 @@
 						<div :id="'program-' + program['ProgramId']" class="card-body">
 							<h3 class="program-card-title card-header">
 								<span class="programViewerTitle">{{ program['Title'] }}</span>
-								<button v-if="!isUserOnly && this.credentials.Staff == 1 && program['Active'] == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
-								<button v-else-if="!isUserOnly && this.credentials.Staff == 1" class="disabled btn btn-outline-secondary">Edit...</button>
+								<button v-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1 && program['Active'] == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
+								<button v-else-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1" class="disabled btn btn-outline-secondary">Edit...</button>
 							</h3>
 							<div class="m-3">
 								<div class="fs-6">{{ program['Description'] }}</div>
