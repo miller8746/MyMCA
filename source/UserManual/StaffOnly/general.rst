@@ -6,6 +6,8 @@ This section of the User Manual is intended for the training of Staff members on
 .. toctree::
 
    Creating a Program <programcreation>
+   Editing a Program <editprogram>
+   Deactivating a Program <deactivateprogram>
    Viewing Users and their Enrollments <userviewing>
 
 .. |UM link| raw:: html

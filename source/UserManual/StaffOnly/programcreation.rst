@@ -12,7 +12,7 @@ This tutorial will teach you how to create a program within the MyMCA system.
 - All fields will need to be filled in.
 - Cost represents the standard non-member cost for the program.  This cost will be halved for members.
 - The Start Date of the program is required to be before the End Date.
-- More Occurrences can be added by using the "+" button.  Only add as many Occurrences as needed.
+- More Occurrences can be added by using the "+" button and removed using the "-" button.  Only add as many Occurrences as needed.
 
 3. When all information is filled in properly, click the "Submit" button.
 
@@ -22,4 +22,4 @@ This tutorial will teach you how to create a program within the MyMCA system.
 
 .. image:: img/programcreation3.png
 
-Please keep in mind that programs cannot be changed after they are created.  If you would like to delete a program from the MyMCA system, please contact your senior Staff for assistance.
+If you would like to edit a program after it has been created, see :doc:`editprogram`.
