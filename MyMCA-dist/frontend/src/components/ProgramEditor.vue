@@ -147,7 +147,9 @@
 				var endDate = new Date(this.programEndDate);
 				// Check if other data in form is valid
 				var datesValid = startDate > Date.now() && endDate > Date.now() || this.program != null;
+				var capacityValid = this.program == null || this.programCapacity >= this.program.Capacity;
 				if (this.programCapacity > 0 &&
+				    capacityValid &&
                     		    this.programCost > 0 &&
 				    this.programRepetitions > 0 &&
 				    datesValid && 

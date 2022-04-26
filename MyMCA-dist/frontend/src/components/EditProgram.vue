@@ -61,7 +61,7 @@
 
 <template>
 	<div>
-		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/programcreation.html'"/>
+		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/editprogram.html'"/>
 		<ProgramEditor @submitProgram="this.saveProgram" @deactivateProgram="this.deactivateProgram" :program="this.program" :saved="this.saved" ref="editor"/>
 	</div>
 </template>
