@@ -3,7 +3,7 @@
 * Purpose: Runs the server and executes database queries
 * Authors: Hannah Hunt, Heather Miller
 * Date Created: 2/21/22
-* Last Modified: 4/25/22
+* Last Modified: 4/26/22
 */
 
 // Import requirements
@@ -46,34 +46,72 @@ app.get('/api/login/:user&:pass', (req, res) => {
 
 /* GETS */
 
-// Get for Programs, Enrollments pages
-// If a user id is specified, it will get enrolled programs, otherwise returns all programs
-app.get('/api/programs/:userId/:searchTerm', (req, res) => {
-  // TODO: Maybe should split these into separate API calls
-  let userId = req.params.userId;
+// Get programs for Programs page
+// Filter by Active status and optional search term
+app.get('/api/programs/:showDeactivated/:searchTerm', (req, res) => {
+  let showDeactivated = req.params.showDeactivated;
   let searchTerm = req.params.searchTerm;
    let sql = ``;
-  if (userId == 'null' && searchTerm == 'null') {
-    // Get all programs
-    console.log('Loading all programs')
+  if (showDeactivated == 'true' && searchTerm == 'null') {
+    // Get all programs, including deactivated ones
+    console.log('Loading all programs, plus deactivated')
     sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
               FROM Programs
               ORDER BY OfferingPeriod ASC;`;
   } else if (searchTerm == 'null'){
-    // Get user-enrolled programs
+    // Get all programs, not including deactivated ones
+    console.log('Loading all programs, minus deactivated');
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+              FROM Programs
+              WHERE Active == 1
+              ORDER BY OfferingPeriod ASC;`;
+  } else if (showDeactivated == 'false') {
+    // Loading all programs (not deactivated) with search term
+    console.log('Loading all programs (not deactivated) with search term ' + searchTerm);
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
+              FROM Programs
+              WHERE Title LIKE '${searchTerm}%' AND Active == 1
+              ORDER BY OfferingPeriod ASC;`;
+  } else {
+    // Loading all programs (including deactivated) with search term
+    console.log('Loading programs (including deactivated) with search term ' + searchTerm);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+              FROM Programs
+              WHERE Title LIKE '${searchTerm}%'
+              ORDER BY OfferingPeriod ASC;`;
+  }
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => { // TODO: use a join here. something like
+      // SELECT d.Day, p.ProgramId FROM ProgramDays d JOIN Programs p ON d.ProgramId = p.ProgramId
+      if (err) {
+        console.log(err);
+      }
+      // Match programs with their occurrence days
+      rows.forEach((row) => {
+        row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
+      });
+      res.send(rows);
+    });
+  });
+});
+
+// Get programs for Enrollments page
+// Gets a user's enrolled programs and optionally filters by search term
+app.get('/api/user-programs/:userId/:searchTerm', (req, res) => {
+  let userId = req.params.userId;
+  let searchTerm = req.params.searchTerm;
+   let sql = ``;
+  if (searchTerm == 'null') {
+    // Get all user-enrolled programs
     console.log('Loading user programs for id ' + userId);
     sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
               WHERE Enrollments.UserId = ${userId}
-              ORDER BY OfferingPeriod ASC;`;
-  } else if (userId == 'null') {
-    // Loading all programs with search term
-    console.log('Loading all programs with search term ' + searchTerm);
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
-              FROM Programs
-              WHERE Title LIKE '${searchTerm}%'
               ORDER BY OfferingPeriod ASC;`;
   } else {
     // Loading user-enrolled programs with search term

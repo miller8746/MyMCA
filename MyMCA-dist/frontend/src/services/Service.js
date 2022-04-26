@@ -3,7 +3,7 @@
 * Purpose: Sends gets/posts between the Vue application and the server
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 2/20/22
-* Last Modified: 4/24/22
+* Last Modified: 4/26/22
 */
 
 // Sends the gets/posts via axios
@@ -21,10 +21,18 @@ class ProfileService {
 	/*
 	* Name: getPrograms
 	* Purpose: Gets all the programs in the system with the specified criteria
-	* Parameters: userId (integer; optional parameter to only return the user's enrolled programs), searchTerm (string; optional parameter to filter by name)
+	* Parameters: showDeactivated (boolean; include programs that are deactivated), searchTerm (string; optional parameter to filter by name)
 	*/
-	getPrograms(userId, searchTerm) {
-		return http.get(`/api/programs/${userId}/${searchTerm}`);
+	getPrograms(showDeactivated, searchTerm) {
+		return http.get(`/api/programs/${showDeactivated}/${searchTerm}`);
+	}
+	/*
+	* Name: getUserPrograms
+	* Purpose: Gets all the user's registered programs in the system with the specified criteria
+	* Parameters: userId (integer; the id of the user whose programs to get), searchTerm (string; optional parameter to filter by name)
+	*/
+	getUserPrograms(userId, searchTerm) {
+		return http.get(`/api/user-programs/${userId}/${searchTerm}`);
 	}
 	/*
 	* Name: createProgram

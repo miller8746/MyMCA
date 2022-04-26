@@ -41,31 +41,22 @@
 			* Parameters: searchTerm (string; null if no search)
 			*/
 			queryPrograms(searchTerm) {
-				var id = this.isUserOnly ? this.credentials.UserId : 'null';
-				Service.getPrograms(id, searchTerm).then(response => {
-					this.programs = response.data;
-					
-					// Getting number of enrollments for all programs
-					Service.getEnrollments().then(response => {
-						this.enrollments = response.data;
-						this.programs.forEach(program => {
-							var startDate = new Date(program['OfferingPeriod']);
-							var endDate = new Date(program['OfferingPeriodEnd']);
-							program['OfferingDate'] = startDate.toLocaleString();
-							program['OfferingDateEnd'] = endDate.toLocaleString();
-							program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
-						});
-
-						if (this.isUserOnly) {
-							this.programs.forEach(program => {
-								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
-							});
-						}
-					}).catch(error => {
-						console.log("Something went wrong: ");
-						console.log(error);
+				if (this.isUserOnly) {
+					// Get data for Enrollments page
+					Service.getUserPrograms(this.credentials.UserId, searchTerm).then(response => {
+						this.programs = response.data;
+						// Getting number of enrollments for all programs and specify user enrollments
+						this.getEnrollmentsForPrograms(true);
 					});
-				});
+				} else {
+					// Get data for Programs page
+					var showDeactivatedPrograms = this.credentials != null && this.credentials.Staff == 1 ? true : false; 
+					Service.getPrograms(showDeactivatedPrograms, searchTerm).then(response => {
+						this.programs = response.data;
+						// Getting number of enrollments for all programs
+						this.getEnrollmentsForPrograms(false);
+					});
+				}
 			},
 			/*
 			* Name: enrollUser
@@ -109,6 +100,26 @@
 				});
 
 				return res;
+			},
+			/*
+			* Name: getEnrollmentsForPrograms
+			* Purpose: Gets enrollments for programs from the database.
+			* Parameters: none
+			*/
+			getEnrollmentsForPrograms() {
+				Service.getEnrollments().then(response => {
+					this.enrollments = response.data;
+					this.programs.forEach(program => {
+						var startDate = new Date(program['OfferingPeriod']);
+						var endDate = new Date(program['OfferingPeriodEnd']);
+						program['OfferingDate'] = startDate.toLocaleString();
+						program['OfferingDateEnd'] = endDate.toLocaleString();
+						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
+						if (this.isUserOnly) {
+							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+						}
+					});
+				});
 			},
 			/*
 			* Name: getCurrentEnrollments
