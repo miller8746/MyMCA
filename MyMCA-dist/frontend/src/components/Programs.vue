@@ -1,8 +1,18 @@
+/*
+* File name: Programs.vue
+* Purpose: Shows programs based on user/search criteria
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/20/22
+* Last Modified: 4/26/22
+*/
+
 <script>
+	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
 	import moment from 'moment'
 
 	export default {
+		components: { SearchBar },
 		props: ['credentials', 'isUserOnly'],
 		data() {
 			return {
@@ -11,50 +21,54 @@
 				userEnrollments: null,
 			};
 		},
-		beforeMount(){
-			if(this.isUserOnly){
-				Service.getUserEnrollments(this.credentials.UserId).then(response => {
-					this.userEnrollments = response.data;
-				}).catch(error => {
-						console.log("Something went wrong: ");
-						console.log(error);
-				});
-			}
-		},
-		mounted() {
+		beforeMount() {
 			var id = this.isUserOnly ? this.credentials.UserId : 'null';
-			Service.getPrograms(id).then(response => {
-				this.programs = response.data;
-
-				// Getting number of enrollments for all programs
-				Service.getEnrollments().then(response => {
-					this.enrollments = response.data;
-					this.programs.forEach(program => {
-						var startDate = new Date(program['OfferingPeriod']);
-						var endDate = new Date(program['OfferingPeriodEnd']);
-						program['OfferingDate'] = startDate.toLocaleString();
-						program['OfferingDateEnd'] = endDate.toLocaleString();
-						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.enrollments);
-					});
-
-					if (this.isUserOnly) {
-						this.programs.forEach(program => {
-							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
-						});
-					}
-				}).catch(error => {
+			Service.getUserEnrollments(id).then(response => {
+				this.userEnrollments = response.data;
+			}).catch(error => {
 					console.log("Something went wrong: ");
 					console.log(error);
-				});
 			});
+		},
+		mounted() {
+			this.queryPrograms(null);
 		},
 
 		methods: {
+			/*
+			* Name: queryPrograms
+			* Purpose: Filters the programs shown based on the search query
+			* Parameters: searchTerm (string; null if no search)
+			*/
+			queryPrograms(searchTerm) {
+				if (this.isUserOnly) {
+					// Get data for Enrollments page
+					Service.getUserPrograms(this.credentials.UserId, searchTerm).then(response => {
+						this.programs = response.data;
+						// Getting number of enrollments for all programs and specify user enrollments
+						this.getEnrollmentsForPrograms(true);
+					});
+				} else {
+					// Get data for Programs page
+					var showDeactivatedPrograms = this.credentials != null && this.credentials.Staff == 1 ? true : false; 
+					Service.getPrograms(showDeactivatedPrograms, searchTerm).then(response => {
+						this.programs = response.data;
+						// Getting number of enrollments for all programs
+						this.getEnrollmentsForPrograms(false);
+					});
+				}
+			},
+			/*
+			* Name: enrollUser
+			* Purpose: Attempts to enroll the user in the specified program
+			* Parameters: programId (integer)
+			*/
 			enrollUser(programId) {
 				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
 					this.popUpSignUpSuccessAlert(programId);
 					this.enrollments = response.data;
-
+					
+					// Update the user enrollments in the view
 					Service.getUserEnrollments(this.credentials.UserId).then(response => {
 						this.userEnrollments = response.data;
 						this.programs.forEach(program => {
@@ -65,7 +79,12 @@
 					this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
 				});
 			},
-			hasTimeConflict(programOfferingDate){	
+			/*
+			* Name: hasTimeConflict
+			* Purpose: Determines if a program conflicts with a user's enrollments
+			* Parameters: programOfferingDate (string; the database-parsed start date of the program)
+			*/
+			hasTimeConflict(programOfferingDate) {
 				let d1 = new Date(programOfferingDate);
 				let res = false;
 
@@ -82,6 +101,31 @@
 
 				return res;
 			},
+			/*
+			* Name: getEnrollmentsForPrograms
+			* Purpose: Gets enrollments for programs from the database.
+			* Parameters: none
+			*/
+			getEnrollmentsForPrograms() {
+				Service.getEnrollments().then(response => {
+					this.enrollments = response.data;
+					this.programs.forEach(program => {
+						var startDate = new Date(program['OfferingPeriod']);
+						var endDate = new Date(program['OfferingPeriodEnd']);
+						program['OfferingDate'] = startDate.toLocaleString();
+						program['OfferingDateEnd'] = endDate.toLocaleString();
+						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
+						if (this.isUserOnly) {
+							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+						}
+					});
+				});
+			},
+			/*
+			* Name: getCurrentEnrollments
+			* Purpose: Gets the total number of enrollments in the specified program
+			* Parameters: program (Object; contains the program's information)
+			*/
 			getCurrentEnrollments(program) {
 				if(this.enrollments != null) {
 					let num = this.enrollments.filter( e => e.ProgramId == program.ProgramId ).map( e => e.NumOfEnrollments )[0];
@@ -92,10 +136,21 @@
 					}
 				}
 			},
+			/*
+			* Name: isSignUpEnabled
+			* Purpose: Determines if the "Sign Up" button is valid for use
+			* Parameters: program (Object; contains the program's information)
+			*/
 			isSignUpEnabled: function (program) {
 				return this.credentials !== null && 
-						this.getCurrentEnrollments(program) < program['Capacity'];
+						this.getCurrentEnrollments(program) < program['Capacity'] && 
+						program['Active'] == 1;
 			},
+			/*
+			* Name: getCost
+			* Purpose: Gets the cost of the program, including member discounts
+			* Parameters: baseCost (double; the cost of the program before discounts)
+			*/
 			getCost(baseCost){
 				if( this.credentials != null ) {
 					if(this.credentials.Member == 1) {
@@ -106,19 +161,12 @@
 					}
 				}
 				return baseCost;
-			}, 
-			// getUserCost(program) {
-			// 	var baseCost = program['Cost'];
-			// 	if( this.credentials != null ) {
-			// 		if(this.credentials.Member == 1) {
-			// 			var d = baseCost / 2;
-			// 			return (d * program['UserEnrollments']).toFixed(2);
-			// 		} else {
-			// 			return baseCost;
-			// 		}
-			// 	}
-			// 	return baseCost;
-			// },
+			},
+			/*
+			* Name: getFormattedDays
+			* Purpose: Formats the program occurrence days for display
+			* Parameters: days (Array of Objects; a program's occurrence days)
+			*/
 			getFormattedDays(days){
 				let formatted = '';
 
@@ -146,14 +194,24 @@
 				
 				return formatted;
 			},
+			/*
+			* Name: getFormattedDate
+			* Purpose: Formats the start and end dates of a program
+			* Parameters: value (string; a program's start or end date as parsed in the database)
+			*/
 			getFormattedDate(value) {
-				if (value){
-    				return moment(String(value)).format('MM/DD hh:mm A')
+				if (value) {
+    					return moment(String(value)).format('MM/DD hh:mm A')
 				} else {
 					return '';
 				}
 			},
-			popUpSignUpSuccessAlert(programId){
+			/*
+			* Name: popUpSignUpSuccessAlert
+			* Purpose: Creates a popup message for successfully registering for a program
+			* Parameters: programId (integer; the id of the program that was signed up for)
+			*/
+			popUpSignUpSuccessAlert(programId) {
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-success alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
@@ -172,7 +230,12 @@
 				let card = document.getElementById("program-" + programId);
 				card.prepend(alert);
 			},
-			popUpSignUpFailureAlert(programId, message){
+			/*
+			* Name: popUpSignUpFailureAlert
+			* Purpose: Creates a popup message for failing to register for a program
+			* Parameters: programId (integer; the id of the program that was signed up for), message (string; the failure message to display)
+			*/
+			popUpSignUpFailureAlert(programId, message) {
 				let alert = document.createElement("div"); 
 				alert.setAttribute("class", "alert alert-danger alert-dismissible fade show alert-font");
 				alert.setAttribute("role", "alert");
@@ -190,6 +253,14 @@
 						
 				let card = document.getElementById("program-" + programId);
 				card.prepend(alert);
+			},
+			/*
+			* Name: editProgram
+			* Purpose: Redirects to the Edit Program page for the specified program
+			* Parameters: programId (integer; the id of the program to edit)
+			*/
+			editProgram(programId) {
+				this.$router.push({name: 'edit-program', params: { programId: programId }});
 			}
 		}
 	}
@@ -198,16 +269,23 @@
 <template>
 	<div>
 		<div class="body pt-3">
+			<SearchBar @search="this.queryPrograms" :term="'Programs'"/>
 			<div class="container">
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
 					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">
 						<div :id="'program-' + program['ProgramId']" class="card-body">
-							<h3 class="program-card-title card-header">{{ program['Title'] }}
+							<h3 class="program-card-title card-header">
+								<span class="programViewerTitle">{{ program['Title'] }}</span>
+								<button v-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1 && program['Active'] == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
+								<button v-else-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1" class="disabled btn btn-outline-secondary">Edit...</button>
 							</h3>
 							<div class="m-3">
-								<div class="fs-6">
-									{{ program['Description'] }}
-								</div>	
+								<div class="fs-6">{{ program['Description'] }}</div>
+								<div v-if="program['Active'] == 0">
+									<div class="fs-6 programDeactivationText">This program has been deactivated.</div>
+									<div v-if="!this.isUserOnly" class="fs-6 programDeactivationText">You cannot sign up for this program.</div>
+									<div v-else class="fs-6 programDeactivationText">Your enrollments have been canceled.</div>
+								</div>
 								<div class="pt-2 pb-2 program-more-info">
 									<div>
 										${{ getCost(program['Cost']) }}/Person
@@ -297,6 +375,15 @@
 
 .footer {
 	font-size: small;
+}
+
+.programViewerTitle {
+	margin-right: 10px;
+}
+
+
+.programDeactivationText {
+	color: #ff5454;
 }
 
 </style>

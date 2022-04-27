@@ -1,3 +1,11 @@
+/*
+* File name: EnrollmentViewer.vue
+* Purpose: Component for the Enrollments page
+* Authors: Heather Miller
+* Date Created: 3/26/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import Programs from './Programs.vue'

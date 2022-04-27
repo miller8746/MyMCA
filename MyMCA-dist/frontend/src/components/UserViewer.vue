@@ -1,25 +1,43 @@
+/*
+* File name: UserViewer.vue
+* Purpose: Component for staff members to view users and their enrollments
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 4/1/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
+	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
 
 	export default {
-		components: { Header },
+		components: { Header, SearchBar },
 		data() {
 			return {
 				credentials: this.$store.state.credentials,
-				users: null
+				users: null,
 			};
 		},
 		mounted() {
-			Service.getUsers().then(response => {
-				this.users = response.data;
-				this.users.forEach(user => {
-					Service.getUserEnrollments(user.UserId).then(response => {
-						user.Enrollments = response.data;
+			this.queryUsers(null);
+		},
+		methods: {
+			/*
+			* Name: queryUsers
+			* Purpose: Filters the users shown based on the search query
+			* Parameters: searchTerm (string; null if no search)
+			*/
+			queryUsers(searchTerm) {
+				Service.getUsers(searchTerm).then(response => {
+					this.users = response.data;
+					this.users.forEach(user => {
+						Service.getUserEnrollments(user.UserId).then(response => {
+							user.Enrollments = response.data;
+						});
 					});
 				});
-				
-			});
+			}
 		}
 	}
 </script>
@@ -28,7 +46,7 @@
 	<div>
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/userviewing.html'"/>
 		<div class="body pt-3">
-			<h4 class="userPageHeader">Currently Viewing All Users</h4>
+			<SearchBar @search="this.queryUsers" :term="'Users'"/>
 			<div class="list-group list-group-horizontal align-items-stretch flex-wrap user-group">
 				<div v-for="user in this.users" v-bind:key="user" class="list-group-item program-card card shadow-sm bg-body rounded user-item">
 					<div class="card-body">
@@ -55,10 +73,6 @@
 </template>
 
 <style>
-
-.userPageHeader {
-	margin: 10px 20px 20px 20px;
-}
 
 .userViewCredentialsContainer {
 	margin-left: 10px;

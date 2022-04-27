@@ -1,3 +1,12 @@
+/*
+* File name: index.js
+* Purpose: Runs the server and executes database queries
+* Authors: Hannah Hunt, Heather Miller
+* Date Created: 2/21/22
+* Last Modified: 4/26/22
+*/
+
+// Import requirements
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -5,10 +14,12 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json());
 
+// Set port to localhost:3000
 const port = 3000
 var router = express.Router();
 
-const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Instructor, Description, Location, Cost, Capacity, Repetitions"
+// Common attributes for selection
+const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Location, Cost, Capacity, Repetitions"
 const allUserAttributes = "UserId, Name,Member, Staff"
 const allCredentialAttributes = "Username, Password, UserId";
 
@@ -35,24 +46,38 @@ app.get('/api/login/:user&:pass', (req, res) => {
 
 /* GETS */
 
-// Get for Programs, Enrollments pages
-// If a user id is specified, it will get enrolled programs, otherwise returns all programs
-app.get('/api/programs/:userId', (req, res) => {
-  let userId = req.params.userId;
+// Get programs for Programs page
+// Filter by Active status and optional search term
+app.get('/api/programs/:showDeactivated/:searchTerm', (req, res) => {
+  let showDeactivated = req.params.showDeactivated;
+  let searchTerm = req.params.searchTerm;
    let sql = ``;
-  if (userId == 'null') {
-    // Get all programs
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+  if (showDeactivated == 'true' && searchTerm == 'null') {
+    // Get all programs, including deactivated ones
+    console.log('Loading all programs, plus deactivated')
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
               FROM Programs
               ORDER BY OfferingPeriod ASC;`;
-  } else {
-    // Get user-enrolled programs
-    console.log('Loading user programs for id ' + userId);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location
+  } else if (searchTerm == 'null'){
+    // Get all programs, not including deactivated ones
+    console.log('Loading all programs, minus deactivated');
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
-              INNER JOIN Enrollments ON
-              Enrollments.ProgramId = Programs.ProgramId
-              WHERE Enrollments.UserId = ${userId}
+              WHERE Active == 1
+              ORDER BY OfferingPeriod ASC;`;
+  } else if (showDeactivated == 'false') {
+    // Loading all programs (not deactivated) with search term
+    console.log('Loading all programs (not deactivated) with search term ' + searchTerm);
+    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
+              FROM Programs
+              WHERE Title LIKE '${searchTerm}%' AND Active == 1
+              ORDER BY OfferingPeriod ASC;`;
+  } else {
+    // Loading all programs (including deactivated) with search term
+    console.log('Loading programs (including deactivated) with search term ' + searchTerm);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+              FROM Programs
+              WHERE Title LIKE '${searchTerm}%'
               ORDER BY OfferingPeriod ASC;`;
   }
   db.all(sql, [], (err, rows) => {
@@ -64,6 +89,51 @@ app.get('/api/programs/:userId', (req, res) => {
       if (err) {
         console.log(err);
       }
+      // Match programs with their occurrence days
+      rows.forEach((row) => {
+        row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
+      });
+      res.send(rows);
+    });
+  });
+});
+
+// Get programs for Enrollments page
+// Gets a user's enrolled programs and optionally filters by search term
+app.get('/api/user-programs/:userId/:searchTerm', (req, res) => {
+  let userId = req.params.userId;
+  let searchTerm = req.params.searchTerm;
+   let sql = ``;
+  if (searchTerm == 'null') {
+    // Get all user-enrolled programs
+    console.log('Loading user programs for id ' + userId);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+              FROM Programs
+              INNER JOIN Enrollments ON
+              Enrollments.ProgramId = Programs.ProgramId
+              WHERE Enrollments.UserId = ${userId}
+              ORDER BY OfferingPeriod ASC;`;
+  } else {
+    // Loading user-enrolled programs with search term
+    console.log('Loading user-enrolled programs with search term ' + searchTerm);
+    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+              FROM Programs
+              INNER JOIN Enrollments ON
+              Enrollments.ProgramId = Programs.ProgramId
+              WHERE Enrollments.UserId = ${userId} AND
+              Programs.Title LIKE '${searchTerm}%'
+              ORDER BY OfferingPeriod ASC;`;
+  }
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => { // TODO: use a join here. something like
+      // SELECT d.Day, p.ProgramId FROM ProgramDays d JOIN Programs p ON d.ProgramId = p.ProgramId
+      if (err) {
+        console.log(err);
+      }
+      // Match programs with their occurrence days
       rows.forEach((row) => {
         row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
       });
@@ -76,6 +146,7 @@ app.get('/api/programs/:userId', (req, res) => {
 app.get('/api/enrollments/', (req, res) => {
   let sql = `SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
               FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+              WHERE e.Active == 1
               GROUP BY p.ProgramId`
 
   db.all(sql, [], (err, rows) => {
@@ -91,7 +162,8 @@ app.get('/api/enrollments/', (req, res) => {
 app.get('/api/user-enrollments/:userId', (req, res) => {
   let userId = req.params.userId;
   let sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, Count(e.programId) AS NumOfEnrollments 
-              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId WHERE e.UserId = ${userId} 
+              FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
+              WHERE e.UserId = ${userId} AND e.Active == 1
               GROUP BY p.ProgramId`
 
   db.all(sql, [], (err, rows) => {
@@ -151,13 +223,27 @@ app.get('api/timeConflict/:programId/:userId', (req, res) => {
   });
 });
 
+// Get a single program and its days for use in the Edit Program tool
+app.get('/api/edit-program/:programId', (req, res) => {
+  let programId = req.params.programId;
+  let sql = `SELECT * FROM Programs WHERE ProgramId = ${programId}`;
+  db.get(sql, [], (err, row) => {
+    if (err) { console.log(err); }
+    db.all(`SELECT * FROM ProgramDays WHERE ProgramId = ${programId}`, (err, days) => {
+      if (err) { console.log(err); }
+      row.Days = days;
+      res.send(row);
+    });
+  });
+});
+
 /* POSTS */
 // Post for enrolling a user in a program
 app.post('/api/users/:userId/enrollments/:programId/', (req, res) => {
   const userId = req.params.userId;
   const programId = req.params.programId;
-  db.run(`INSERT INTO Enrollments(UserId, ProgramId) 
-          VALUES(${userId}, ${programId});`)
+  db.run(`INSERT INTO Enrollments(UserId, ProgramId, Active) 
+          VALUES(${userId}, ${programId}, 1);`)
     .all(`SELECT p.ProgramId, Count(e.programId) AS NumOfEnrollments 
             FROM Programs p JOIN Enrollments e ON e.ProgramId = p.ProgramId 
             GROUP BY p.ProgramId`, (err, rows) => {
@@ -175,8 +261,8 @@ app.post(`/api/programs/`, (req, res) => {
 
   console.log(program);
 
-  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Instructor, Description, Location, Cost, Capacity) 
-            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, 0, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity});`)
+  db.run(`INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Repetitions, Description, Location, Cost, Capacity, Active) 
+            VALUES ('${program.programTitle}', '${program.programOfferingPeriod}', '${program.programOfferingPeriodEnd}', ${program.programRepetitions}, '${program.programDescription}', '${program.programLocation}', ${program.programCost}, ${program.programCapacity}, 1);`)
   .all(`SELECT ${allProgramAttributes} 
           FROM Programs 
           WHERE Title = '${program.programTitle}' AND 
@@ -191,8 +277,8 @@ app.post(`/api/programs/`, (req, res) => {
       console.log(err);
     }
     db.serialize(() => {
-      var i = 1;
-      for (i = 1; i < program.programDays.length; i++) {
+      var i = 0;
+      for (i = 0; i < program.programDays.length; i++) {
         db.run(`INSERT INTO ProgramDays(ProgramId, Day) VALUES (${rows[0].ProgramId}, '${program.programDays[i]}');`);
       }
       db.all(`SELECT ProgramDayId, Day FROM ProgramDays WHERE ProgramId = ${rows[0].ProgramId}`, (err, days) => {
@@ -205,15 +291,59 @@ app.post(`/api/programs/`, (req, res) => {
   });;
 }); 
 
+// Post for Edit Program page (save)
+app.post(`/api/edit-program/`, (req, res) => {
+  let program = req.body;
 
+  console.log(program);
+  console.log('Saving program');
+  // Force queries to run sequentially
+  db.serialize(() => {
+    db.run(`UPDATE Programs SET Title = '${program.programTitle}', OfferingPeriod = '${program.programOfferingPeriod}', OfferingPeriodEnd = '${program.programOfferingPeriodEnd}', Repetitions = ${program.programRepetitions}, Description = '${program.programDescription}', Location = '${program.programLocation}', Cost = ${program.programCost}, Capacity = ${program.programCapacity} WHERE ProgramId = ${program.programId};`).run(`DELETE FROM ProgramDays WHERE ProgramId = ${program.programId};`);
+    
+    console.log('Updated program and deleted old days');
+    
+    // Add new program days
+    var i = 0;
+    for (i = 0; i < program.programDays.length; i++) {
+      console.log('Adding day ' + program.programDays[i]);
+      db.run(`INSERT INTO ProgramDays(ProgramId, Day) VALUES (${program.programId}, '${program.programDays[i]}');`);
+    }
+    console.log('Should be finished');
+    res.status(200).send(true);
+  });
+});
+
+// Post for Edit Program page (deactivation)
+app.post(`/api/deactivate-program/:programId`, (req, res) => {
+  let programId = req.params.programId;
+
+  console.log('Deactivating program ' + programId);
+  // Set Program Active to false
+  db.run(`UPDATE Programs SET Active = 0 WHERE ProgramId = ${programId}`);
+  // Set Enrollments Active to false
+  db.run(`UPDATE Enrollments SET Active = 0 WHERE ProgramId = ${programId}`);
+
+  res.status(200).send(true);
+});
 
 /* USERS - all apis */
 
 /* GETS */
 
 // Get for Users page
-app.get('/api/users/', (req, res) => {
-  let sql = `SELECT ${allUserAttributes} FROM Users`;
+app.get('/api/users/:searchTerm', (req, res) => {
+  let searchTerm = req.params.searchTerm;
+  let sql = ``;
+  if (searchTerm == 'null') {
+    // Get all users
+    console.log('Getting all users');
+    sql = `SELECT ${allUserAttributes} FROM Users`;
+  } else {
+    // Get users that match the search term
+    console.log(`Getting users that match ${searchTerm}`);
+    sql = `SELECT ${allUserAttributes} FROM Users WHERE Name LIKE '${searchTerm}%'`;
+  }
   db.all(sql, [], (err, rows) => {
     if (err) { console.log(err); }
     res.send(rows);
@@ -250,7 +380,7 @@ app.post('/api/account/', (req,res) => {
       res.send({successful: false, userId: 0});
     } else {
       // Put values into Users and Credentials tables (unique UserId != 0)
-      db.run(`INSERT INTO Users(Name, Member, Staff) VALUES ('${credentials.name}', ${credentials.isMember}, ${credentials.isStaff})`)
+      db.run(`INSERT INTO Users(Name, Member, Staff, Active) VALUES ('${credentials.name}', ${credentials.isMember}, ${credentials.isStaff}, 1)`)
         .all(`SELECT ${allUserAttributes} FROM Users WHERE Name = '${credentials.name}' AND Member = ${credentials.isMember} AND Staff = ${credentials.isStaff}`, (err, rows) => {
           // TODO: Better way to select row after creation?
           if (err) {

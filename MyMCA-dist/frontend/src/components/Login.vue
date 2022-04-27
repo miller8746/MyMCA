@@ -1,3 +1,11 @@
+/*
+* File name: Login.vue
+* Purpose: Component responsible for logging in the user
+* Authors: Heather Miller, Hannah Hunt, Chloe McQuin
+* Date Created: 2/16/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
@@ -13,20 +21,29 @@
 			}
 		},
 		methods: {
+			/*
+			* Name: submitCredentials
+			* Purpose: Attempts to log the user in
+			* Parameters:  none
+			*/
 			submitCredentials() {
 				this.showLoginError = false;
 				this.showDataError = false;
+				// Verify both fields are filled in
 				if (this.username != '' && this.password != '') {
 					Service.getCredentials(this.username, this.password).then(response => {
 						if (response.data == "") {
+							// Login unsuccessful
 							this.showLoginError = true;
 						} else {
+							// Login successful, save in VueX state
 							this.credentials = response.data;
 							this.$store.commit('login', this.credentials);
 							
 						}
 					});
 				} else {
+					// Some information is missing
 					this.showDataError = true;
 				}
 			}
@@ -187,7 +204,7 @@
 	display: flex;
 	width: 400px;
 	height: 400px;
-	margin-top: -450px;
+	margin-top: -545px;
 	justify-content: space-around;
 	align-items: center;
 	flex-direction: column;

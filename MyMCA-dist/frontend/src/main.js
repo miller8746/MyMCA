@@ -1,3 +1,12 @@
+/*
+* File name: main.js
+* Purpose: Initializes the Vue application
+* Authors: Heather Miller
+* Date Created: 2/21/22
+* Last Modified: 4/22/22
+*/
+
+// App dependencies
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
@@ -5,7 +14,6 @@ import App from './App.vue'
 import router from './router/router'
 
 // Store login data through VueX app state
-
 const store = createStore({
 	state() {
 		return {
@@ -25,4 +33,5 @@ const store = createStore({
 	})]
 });
 
+// Initializes the application
 createApp(App).use(router).use(store).mount('#app');

@@ -1,3 +1,11 @@
+/*
+* File name: CreateAccount.vue
+* Purpose: Component responsible for account creation
+* Authors: Chloe McQuin, Heather Miller
+* Date Created: 3/5/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
@@ -18,6 +26,11 @@ export default {
 			}
 		},
 		methods: {
+			/*
+			* Name: createAccount
+			* Purpose: Attempts to create the account, redirects to login page
+			* Parameters: none
+			*/
 			createAccount() {
 				this.showDataError = false;
 				this.showPasswordError = false;

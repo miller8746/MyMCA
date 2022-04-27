@@ -1,3 +1,11 @@
+/*
+* File name: Profile.vue
+* Purpose: Component responsible for viewing and changing user information
+* Authors: Heather Miller
+* Date Created: 3/8/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
@@ -8,9 +16,7 @@
 				credentials: this.$store.state.credentials,
 				isStaff: false,
 				isMember: false,
-				deleteClicked: false,
-				showSaved: false,
-				dev: false
+				showSaved: false
 			};
 		},
 		mounted() {
@@ -18,8 +24,14 @@
 			this.isMember = this.credentials.Member == 1 ? true : false;
 		},
 		methods: {
+			/*
+			* Name: saveInfo
+			* Purpose: Saves the changed information in the system
+			* Parameters: none
+			*/
 			saveInfo() {
 				this.showSaved = false;
+				// Parsing booleans for the database
 				var member = this.isMember == true ? 1 : 0;
 				var staff = this.isStaff == true ? 1 : 0;
 				Service.saveAccountInfo(member, staff, this.credentials.UserId).then((res) => {
@@ -28,15 +40,6 @@
 					this.$store.commit('login', this.credentials);
 					this.showSaved = true;
 				});
-			},
-			deactivate() {
-				this.showSaved = false;
-				if (!this.deleteClicked) {
-					// Warn them first, force them to click again if sure
-					this.deleteClicked = true;
-				} else {
-					// Go through with the de-activation
-				}
 			}
 		}
 	}
@@ -62,11 +65,8 @@
 						</div>
 						<div class="profileButtonContainer">
 							<div class="btn btn-primary btn-sm mt-3 mb-3" @click="saveInfo">Save</div>
-							<div v-if="dev" class="btn btn-primary btn-sm mt-3 mb-3 deleteButton" @click="deactivate">Deactivate Account</div>
 						</div>
 						<div v-if="showSaved">Saved.</div>
-						<div v-if="deleteClicked" class="warningText">Are you sure you want to deactivate your account?  You will not be able to reactivate it.</div>
-						<div v-if="deleteClicked" class="warningText">Click the button again to confirm.</div>
 					</div>
 				</div>
 			</div>
@@ -104,14 +104,5 @@
 .profileCheckboxLabel {
 	font-size: 12pt;
 	margin-right: 6px;
-}
-
-.deleteButton {
-	background-color: #ff4040;
-	transition: background-color 2ms fade;
-}
-
-.deleteButton:hover {
-	background-color: #c72020;
 }
 </style>

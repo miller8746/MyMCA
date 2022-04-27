@@ -1,8 +1,21 @@
+/*
+* File name: Header.vue
+* Purpose: Header for the application; contains page links and logout functionality
+* Authors: Heather Miller, Hannah Hunt
+* Date Created: 2/18/22
+* Last Modified: 4/22/22
+*/
+
 <script>
 	import Service from '../services/Service.js'
 	export default {
 		props: ['credentials', 'isLoginPage', 'helpLink'],
 		methods: {
+			/*
+			* Name: logOut
+			* Purpose: Logs the user out of the application
+			* Parameters: none
+			*/
 			logOut() {
 				this.$store.commit('logout');
 				if (!this.isLoginPage) {
@@ -31,7 +44,7 @@
 				<router-link to="/create-program" v-if="credentials != null && credentials.Staff == true" class="pageLink fs-5">Create Program</router-link>
 				<div v-if="credentials != null" class="signOutText">
 					<div class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<a class="navLinkPartial dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							{{ credentials.Name }}
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -46,8 +59,8 @@
 				<router-link to="/profile">
 					<span v-if="credentials != null" class="material-icons face">person</span>
 				</router-link>
-				<a :href="this.helpLink" class="help">
-					<span target="_blank" class="material-icons">help_outline</span>
+				<a :href="this.helpLink" class="help" target="_blank">
+					<span class="material-icons">help_outline</span>
 				</a>
 			</div>
 		</nav>
@@ -187,6 +200,13 @@
 
 .headerCredentialImage {
 	padding: 5px;
+}
+
+.navLinkPartial {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
 
 </style>
