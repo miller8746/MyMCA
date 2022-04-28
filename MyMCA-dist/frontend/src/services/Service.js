@@ -21,18 +21,27 @@ class ProfileService {
 	/*
 	* Name: getPrograms
 	* Purpose: Gets all the programs in the system with the specified criteria
-	* Parameters: showDeactivated (boolean; include programs that are deactivated), searchTerm (string; optional parameter to filter by name)
+	* Parameters: searchTerm (string; parameter to filter by name)
 	*/
-	getPrograms(showDeactivated, searchTerm) {
-		return http.get(`/api/programs/${showDeactivated}/${searchTerm}`);
+	getPrograms(searchTerm) {
+		return http.get(`/api/programs/search=${searchTerm}`);
+	}
+
+	/*
+	* Name: getNonDeactivatedPrograms
+	* Purpose: Gets all the programs in the system with the specified criteria that are not deactivated
+	* Parameters: searchTerm (string; parameter to filter by name)
+	*/
+	getNonDeactivatedPrograms(searchTerm){
+		return http.get(`/api/nondeactivatedprograms/search=${searchTerm}`);
 	}
 	/*
 	* Name: getUserPrograms
 	* Purpose: Gets all the user's registered programs in the system with the specified criteria
-	* Parameters: userId (integer; the id of the user whose programs to get), searchTerm (string; optional parameter to filter by name)
+	* Parameters: userId (integer; the id of the user whose programs to get), searchTerm (string; parameter to filter by name)
 	*/
 	getUserPrograms(userId, searchTerm) {
-		return http.get(`/api/user-programs/${userId}/${searchTerm}`);
+		return http.get(`/api/users/${userId}/programs/search=${searchTerm}`);
 	}
 	/*
 	* Name: createProgram

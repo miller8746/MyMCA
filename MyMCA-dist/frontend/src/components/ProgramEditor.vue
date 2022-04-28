@@ -235,7 +235,7 @@
 								<option value="Saturday">Saturday</option>
 							</select>
 						</div>
-						<div class="btn btn-primary input-group-text dayOccurrenceButton" @click="addOccurrence">+</div>
+						<div class="btn btn-primary input-group-text edit-program-add-button dayOccurrenceButton" @click="addOccurrence">+</div>
 						<div class="btn input-group-text dayOccurrenceButton editProgramRemoveButton" @click="removeOccurrence">-</div>
 					</div>
 					<div class="input-group mb-2">
@@ -306,13 +306,25 @@
 }
 
 .dayOccurrenceButton {
+	margin-left: 2px !important;
 	height: 38px;
+	transition: background-color 0.5s fade;
+}
+
+.edit-program-add-button {
+	background-color : rgb(32, 163, 32);
+	border-radius: 0% 50%;
+}
+
+.edit-program-add-button:hover {
+	background-color: green !important;
+	color: #FFFFFF;
 }
 
 .editProgramRemoveButton {
 	background-color: #ff5454 !important;
 	color: #FFFFFF;
-	transition: background-color 0.5s fade;
+	border-radius: 50%;
 }
 
 .editProgramRemoveButton:hover {
@@ -362,5 +374,6 @@
 .button:hover {
 	background-color: #154a99;
 }
+
 
 </style>

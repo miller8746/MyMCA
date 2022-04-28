@@ -37,28 +37,23 @@
 			*/
 			clearSearch() {
 				this.isSearching = false;
-				this.lastSearch = '';
-				this.$emit('search', null);
+				this.searchQuery = '';
+				this.$emit('search', 0);
 			}
 		}
 	}
 </script>
 
 <template>
-	<div class="searchContainer">
-		<div class="material-icons fa-4x">search</div>
-			<input class="userSearchBar userSearchBarSize" v-model="searchQuery"/>
-			<div>
-				<button @click="trySearch" class="btn btn-outline-primary mb-2">Search</button>
+	<div>
+		<div class="searchContainer">
+				<input class="userSearchBar" v-model="searchQuery"/>
+				<div>
+					<span @click="trySearch" class="material-icons search-button fa-4x">search</span>
+					<span @click="clearSearch" class="material-icons search-button">backspace</span>
+				</div>
 			</div>
-		</div>
-		<div v-if="isSearching" class="searchContainer userSearchBarSize">
-			<div class="fs-4 userSearchLabel">Currently Viewing {{ term }} "{{ lastSearch }}"</div>
-			<button @click="clearSearch" class="btn btn-outline-primary mb-2">Clear</button>
-		</div>
-		<div v-else class="searchContainer userSearchBarSize">
-			<div class="fs-4">Currently Viewing All {{ term }}</div>
-		</div>
+	</div>
 </template>
 
 <style>
@@ -77,11 +72,25 @@
 	padding: 10px;
 	height: 50px;
 	font-size: 20pt;
-	width: 1000px;
+	width: 73%;
+	border: thin solid rgb(204, 204, 204);
+	border-radius: 20px;
+	margin: 10px 20px 20px -35px;
 }
 
-.userSearchBarSize {
-	margin: 10px 20px 20px 20px;
+.search-button {
+	background-color: #589ad4;
+	color: white;
+	padding: 10px;
+	border-radius: 50%;
+	margin-bottom: 10px;
+	margin-right: 8px;
+}
+
+.search-button:hover {
+	cursor: pointer;
+	background-color: #0275d8
+;
 }
 
 </style>

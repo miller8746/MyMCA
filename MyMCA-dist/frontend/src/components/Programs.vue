@@ -31,7 +31,7 @@
 			});
 		},
 		mounted() {
-			this.queryPrograms(null);
+			this.queryPrograms(0);
 		},
 
 		methods: {
@@ -49,13 +49,18 @@
 						this.getEnrollmentsForPrograms(true);
 					});
 				} else {
-					// Get data for Programs page
-					var showDeactivatedPrograms = this.credentials != null && this.credentials.Staff == 1 ? true : false; 
-					Service.getPrograms(showDeactivatedPrograms, searchTerm).then(response => {
-						this.programs = response.data;
-						// Getting number of enrollments for all programs
-						this.getEnrollmentsForPrograms(false);
-					});
+					// Get data for Programs page					
+					if( this.credentials != null && this.credentials.Staff == 1 ){
+						Service.getPrograms( searchTerm ).then(response => {
+							this.programs = response.data;
+						});
+					} else {
+						Service.getNonDeactivatedPrograms( searchTerm ).then(response => {
+							this.programs = response.data;
+						});	
+					}
+
+					this.getEnrollmentsForPrograms(false);
 				}
 			},
 			/*
@@ -144,6 +149,17 @@
 			isSignUpEnabled: function (program) {
 				return this.credentials !== null && 
 						this.getCurrentEnrollments(program) < program['Capacity'] && 
+						program['Active'] == 1;
+			},
+			/*
+			* Name: isEditButtonVisible
+			* Purpose: Determines if the "Sign Up" button is valid for use
+			* Parameters: program (Object; contains the program's information)
+			*/
+			isEditButtonVisible(program) {
+				return !this.isUserOnly && 
+						this.credentials != null && 
+						this.credentials.Staff == 1 && 
 						program['Active'] == 1;
 			},
 			/*
@@ -276,16 +292,13 @@
 						<div :id="'program-' + program['ProgramId']" class="card-body">
 							<h3 class="program-card-title card-header">
 								<span class="programViewerTitle">{{ program['Title'] }}</span>
-								<button v-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1 && program['Active'] == 1" @click="this.editProgram(program['ProgramId'])" class="btn btn-outline-primary">Edit...</button>
-								<button v-else-if="!isUserOnly && this.credentials != null && this.credentials.Staff == 1" class="disabled btn btn-outline-secondary">Edit...</button>
+
+								<span v-if="isEditButtonVisible(program)" 
+										class="material-icons edit-button" 
+										@click="this.editProgram(program['ProgramId'])">edit</span>
 							</h3>
 							<div class="m-3">
 								<div class="fs-6">{{ program['Description'] }}</div>
-								<div v-if="program['Active'] == 0">
-									<div class="fs-6 programDeactivationText">This program has been deactivated.</div>
-									<div v-if="!this.isUserOnly" class="fs-6 programDeactivationText">You cannot sign up for this program.</div>
-									<div v-else class="fs-6 programDeactivationText">Your enrollments have been canceled.</div>
-								</div>
 								<div class="pt-2 pb-2 program-more-info">
 									<div>
 										${{ getCost(program['Cost']) }}/Person
@@ -301,6 +314,13 @@
 									<div v-if="this.isUserOnly && hasTimeConflict(program['OfferingPeriod'])" class="info">
 										<span>This program conflicts with another program you are enrolled in</span>
 									</div>
+									
+									<div class="program-deactivation-text" v-if="program['Active'] == 0">
+										<span>This program has been deactivated. </span>
+										<span v-if="!this.isUserOnly">You cannot sign up for this program.</span>
+										<span v-else>Your enrollments have been canceled.</span>
+									</div>
+
 								</div>
 
 								<button v-if="isSignUpEnabled(program)" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
@@ -308,8 +328,8 @@
 							</div>
 							<div class="card-footer footer">
 								<div class="fs-6">{{ getCurrentEnrollments( program ) }} / {{ program['Capacity'] }} Slots filled</div>
-								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingDate']) }}</div>
-								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingDateEnd']) }}</div>
+								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingPeriod']) }}</div>
+								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingPeriodEnd']) }}</div>
 							</div>
 						</div>
 					</div>
@@ -382,8 +402,22 @@
 }
 
 
-.programDeactivationText {
+.program-deactivation-text {
 	color: #ff5454;
+	font-size: small;
+	font-style: italic;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.edit-button {
+	color: rgb(102, 102, 102);
+	float: right;
+	cursor: pointer;
+}
+
+.edit-button:hover {
+	color: black;
 }
 
 </style>

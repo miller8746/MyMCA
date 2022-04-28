@@ -24,8 +24,8 @@
 					</div>
 					<div class="modal-footer">
 						<slot name="footer">
-							<button class="modal-default-button btn btn-primary" @click="$emit('exitPrompt', true)">Yes</button>
-							<button class="modal-default-button btn btn-primary" @click="$emit('exitPrompt', false)">No</button>
+              <button class="modal-default-button btn btn-success" @click="$emit('exitPrompt', false)">No</button>
+							<button class="modal-default-button btn btn-danger" @click="$emit('exitPrompt', true)">Yes</button>
 						</slot>
 					</div>
 				</div>
