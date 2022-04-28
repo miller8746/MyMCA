@@ -311,7 +311,7 @@
 										week(s) at the {{program['Location']}}.
 									</div>
 									
-									<div v-if="this.isUserOnly && hasTimeConflict(program['OfferingPeriod'])" class="info">
+									<div v-if="hasTimeConflict(program['OfferingPeriod'])" class="info">
 										<span>This program conflicts with another program you are enrolled in</span>
 									</div>
 									

@@ -193,7 +193,7 @@
 	z-index: 999;
 	position: fixed;
 	left: 37%;
-	top: 70%;
+	top: 80%;
 	transform: translate(-50%, -50%);
 }
 
