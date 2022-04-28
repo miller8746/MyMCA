@@ -48,7 +48,6 @@ app.get('/api/login/:user&:pass', (req, res) => {
 app.get('/api/programs/search=:searchTerm', (req, res) => {
   var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
 
-  console.log('Loading all programs with search term ' + searchTerm); // todo delete
   sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, p.OfferingPeriodEnd, p.Description, 
                         p.Location, p.Cost, p.Capacity, p.Repetitions, p.Active
           FROM Programs p 
@@ -76,8 +75,6 @@ app.get('/api/programs/search=:searchTerm', (req, res) => {
 
 app.get('/api/nondeactivatedprograms/search=:searchTerm', (req, res) => {
   var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
-
-  console.log('Loading all programs (not deactivated) with search term ' + searchTerm); // todo delete
 
   sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, p.OfferingPeriodEnd, p.Description, 
                         p.Location, p.Cost, p.Capacity, p.Repetitions, p.Active
@@ -109,9 +106,6 @@ app.get('/api/nondeactivatedprograms/search=:searchTerm', (req, res) => {
 app.get('/api/users/:userId/programs/search=:searchTerm', (req, res) => {
   let userId = req.params.userId;
   let searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
-
-  console.log('Loading user programs for id ' + userId);
-  console.log('Loading user-enrolled programs with search term ' + searchTerm);
 
   let sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
