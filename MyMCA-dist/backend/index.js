@@ -19,7 +19,7 @@ const port = 3000
 var router = express.Router();
 
 // Common attributes for selection
-const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Location, Cost, Capacity, Repetitions"
+const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Location, Cost, Capacity, Repetitions, Active"
 const allUserAttributes = "UserId, Name,Member, Staff"
 const allCredentialAttributes = "Username, Password, UserId";
 
@@ -45,51 +45,57 @@ app.get('/api/login/:user&:pass', (req, res) => {
 /* PROGRAMS - all apis */
 
 /* GETS */
+app.get('/api/programs/search=:searchTerm', (req, res) => {
+  var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
 
-// Get programs for Programs page
-// Filter by Active status and optional search term
-app.get('/api/programs/:showDeactivated/:searchTerm', (req, res) => {
-  let showDeactivated = req.params.showDeactivated;
-  let searchTerm = req.params.searchTerm;
-   let sql = ``;
-  if (showDeactivated == 'true' && searchTerm == 'null') {
-    // Get all programs, including deactivated ones
-    console.log('Loading all programs, plus deactivated')
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
-              FROM Programs
-              ORDER BY OfferingPeriod ASC;`;
-  } else if (searchTerm == 'null'){
-    // Get all programs, not including deactivated ones
-    console.log('Loading all programs, minus deactivated');
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
-              FROM Programs
-              WHERE Active == 1
-              ORDER BY OfferingPeriod ASC;`;
-  } else if (showDeactivated == 'false') {
-    // Loading all programs (not deactivated) with search term
-    console.log('Loading all programs (not deactivated) with search term ' + searchTerm);
-    sql = `SELECT ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Active
-              FROM Programs
-              WHERE Title LIKE '${searchTerm}%' AND Active == 1
-              ORDER BY OfferingPeriod ASC;`;
-  } else {
-    // Loading all programs (including deactivated) with search term
-    console.log('Loading programs (including deactivated) with search term ' + searchTerm);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
-              FROM Programs
-              WHERE Title LIKE '${searchTerm}%'
-              ORDER BY OfferingPeriod ASC;`;
-  }
+  console.log('Loading all programs with search term ' + searchTerm); // todo delete
+  sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, p.OfferingPeriodEnd, p.Description, 
+                        p.Location, p.Cost, p.Capacity, p.Repetitions, p.Active
+          FROM Programs p 
+          WHERE p.Title LIKE '${searchTerm}%'
+          ORDER BY p.OfferingPeriod ASC
+          LIMIT 100;`;
+
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.log(err);
     }
-    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => { // TODO: use a join here. something like
-      // SELECT d.Day, p.ProgramId FROM ProgramDays d JOIN Programs p ON d.ProgramId = p.ProgramId
+
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => {
       if (err) {
         console.log(err);
       }
-      // Match programs with their occurrence days
+
+      rows.forEach((row) => {
+        row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
+      });
+      res.send(rows);
+    });
+    });
+});
+
+app.get('/api/nondeactivatedprograms/search=:searchTerm', (req, res) => {
+  var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
+
+  console.log('Loading all programs (not deactivated) with search term ' + searchTerm); // todo delete
+
+  sql = `SELECT p.ProgramId, p.Title, p.OfferingPeriod, p.OfferingPeriodEnd, p.Description, 
+                        p.Location, p.Cost, p.Capacity, p.Repetitions, p.Active
+          FROM Programs p 
+          WHERE p.Title LIKE '${searchTerm}%' AND p.Active == 1
+          ORDER BY p.OfferingPeriod ASC
+          LIMIT 100;`;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => {
+      if (err) {
+        console.log(err);
+      }
+
       rows.forEach((row) => {
         row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
       });
@@ -100,43 +106,35 @@ app.get('/api/programs/:showDeactivated/:searchTerm', (req, res) => {
 
 // Get programs for Enrollments page
 // Gets a user's enrolled programs and optionally filters by search term
-app.get('/api/user-programs/:userId/:searchTerm', (req, res) => {
+app.get('/api/users/:userId/programs/search=:searchTerm', (req, res) => {
   let userId = req.params.userId;
-  let searchTerm = req.params.searchTerm;
-   let sql = ``;
-  if (searchTerm == 'null') {
-    // Get all user-enrolled programs
-    console.log('Loading user programs for id ' + userId);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
-              FROM Programs
-              INNER JOIN Enrollments ON
-              Enrollments.ProgramId = Programs.ProgramId
-              WHERE Enrollments.UserId = ${userId}
-              ORDER BY OfferingPeriod ASC;`;
-  } else {
-    // Loading user-enrolled programs with search term
-    console.log('Loading user-enrolled programs with search term ' + searchTerm);
-    sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
+  let searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
+
+  console.log('Loading user programs for id ' + userId);
+  console.log('Loading user-enrolled programs with search term ' + searchTerm);
+
+  let sql = `SELECT DISTINCT Programs.ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Repetitions, Location, Programs.Active
               FROM Programs
               INNER JOIN Enrollments ON
               Enrollments.ProgramId = Programs.ProgramId
               WHERE Enrollments.UserId = ${userId} AND
               Programs.Title LIKE '${searchTerm}%'
               ORDER BY OfferingPeriod ASC;`;
-  }
+  
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.log(err);
     }
-    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => { // TODO: use a join here. something like
-      // SELECT d.Day, p.ProgramId FROM ProgramDays d JOIN Programs p ON d.ProgramId = p.ProgramId
+
+    db.all(`SELECT Day, ProgramId FROM ProgramDays`, (err, days) => {
       if (err) {
         console.log(err);
       }
-      // Match programs with their occurrence days
+
       rows.forEach((row) => {
         row.Days = days.filter(function(day) { if (day.ProgramId == row.ProgramId) return true});
       });
+      
       res.send(rows);
     });
   });
