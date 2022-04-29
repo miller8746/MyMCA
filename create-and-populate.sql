@@ -55,7 +55,8 @@ CREATE TABLE Enrollments (
                                 REFERENCES Users,
     ProgramId       INTEGER     NOT NULL
                                 REFERENCES Programs,
-    Active          BOOLEAN     NOT NULL
+    Active          BOOLEAN     NOT NULL,
+    FirstName       STRING      NOT NULL
 );
 
 INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (1, 'Susan', 1, 0, 1);
@@ -104,10 +105,10 @@ INSERT INTO ProgramDays(ProgramId, Day) VALUES (8, 'Wednesday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (9, 'Sunday');
 INSERT INTO ProgramDays(ProgramId, Day) VALUES (10, 'Monday');
 
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (3, 3, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (3, 5, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (3, 7, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (3, 10, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (4, 8, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (4, 9, 1);
-INSERT INTO Enrollments(UserId, ProgramId, Active) VALUES (4, 10, 1);
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (3, 3, 1, 'Jane');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (3, 5, 1, 'Jane');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (3, 7, 1, 'Jane');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (3, 10, 1, 'Jane');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (4, 8, 1, 'Luke');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (4, 9, 1, 'Luke');
+INSERT INTO Enrollments(UserId, ProgramId, Active, FirstName) VALUES (4, 10, 1, 'Aini');
