@@ -13,6 +13,7 @@ import createPersistedState from 'vuex-persistedstate'
 import App from './App.vue'
 import router from './router/router'
 
+
 // Store login data through VueX app state
 const store = createStore({
 	state() {

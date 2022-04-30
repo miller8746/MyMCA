@@ -8,6 +8,7 @@
 
 <script>
 	import DialogPrompt from './DialogPrompt.vue'
+	import Service from '../services/Service.js'
 
 	export default {
 		components: { DialogPrompt },
@@ -28,7 +29,7 @@
 				days: [],
 				showFormatError: false,
 				showDataError: false,
-				showDeactivateDialog: false
+				isDeactivateDialogVisible: false
 			};
 		},
 		methods: {
@@ -75,14 +76,14 @@
 			},
 			/*
 			* Name: deactivateProgram
-			* Purpose: If confirmed, emits a deactivate event to the parent component
-			* Parameters: isConfirmed (boolean; true if the user confirms the deactivation from the prompt)
+			* Purpose: Sets the program to an inactive state and redirects to the Programs page
+			* Parameters: none
 			*/
-			deactivateProgram(isConfirmed) {
-				this.showDeactivateDialog = false;
-				if (isConfirmed) {
-					this.$emit('deactivateProgram');
-				}
+			deactivateProgram(programId) {
+				this.isDeactivateDialogVisible = false;
+				Service.deactivateProgram(programId).then((res) => {
+					this.$router.push('/programs');
+				});
 			},
 			/*
 			* Name: addOccurrence
@@ -188,7 +189,13 @@
 
 <template>
 	<div>
-		<DialogPrompt @exitPrompt="this.deactivateProgram" v-if="program != null" :isShown="this.showDeactivateDialog" :headerMessage="'Deactivate Program'" :bodyMessage="'Are you sure you would like to deactivate this program?  There is no undoing this action.'" />
+		<DialogPrompt v-if="this.isDeactivateDialogVisible" 
+						:confirmFunction="deactivateProgram"
+						:confirmFunctionInput="this.program.ProgramId"
+						:text="'Are you sure you want to deactivate this program? This action cannot be undone.'"
+						:cancelButtonText="'Cancel'"
+						:confirmButtonText="'Deactivate'"
+						:isDialogVisible="this.isDeactivateDialogVisible"/>
 		<div class="pageContent create-page">
 			<div class="card create-card shadow-lg">
 				<div class="card-body">
@@ -251,7 +258,7 @@
 				<div class="programButtonContainer">
 					<div>
 						<div class="button" @click="submitProgram()">Save</div>
-						<div v-if="program != null" class="button editProgramRemoveButton" @click="this.showDeactivateDialog = true">Deactivate</div>
+						<div class="button editProgramRemoveButton" @click="this.isDeactivateDialogVisible = true">Deactivate</div>
 					</div>
 					<div v-if="this.saved">Saved.</div>
 					<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>

@@ -110,7 +110,7 @@ class ProfileService {
 	* Parameters: userId (integer)
 	*/
 	getUserEnrollments(userId) {
-		return http.get(`/api/user-enrollments/${userId}`);
+		return http.get(`/api/users/${userId}/enrollments`);
 	}
 	/*
 	* Name: createAccount
@@ -143,8 +143,12 @@ class ProfileService {
 	* Purpose: Enrolls a specified user into a specified program
 	* Parameters: userId (integer), programId (integer)
 	*/
-	enrollUser(userid, programId){
-		return http.post(`/api/users/${userid}/enrollments/${programId}/`, {});
+	enrollUser(userid, programId, firstName){
+		return http.post(`/api/users/${userid}/enrollments/`, 
+			{
+				"FirstName" : firstName,
+				"ProgramId" : programId
+			});
 	}
 	/*
 	* Name: getUsers

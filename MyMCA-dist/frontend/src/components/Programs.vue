@@ -9,16 +9,20 @@
 <script>
 	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
+	import DialogPrompt from './DialogPrompt.vue'
 	import moment from 'moment'
 
 	export default {
-		components: { SearchBar },
+		components: { SearchBar, DialogPrompt },
 		props: ['credentials', 'isUserOnly'],
 		data() {
 			return {
 				programs: null,
 				enrollments: null,
 				userEnrollments: null,
+				showEnrollDialog: false,
+				isConfirmDialogVisible: false,
+				selectedProgramId: null,
 			};
 		},
 		beforeMount() {
@@ -68,21 +72,31 @@
 			* Purpose: Attempts to enroll the user in the specified program
 			* Parameters: programId (integer)
 			*/
-			enrollUser(programId) {
-				Service.enrollUser(this.credentials.UserId, programId).then((response) => {
-					this.popUpSignUpSuccessAlert(programId);
-					this.enrollments = response.data;
-					
-					// Update the user enrollments in the view
-					Service.getUserEnrollments(this.credentials.UserId).then(response => {
-						this.userEnrollments = response.data;
-						this.programs.forEach(program => {
-							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+			enrollUser(programId, firstName) {
+				console.log("name = " + this.firstName)
+
+				this.isConfirmDialogVisible = false
+				if( firstName && firstName.length > 0 ){
+					this.showEnrollDialog = false;
+					this.enrollmentInvalid = false;
+
+					Service.enrollUser(this.credentials.UserId, programId, firstName).then((response) => {
+						this.popUpSignUpSuccessAlert(programId);
+						this.enrollments = response.data;
+						
+						// Update the user enrollments in the view
+						Service.getUserEnrollments(this.credentials.UserId).then(response => {
+							this.userEnrollments = response.data;
+							this.programs.forEach(program => {
+								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+							});
 						});
+					}).catch(() => {
+						this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
 					});
-				}).catch(() => {
-					this.popUpSignUpFailureAlert(programId, "Something went wrong, try again later.");
-				});
+				} else {
+					this.popUpSignUpFailureAlert(programId, "Enter your first name to enroll");
+				}
 			},
 			/*
 			* Name: hasTimeConflict
@@ -95,9 +109,6 @@
 
 				this.userEnrollments.forEach(enrollment => {
 					let d2 = new Date(enrollment.OfferingPeriod);
-
-					console.log(d1);
-					console.log(d2);
 					
 					if( d1.getDay() == d2.getDay() && d1.getTime() == d2.getTime() ){
 						res = true;
@@ -114,16 +125,18 @@
 			getEnrollmentsForPrograms() {
 				Service.getEnrollments().then(response => {
 					this.enrollments = response.data;
-					this.programs.forEach(program => {
-						var startDate = new Date(program['OfferingPeriod']);
-						var endDate = new Date(program['OfferingPeriodEnd']);
-						program['OfferingDate'] = startDate.toLocaleString();
-						program['OfferingDateEnd'] = endDate.toLocaleString();
-						program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
-						if (this.isUserOnly) {
-							program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
-						}
-					});
+					if( this.programs ) {
+						this.programs.forEach(program => {
+							var startDate = new Date(program['OfferingPeriod']);
+							var endDate = new Date(program['OfferingPeriodEnd']);
+							program['OfferingDate'] = startDate.toLocaleString();
+							program['OfferingDateEnd'] = endDate.toLocaleString();
+							program['Enrollments'] = this.getCurrentEnrollments(program['ProgramId']);
+							if (this.isUserOnly) {
+								program['UserEnrollments'] = this.getCurrentEnrollments(program['ProgramId'], this.userEnrollments);
+							}
+						});
+					}
 				});
 			},
 			/*
@@ -286,6 +299,13 @@
 	<div>
 		<div class="body pt-3">
 			<SearchBar @search="this.queryPrograms" :term="'Programs'"/>
+			<DialogPrompt v-if="this.isConfirmDialogVisible" 
+				:confirmFunction="enrollUser"
+				:confirmFunctionInput="this.selectedProgramId"
+				:text="'Please enter your first name'"
+				:cancelButtonText="'Cancel'"
+				:confirmButtonText="'Enroll'"
+				:isDialogVisible="this.isConfirmDialogVisible"/>
 			<div class="container">
 				<div class="list-group list-group-horizontal align-items-stretch flex-wrap">
 					<div v-for="program in this.programs" v-bind:key="program" class="list-group-item program-card card shadow-sm bg-body rounded">
@@ -303,13 +323,12 @@
 									<div>
 										${{ getCost(program['Cost']) }}/Person
 									</div>
-									<!-- <div v-if="this.isUserOnly">
-										You are paying ${{ getUserCost(program) }} for this program.
-									</div> -->
 									<div>
 										Offered on {{ getFormattedDays(program['Days']) }} for {{ program['Repetitions'] }} 
 										week(s) at the {{program['Location']}}.
 									</div>
+
+									<div v-if="this.isUserOnly" class="enrollment-name">Enrolled in by {{program['FirstName']}}</div>
 									
 									<div v-if="hasTimeConflict(program['OfferingPeriod'])" class="info">
 										<span>This program conflicts with another program you are enrolled in</span>
@@ -320,18 +339,19 @@
 										<span v-if="!this.isUserOnly">You cannot sign up for this program.</span>
 										<span v-else>Your enrollments have been canceled.</span>
 									</div>
-
 								</div>
 
-								<button v-if="isSignUpEnabled(program)" @click="enrollUser(program['ProgramId'])" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
-								<button v-if="!isSignUpEnabled(program)" class="disabled btn btn-outline-secondary btn mb-3">Sign Up</button>
+								<button v-if="isSignUpEnabled(program)" @click="this.isConfirmDialogVisible = true; this.selectedProgramId = program['ProgramId']" class="btn btn-outline-primary btn mb-3">Sign Up</button>  
+								<button v-if="!isSignUpEnabled(program)" class="disabled btn btn-outline-secondary btn mb-3">Sign Up</button>								
 							</div>
+
 							<div class="card-footer footer">
 								<div class="fs-6">{{ getCurrentEnrollments( program ) }} / {{ program['Capacity'] }} Slots filled</div>
 								<div class="text-muted" >Start Date: {{ getFormattedDate( program['OfferingPeriod']) }}</div>
 								<div class="text-muted" >End Date: {{ getFormattedDate( program['OfferingPeriodEnd']) }}</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -418,6 +438,16 @@
 
 .edit-button:hover {
 	color: black;
+}
+
+.error-input {
+	color:red;
+	border-color: red;
+}
+
+.enrollment-name {
+	margin-top: 10px;
+	font-weight: bold;
 }
 
 </style>

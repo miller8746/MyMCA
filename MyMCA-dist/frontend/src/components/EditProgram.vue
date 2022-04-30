@@ -33,16 +33,6 @@
 					this.saved = true;
 				});
 			},
-			/*
-			* Name: deactivateProgram
-			* Purpose: Sets the program to an inactive state and redirects to the Programs page
-			* Parameters: none
-			*/
-			deactivateProgram() {
-				Service.deactivateProgram(this.programId).then((res) => {
-					this.$router.push('/programs');
-				});
-			},
 		},
 		mounted() {
 			if (this.programId == null) {
