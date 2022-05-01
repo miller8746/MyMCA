@@ -3,7 +3,7 @@
 * Purpose: Component responsible for taking inputs for program information
 * Authors: Heather Miller
 * Date Created: 2/23/22
-* Last Modified: 4/24/22
+* Last Modified: 5/1/22
 */
 
 <script>
