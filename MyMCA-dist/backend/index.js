@@ -3,7 +3,7 @@
 * Purpose: Runs the server and executes database queries
 * Authors: Hannah Hunt, Heather Miller
 * Date Created: 2/21/22
-* Last Modified: 4/26/22
+* Last Modified: 5/1/22
 */
 
 // Import requirements
@@ -11,6 +11,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const hash = require('object-hash')
 app.use(cors())
 app.use(bodyParser.json());
 
@@ -27,11 +28,12 @@ const allCredentialAttributes = "Username, Password, UserId";
 app.get('/api/login/:user&:pass', (req, res) => {
   let username = req.params.user;
   let password = req.params.pass;
-  
+  var hashPswd = hash({pswd: password});
+  console.log('Password hashed as ' + hashPswd);
   let sql = `SELECT u.UserId, Name, Member, Staff 
                 FROM Users u 
                 JOIN Credentials c ON u.UserId = c.UserId 
-                WHERE Username = '${username}' AND PASSWORD = '${password}';`
+                WHERE Username = '${username}' AND PASSWORD = '${hashPswd}';`
 
   db.get(sql, [], (err, row) => {
     if (err) {
@@ -386,7 +388,9 @@ app.post('/api/account/', (req,res) => {
           } else {
             var id = rows[0].UserId;
 	    // Create corresponding entry in Credentials table
-            db.run(`INSERT INTO Credentials(Username, Password, UserId) VALUES ('${credentials.username}', '${credentials.password}', ${id})`).all(`SELECT ${allCredentialAttributes} FROM Credentials WHERE UserId = ${id}`, (err, rows) => {
+            var hashPswd = hash({pswd: credentials.password});
+            console.log('Password hashed as ' + hashPswd);
+            db.run(`INSERT INTO Credentials(Username, Password, UserId) VALUES ('${credentials.username}', '${hashPswd}', ${id})`).all(`SELECT ${allCredentialAttributes} FROM Credentials WHERE UserId = ${id}`, (err, rows) => {
               if (err) {
                 console.log(err);
 	      }

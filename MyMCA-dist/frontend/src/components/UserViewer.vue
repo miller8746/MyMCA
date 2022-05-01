@@ -3,7 +3,7 @@
 * Purpose: Component for staff members to view users and their enrollments
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 4/1/22
-* Last Modified: 4/22/22
+* Last Modified: 5/1/22
 */
 
 <script>
@@ -37,6 +37,15 @@
 						});
 					});
 				});
+			},
+			/*
+			* Name: getEnrollmentDate
+			* Purpose: Parses the enrollment date from database format to MM/YY format.
+			* Parameters: date (date in database string format)
+			*/
+			getEnrollmentDate(date) {
+				var parsedDate = new Date(date)
+				return `${parsedDate.getMonth()}/${parsedDate.getDate()}/${parsedDate.getFullYear()}`;
 			}
 		}
 	}
@@ -60,7 +69,7 @@
 						<div v-if="user.Enrollments != null">
 							<div class="pt-3">Enrollments</div>
 							<div v-if="user.Enrollments.length != 0">
-								<div v-for="enrollment in user.Enrollments" v-bind:key="enrollment" class="fs-6 pt-3">This user has {{ enrollment.NumOfEnrollments }} spot(s) reserved for the {{ enrollment.Title }} program.
+								<div v-for="enrollment in user.Enrollments" v-bind:key="enrollment" class="fs-6 pt-3">This user has {{ enrollment.NumOfEnrollments }} spot(s) reserved for the {{ enrollment.Title }} program beginning on {{ this.getEnrollmentDate(enrollment.OfferingPeriod) }}.
 								</div>
 							</div>
 							<div v-else class="fs-6 pt-3">This user has no current enrollments.</div>
