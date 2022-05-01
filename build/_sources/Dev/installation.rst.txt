@@ -1,12 +1,13 @@
 Installing and Running MyMCA
 ============================
 
-Setting Up a Development Environment
-------------------------------------
+Installing MyMCA
+----------------
+
 First, you will need to install Node.js from |node.js link|.  After this is done, you can set up the database, backend, and frontend separately.  To get started, download the contents of the |MyMCA link|.
 
 Database
---------
+~~~~~~~~
 
 - Download |sqlite link|.
 - Add the :code:`/MyMCA-dist/db/cs341-ymca.db` database in SQLiteStudio by navigating to "Database > Add Database".
@@ -15,7 +16,7 @@ Database
 Your database is now up-to-date and ready to interact with the server.  Don't forget to edit :code:`index.js` to point to your database file (if it is not already).
 
 Backend
--------
+~~~~~~~
 
 In the directory you want to create the backend project in, run::
 
@@ -32,7 +33,8 @@ Then, retrieve :code:`/MyMCA-dist/backend/index.js` and place it in the project 
 Don't forget to edit :code:`index.js` to point to your database file (if it is not already).
 
 Frontend
---------
+~~~~~~~~
+
 In the directory you created for the backend project, run the following::
 
 	npm install -g @vue/cli
@@ -58,6 +60,11 @@ Then, to run the project, run this command in the project folder::
 	npm run serve
 
 You will now be able to access the project through |localhost link|.
+
+Running MyMCA
+-------------
+
+To run MyMCA, you simply need to have both the backend and frontend portions of the project running at the same time.  Run :code:`node index.js` in the backend directory and run :code:`npm run serve` in the frontend directory.  Go to |localhost link| in any browser (preferred Chromium or Safari) to view the project while it is running.
 
 .. |node.js link| raw:: html
 

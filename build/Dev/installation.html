@@ -50,12 +50,11 @@
             
   <section id="installing-and-running-mymca">
 <h1>Installing and Running MyMCA<a class="headerlink" href="#installing-and-running-mymca" title="Permalink to this headline">¶</a></h1>
-<section id="setting-up-a-development-environment">
-<h2>Setting Up a Development Environment<a class="headerlink" href="#setting-up-a-development-environment" title="Permalink to this headline">¶</a></h2>
+<section id="installing-mymca">
+<h2>Installing MyMCA<a class="headerlink" href="#installing-mymca" title="Permalink to this headline">¶</a></h2>
 <p>First, you will need to install Node.js from <a href="https://nodejs.org/en/download/" target="_blank">here</a>.  After this is done, you can set up the database, backend, and frontend separately.  To get started, download the contents of the <a href="https://github.com/miller8746/MyMCA" target="_blank">main branch of MyMCA on GitHub</a>.</p>
-</section>
 <section id="database">
-<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<h3>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Download <a href="https://sqlitestudio.pl" target="_blank">SQLiteStudio</a>.</p></li>
 <li><p>Add the <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist/db/cs341-ymca.db</span></code> database in SQLiteStudio by navigating to “Database &gt; Add Database”.</p></li>
@@ -64,7 +63,7 @@
 <p>Your database is now up-to-date and ready to interact with the server.  Don’t forget to edit <code class="code docutils literal notranslate"><span class="pre">index.js</span></code> to point to your database file (if it is not already).</p>
 </section>
 <section id="backend">
-<h2>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h2>
+<h3>Backend<a class="headerlink" href="#backend" title="Permalink to this headline">¶</a></h3>
 <p>In the directory you want to create the backend project in, run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">init</span>
 </pre></div>
@@ -80,7 +79,7 @@
 <p>Don’t forget to edit <code class="code docutils literal notranslate"><span class="pre">index.js</span></code> to point to your database file (if it is not already).</p>
 </section>
 <section id="frontend">
-<h2>Frontend<a class="headerlink" href="#frontend" title="Permalink to this headline">¶</a></h2>
+<h3>Frontend<a class="headerlink" href="#frontend" title="Permalink to this headline">¶</a></h3>
 <p>In the directory you created for the backend project, run the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="nd">@vue</span><span class="o">/</span><span class="n">cli</span>
 <span class="n">vue</span> <span class="n">create</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span>
@@ -106,6 +105,11 @@
 <p>You will now be able to access the project through <a href="http://localhost:8080" target="_blank">http://localhost:8080</a>.</p>
 </section>
 </section>
+<section id="running-mymca">
+<h2>Running MyMCA<a class="headerlink" href="#running-mymca" title="Permalink to this headline">¶</a></h2>
+<p>To run MyMCA, you simply need to have both the backend and frontend portions of the project running at the same time.  Run <code class="code docutils literal notranslate"><span class="pre">node</span> <span class="pre">index.js</span></code> in the backend directory and run <code class="code docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">serve</span></code> in the frontend directory.  Go to <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> in any browser (preferred Chromium or Safari) to view the project while it is running.</p>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -118,10 +122,13 @@
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Installing and Running MyMCA</a><ul>
-<li><a class="reference internal" href="#setting-up-a-development-environment">Setting Up a Development Environment</a></li>
+<li><a class="reference internal" href="#installing-mymca">Installing MyMCA</a><ul>
 <li><a class="reference internal" href="#database">Database</a></li>
 <li><a class="reference internal" href="#backend">Backend</a></li>
 <li><a class="reference internal" href="#frontend">Frontend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-mymca">Running MyMCA</a></li>
 </ul>
 </li>
 </ul>
