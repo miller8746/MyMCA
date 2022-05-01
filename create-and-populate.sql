@@ -64,10 +64,10 @@ INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (2, 'Bob H.', 1, 1
 INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (3, 'Jane Doe', 1, 0, 1);
 INSERT INTO Users(UserId, Name, Member, Staff, Active) VALUES (4, 'Luke Anderson', 1, 0, 1);
 
-INSERT INTO Credentials(Username, Password, UserId) VALUES ('susan', '123', 1);
-INSERT INTO Credentials(Username, Password, UserId) VALUES ('bobby', 'abc', 2);
-INSERT INTO Credentials(Username, Password, UserId) VALUES ('jdoe', 'jdoe', 3);
-INSERT INTO Credentials(Username, Password, UserId) VALUES ('landerson', 'landerson', 4);
+INSERT INTO Credentials(Username, Password, UserId) VALUES ('susan', '5fbe0a2db6146918c3df5139fb78dff44e40b06e', 1);  /* Password is '123' */
+INSERT INTO Credentials(Username, Password, UserId) VALUES ('bobby', '81600936764f8f0c8d587032114425e934b0c67f', 2);  /* Password is 'abc' */
+INSERT INTO Credentials(Username, Password, UserId) VALUES ('jdoe', '80363019802f096f6da687aad439e1d982a5d963', 3);  /* Password is 'jdoe' */
+INSERT INTO Credentials(Username, Password, UserId) VALUES ('landerson', 'aaa86131a8b5335797c211a3c2601b844879004b', 4);  /* Password is 'landerson' */
 
 INSERT INTO Programs(Title, OfferingPeriod, OfferingPeriodEnd, Description, Cost, Capacity, Location, Repetitions, Active)
 VALUES ('X-treme Cycling', '2022-07-06T07:00', '2022-07-06T08:00', 'Hour long super intense workout!', 15.0, 10, 'Onalaska YMCA', 1, 1);
