@@ -27,7 +27,11 @@ To clear your search, simply hit the "Clear" button.
 
 .. image:: img/program2.png
 
-5. You will see a message that confirms you have reserved a slot in the program.  If you have family members that are also attending the program, **please reserve one slot per person**.
+5. You will be prompted to enter your first name to register the enrollment under.  Enter your name and click "Enroll".
+
+.. image:: img/program8.png
+
+6. You will see a message that confirms you have reserved a slot in the program.  If you have family members that are also attending the program, **please reserve one slot per person**.
 
 .. image:: img/program3.png
 
