@@ -3,7 +3,7 @@ Editing a Program
 
 As a Staff member, you will sometimes need to edit programs after they are already created.  This page will guide you on how to do so.
 
-1. Navigate to the Programs page and find the program you would like to edit.  Click the "Edit..." button next to the title of the program.
+1. Navigate to the Programs page and find the program you would like to edit.  Click the pencil icon next to the title of the program.
 
 .. image:: img/editprogram1.png
 

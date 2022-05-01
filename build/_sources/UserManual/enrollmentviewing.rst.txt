@@ -9,7 +9,7 @@ After you have signed up for programs, you will be able to see them from within 
 
 .. image:: img/enrollmentviewing1.png
 
-3. You will be greeted with a list of your current program enrollments.  You can see when they are offered, how much you are paying per session, and how many spots you currently have reserved.
+3. You will be greeted with a list of your current program enrollments.  You can see when they are offered, how much you are paying per session, and how many spots you currently have reserved.  If you have multiple enrollments per program, they will appear separately under the name they are registered to.
 
 .. image:: img/enrollmentviewing2.png
 

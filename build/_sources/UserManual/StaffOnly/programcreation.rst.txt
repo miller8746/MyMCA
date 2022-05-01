@@ -14,7 +14,7 @@ This tutorial will teach you how to create a program within the MyMCA system.
 - The Start Date of the program is required to be before the End Date.
 - More Occurrences can be added by using the "+" button and removed using the "-" button.  Only add as many Occurrences as needed.
 
-3. When all information is filled in properly, click the "Submit" button.
+3. When all information is filled in properly, click the "Save" button.
 
 .. image:: img/programcreation2.png
 

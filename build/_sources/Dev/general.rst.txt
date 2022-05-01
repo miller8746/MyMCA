@@ -6,7 +6,6 @@ If you are a developer for MyMCA, you have come to the right place.  Learn how t
 .. toctree::
 
    Installing and Running MyMCA <installation>
-   Setting Up Database <db>
    Publishing Steps <publishing>
    Updating Documentation <updocs>
    Useful Resources <resources>

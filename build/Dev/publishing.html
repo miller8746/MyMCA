@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Updating Documentation" href="updocs.html" />
-    <link rel="prev" title="Setting Up Database" href="db.html" />
+    <link rel="prev" title="Installing and Running MyMCA" href="installation.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
@@ -35,7 +35,7 @@
           <a href="updocs.html" title="Updating Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="db.html" title="Setting Up Database"
+          <a href="installation.html" title="Installing and Running MyMCA"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="general.html" accesskey="U">Developer Documentation</a> &#187;</li>
@@ -51,7 +51,7 @@
   <section id="publishing-steps">
 <h1>Publishing Steps<a class="headerlink" href="#publishing-steps" title="Permalink to this headline">¶</a></h1>
 <p>Due to the nature of the MyMCA development environment, commits to MyMCA must be done manually.  Below is a guide to help you commit to the proper directory structure of the <code class="code docutils literal notranslate"><span class="pre">main</span></code> branch of MyMCA.</p>
-<p>First, visit the <a href="https://github.com/miller8746/MyMCA" target="_blank">main branch of MyMCA on GitHub</a>.  The <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist</span></code> directory contains three folders, one called <code class="code docutils literal notranslate"><span class="pre">/frontend</span></code>, one called <code class="code docutils literal notranslate"><span class="pre">/db</span></code>, and one called <code class="code docutils literal notranslate"><span class="pre">/backend</span></code>.  The <code class="code docutils literal notranslate"><span class="pre">/frontend</span></code> directory contains the Vue.js project, while the <code class="code docutils literal notranslate"><span class="pre">/backend</span></code> directory contains the Node.js project.  The <code class="code docutils literal notranslate"><span class="pre">/db</span></code> folder contains the script for creating and populating the database, and will only ever need to be changed when database tables are altered.</p>
+<p>First, visit the <a href="https://github.com/miller8746/MyMCA" target="_blank">main branch of MyMCA on GitHub</a>.  The <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist</span></code> directory contains three folders, one called <code class="code docutils literal notranslate"><span class="pre">/frontend</span></code>, one called <code class="code docutils literal notranslate"><span class="pre">/backend</span></code>, and one called <code class="code docutils literal notranslate"><span class="pre">/db</span></code>.  The <code class="code docutils literal notranslate"><span class="pre">/frontend</span></code> directory contains the Vue.js project, while the <code class="code docutils literal notranslate"><span class="pre">/backend</span></code> directory contains the Node.js project.  The <code class="code docutils literal notranslate"><span class="pre">/db</span></code> folder contains the script for creating and populating the database and the database scaffold, and will only ever need to be changed when database tables are altered (requiring an update to <code class="code docutils literal notranslate"><span class="pre">create-and_populate.sql</span></code>).</p>
 <p>In order to make a commit, I recommend creating a <code class="code docutils literal notranslate"><span class="pre">/MyMCA-dist</span></code> directory on your machine with the appropriate subdirectories, populate them with the changed files, and drag the entire directory into GitHub.  This will prevent the repository from being filled from unnecessary files that are created while scaffolding the project, such as config files and dependency code.</p>
 <p><strong>The only file that will ever need to be updated in</strong> <code class="code docutils literal notranslate"><span class="pre">/backend</span></code> <strong>is</strong> <code class="code docutils literal notranslate"><span class="pre">index.js</span></code> <strong>!</strong></p>
 <p><strong>The only files that will ever need to be updated in</strong> <code class="code docutils literal notranslate"><span class="pre">/frontend</span></code> <strong>are</strong> <code class="code docutils literal notranslate"><span class="pre">vue.config.js</span></code> <strong>and files in the directories</strong> <code class="code docutils literal notranslate"><span class="pre">/public</span></code> <strong>and</strong> <code class="code docutils literal notranslate"><span class="pre">/src</span></code> <strong>!</strong></p>
@@ -66,8 +66,8 @@
         <div class="sphinxsidebarwrapper">
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="db.html"
-                          title="previous chapter">Setting Up Database</a></p>
+    <p class="topless"><a href="installation.html"
+                          title="previous chapter">Installing and Running MyMCA</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -105,7 +105,7 @@
           <a href="updocs.html" title="Updating Documentation"
              >next</a> |</li>
         <li class="right" >
-          <a href="db.html" title="Setting Up Database"
+          <a href="installation.html" title="Installing and Running MyMCA"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">MyMCA  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="general.html" >Developer Documentation</a> &#187;</li>
