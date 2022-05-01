@@ -258,7 +258,7 @@
 				<div class="programButtonContainer">
 					<div>
 						<div class="button" @click="submitProgram()">Save</div>
-						<div class="button editProgramRemoveButton" @click="this.isDeactivateDialogVisible = true">Deactivate</div>
+						<div v-if="program != null" class="button editProgramRemoveButton" @click="this.isDeactivateDialogVisible = true">Deactivate</div>
 					</div>
 					<div v-if="this.saved">Saved.</div>
 					<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
