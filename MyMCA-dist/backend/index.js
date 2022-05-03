@@ -168,54 +168,6 @@ app.get('/api/users/:userId/enrollments', (req, res) => {
   });
 });
 
-// Get time conflict
-// app.get('api/timeConflict/:programId/:userId', (req, res) => {
-//   let programId = req.params.programId;
-//   let userId = req.params.userId;
-//   let hasConflict = false;
-
-//   let sql = `SELECT ${allProgramAttributes}
-//               FROM Programs 
-//               WHERE ProgramId = ${programId}`;
-
-//   db.all(sql, [], (err, newProgram) => {
-//       if( er ){
-//         console.log("Something happened.");
-//       }
-
-//      sql = `SELECT p.ProgramId, OfferingPeriod, OfferingPeriodEnd, Repetitions
-//               FROM Programs p JOIN Enrollments e 
-//                 ON e.ProgramId = p.ProgramId 
-//               WHERE e.UserId = ${userId};`;
-
-//       db.all(sql, [], (err, allEnrollments) => {
-        
-//         allEnrollments.forEach(program => { 
-//             for(let i = 0; i < program['Repetitions']; i++){
-//                 var newProgramDateStart = new Date(newProgram['OfferingPeriod']);
-//                 newProgramDateStart.setDate(newProgramDateStart.getDate() + i);
-
-//                 var newProgramDateEnd = new Date(newProgram['OfferingPeriodEnd']);
-//                 newProgramDateEnd.setDate(newProgramDateEnd.getDate() + i);
-
-//                 var currentProgramDateStart = new Date(program['OfferingPeriod']);
-//                 currentProgramDateStart.setDate(currentProgramDateStart.getDate() + i);
-
-//                 var currentProgramDateEnd = new Date(program['OfferingPeriodEnd']);
-//                 currentProgramDateEnd.setDate(currentProgramDateStart.getDate() + i);
-
-//                 hasConflict = newProgramDateStart == currentProgramDateStart &&
-//                         newProgramDateStart.getHours() >= currentProgramDateStart.getHours() && newProgramDateStart <= currentProgramDateEnd &&
-//                         currentProgramDateStart.getHours >= newProgramDateStart.getHours() && currentProgramDateStart <= newProgramDateEnd;
-
-//             }
-//         });
-
-//         return hasConflict;
-//       });
-//   });
-// });
-
 // Get a single program and its days for use in the Edit Program tool
 app.get('/api/edit-program/:programId', (req, res) => {
   let programId = req.params.programId;
@@ -329,8 +281,9 @@ app.post(`/api/deactivate-program/:programId`, (req, res) => {
 /* GETS */
 
 // Get for Users page
-app.get('/api/users/:searchTerm', (req, res) => {
-  let searchTerm = req.params.searchTerm;
+app.get('/api/users/search=:searchTerm', (req, res) => {
+  var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
+  
   let sql = ``;
   if (searchTerm == 'null') {
     // Get all users
@@ -409,15 +362,23 @@ app.post('/api/account/delete', (req, res) => {
   let sql = `UPDATE Users 
               SET Active = 0
               WHERE UserId = '${userId}';`;
-
+              
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.log(err);
     }
-
-    res.json(200).send();         
   });
 
+  sql = `DELETE FROM Enrollments 
+              WHERE UserId = '${userId}';`;
+
+  db.all(sql, [], (err, rows) => {
+      if (err) {
+        console.log(err);
+      }
+  });
+
+  res.json(200).send();         
 });
 
 
