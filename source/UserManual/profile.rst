@@ -18,3 +18,5 @@ If your information needs to be changed while using MyMCA, you can change it fro
 .. image:: img/profile3.png
 
 Please be aware that Staff members will periodically validate the states of user accounts.  Changing your account state without proper Staff authorization will result in account deactivation or permanent suspension.  If you believe your account has been deactivated by mistake, please contact a Staff member for assistance.
+
+If you would like to stop using the MyMCA service and deactivate your own account, please see :doc:`deactivate`.
