@@ -20,7 +20,7 @@
 			};
 		},
 		mounted() {
-			this.queryUsers(null);
+			this.queryUsers(0);
 		},
 		methods: {
 			/*

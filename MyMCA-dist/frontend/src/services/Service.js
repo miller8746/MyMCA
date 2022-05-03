@@ -167,7 +167,7 @@ class ProfileService {
 	* Parameters: searchTerm (string; optional parameter to filter by user's display name)
 	*/
 	getUsers(searchTerm) {
-		return http.get(`/api/users/${searchTerm}`, {});
+		return http.get(`/api/users/search=${searchTerm}`, {});
 	}
 }
 export default new ProfileService();
