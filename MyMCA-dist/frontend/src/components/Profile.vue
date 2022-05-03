@@ -16,7 +16,7 @@
 				credentials: this.$store.state.credentials,
 				isStaff: false,
 				isMember: false,
-				showSaved: false
+				isSaveConfirmationDisplayed: false
 			};
 		},
 		mounted() {
@@ -30,10 +30,11 @@
 			* Parameters: none
 			*/
 			saveInfo() {
-				this.showSaved = false;
-				// Parsing booleans for the database
+				this.isSaveConfirmationDisplayed = true;
+
 				var member = this.isMember == true ? 1 : 0;
 				var staff = this.isStaff == true ? 1 : 0;
+
 				Service.saveAccountInfo(member, staff, this.credentials.UserId).then((res) => {
 					this.credentials.Staff = staff;
 					this.credentials.Member = member;
@@ -48,61 +49,67 @@
 <template>
 	<div>
 		<Header :credentials="credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/profile.html'"/>
-		<div class="pageContent">
-			<div class="card border-primary mt-3">
+		<div class="body pt-5">
+			<div class="card">
 				<div class="card-body">
-					<h3 class="card-title card-header">Profile - {{ credentials.Name }}</h3>
-					<div class="profileContentContainer">
-						<div class="profileCheckboxes">
-							<div class="profileCheckboxContainer">
-								<div class="profileCheckboxLabel">Member?</div>
-								<input type="checkbox" v-model="isMember"/>
+					<div v-if="isSaveConfirmationDisplayed" class="alert alert-success alert-dismissible fade show alert-font" role="alert">
+						Your profile information has been saved
+						
+						<button type="button" 
+								class="btn-close"
+								data-bs-dismiss="alert"
+								aria-label="Close">
+						</button>
+					</div>
+
+					<h3 class="card-title card-header">{{ credentials.Name }}</h3>
+
+					<div>
+						<div class="switches">
+							<div class="form-check form-switch mb-3">
+								<input v-model="isMember" class="form-check-input" type="checkbox" role="switch" id="isMemberSwitch">
+								<label class="form-check-label" for="isMemberSwitch">Member</label>
 							</div>
-							<div class="profileCheckboxContainer">
-								<div class="profileCheckboxLabel">Staff?</div>
-								<input type="checkbox" v-model="isStaff"/>
+
+							<div class="form-check form-switch">
+								<input v-model="isStaff" class="form-check-input" type="checkbox" role="switch" id="isStaffSwitch">
+								<label class="form-check-label" for="isStaffSwitch">Staff</label>
 							</div>
 						</div>
-						<div class="profileButtonContainer">
-							<div class="btn btn-primary btn-sm mt-3 mb-3" @click="saveInfo">Save</div>
-						</div>
-						<div v-if="showSaved">Saved.</div>
+						
+						<div class="btn btn-primary btn-lg mt-3 mb-3" @click="saveInfo">Save</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>	
 	</div>
 </template>
 
 <style>
 
-.profileButtonContainer {
-	display: flex;
-	justify-content: space-around;
-	width: 240px;
+.body {
+	background-color: rgb(233, 233, 233);
+	min-width: 100vw;
+	min-height: 90vh;
 }
 
-.profileContentContainer {
-	font-size: 12pt;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	height: 160px;
-	justify-content: space-around;
+.card {
+	margin: 0% 5% 10% 5%;
+	padding-bottom: 150px;
 }
 
-.profileCheckboxes {
-	display: flex;
-	justify-content: space-evenly;
-	width: 300px;
+.switches {
+	margin-top: 30px;
+	margin-left: 10%;
 }
 
-.profileCheckboxContainer {
-	display: flex;
+.form-check-label {
+	font-size: larger;
 }
 
-.profileCheckboxLabel {
-	font-size: 12pt;
-	margin-right: 6px;
-}
 </style>
+
+
+
+
+

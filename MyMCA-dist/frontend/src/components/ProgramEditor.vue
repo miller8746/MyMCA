@@ -242,8 +242,8 @@
 								<option value="Saturday">Saturday</option>
 							</select>
 						</div>
-						<div class="btn btn-primary input-group-text edit-program-add-button dayOccurrenceButton" @click="addOccurrence">+</div>
 						<div class="btn input-group-text dayOccurrenceButton editProgramRemoveButton" @click="removeOccurrence">-</div>
+						<div class="btn btn-primary input-group-text edit-program-add-button dayOccurrenceButton" @click="addOccurrence">+</div>
 					</div>
 					<div class="input-group mb-2">
 						<span class="input-group-text program-create-label">Repeats for </span>
@@ -257,8 +257,8 @@
 				</div>
 				<div class="programButtonContainer">
 					<div>
+						<div class="button editProgramRemoveButton" @click="this.isDeactivateDialogVisible = true">Deactivate</div>
 						<div class="button" @click="submitProgram()">Save</div>
-						<div v-if="program != null" class="button editProgramRemoveButton" @click="this.isDeactivateDialogVisible = true">Deactivate</div>
 					</div>
 					<div v-if="this.saved">Saved.</div>
 					<div v-if="showFormatError" class="warningText">The information you have entered is not formatted correctly.</div>
@@ -320,7 +320,7 @@
 
 .edit-program-add-button {
 	background-color : rgb(32, 163, 32);
-	border-radius: 0% 50%;
+	border-radius: 50%;
 }
 
 .edit-program-add-button:hover {
