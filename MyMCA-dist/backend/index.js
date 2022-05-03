@@ -29,11 +29,11 @@ app.get('/api/login/:user&:pass', (req, res) => {
   let username = req.params.user;
   let password = req.params.pass;
   var hashPswd = hash({pswd: password});
-  console.log('Password hashed as ' + hashPswd);
+
   let sql = `SELECT u.UserId, Name, Member, Staff 
                 FROM Users u 
                 JOIN Credentials c ON u.UserId = c.UserId 
-                WHERE Username = '${username}' AND PASSWORD = '${hashPswd}';`
+                WHERE Username = '${username}' AND PASSWORD = '${hashPswd}' AND u.Active = 1;`
 
   db.get(sql, [], (err, row) => {
     if (err) {
@@ -402,6 +402,25 @@ app.post('/api/account/', (req,res) => {
   });
 })
 
+//POST to soft delete account
+app.post('/api/account/delete', (req, res) => {
+  let userId = req.body.userId;
+
+  let sql = `UPDATE Users 
+              SET Active = 0
+              WHERE UserId = '${userId}';`;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+
+    res.json(200).send();         
+  });
+
+});
+
+
 // OTHER
 
 app.listen(port, () => {
@@ -418,5 +437,4 @@ let db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Connected to the MyMCA database.'); // REMOVE FOR PROD
 });
