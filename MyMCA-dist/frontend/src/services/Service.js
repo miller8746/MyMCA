@@ -126,6 +126,17 @@ class ProfileService {
 			isStaff: userInfo.isStaff
 		});
 	}
+
+	/*
+	* Name: deactivateAccount
+	* Purpose: Deactivated an account in the system with the information given
+	* Parameters: userid (String; userid)
+	*/
+	deactivateAccount(userId) {
+		return http.post('/api/account/delete', {
+			userId: userId
+		});
+	}	
 	/*
 	* Name: saveAccountInfo
 	* Purpose: Saves changes to a user's account information made on the Profile page

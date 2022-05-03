@@ -366,6 +366,7 @@
 	background-color: rgb(233, 233, 233);
 	min-width: 100vw;
 	min-height: 100vh;
+	padding-bottom: 300px;
 }
 
 .list-group-item {
@@ -447,7 +448,8 @@
 
 .enrollment-name {
 	margin-top: 10px;
-	font-weight: bold;
+	font-weight: bolder;
+	color: black;
 }
 
 </style>

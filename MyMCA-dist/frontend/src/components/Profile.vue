@@ -9,14 +9,17 @@
 <script>
 	import Header from './Header.vue'
 	import Service from '../services/Service.js'
+	import DialogPrompt from './DialogPrompt.vue'
+
 	export default {
-		components: { Header },
+		components: { Header, DialogPrompt },
 		data() {
 			return {
 				credentials: this.$store.state.credentials,
 				isStaff: false,
 				isMember: false,
-				isSaveConfirmationDisplayed: false
+				isSaveConfirmationDisplayed: false,
+				isDialogVisible: false,
 			};
 		},
 		mounted() {
@@ -41,6 +44,21 @@
 					this.$store.commit('login', this.credentials);
 					this.showSaved = true;
 				});
+			},
+			/*
+			* Name: deactivateAccount
+			* Purpose: Deactivates the profile
+			* Parameters: userId
+			*/
+			deactivateAccount(userId) {
+				Service.deactivateAccount(userId).then((res) => {
+					this.$store.commit('logout');
+					if (!this.isLoginPage) {
+						this.$router.push('/');
+					} else {
+						this.$router.go();
+					}
+				});
 			}
 		}
 	}
@@ -49,8 +67,16 @@
 <template>
 	<div>
 		<Header :credentials="credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/profile.html'"/>
-		<div class="body pt-5">
-			<div class="card">
+		<DialogPrompt v-if="this.isDialogVisible" 
+						:confirmFunction="deactivateAccount"
+						:confirmFunctionInput="this.credentials.UserId"
+						:text="'Are you sure you want to deactivate this account? This action cannot be undone.'"
+						:cancelButtonText="'Cancel'"
+						:confirmButtonText="'Deactivate'"
+						:isDialogVisible="this.isDialogVisible"/>
+
+		<div class="profile-body pt-5 container">
+			<div class="profile card">
 				<div class="card-body">
 					<div v-if="isSaveConfirmationDisplayed" class="alert alert-success alert-dismissible fade show alert-font" role="alert">
 						Your profile information has been saved
@@ -65,19 +91,22 @@
 					<h3 class="card-title card-header">{{ credentials.Name }}</h3>
 
 					<div>
-						<div class="switches">
-							<div class="form-check form-switch mb-3">
+						<div class="switches row">
+							<div class="col form-check form-switch mb-3 member">
 								<input v-model="isMember" class="form-check-input" type="checkbox" role="switch" id="isMemberSwitch">
 								<label class="form-check-label" for="isMemberSwitch">Member</label>
 							</div>
 
-							<div class="form-check form-switch">
+							<div class="col form-check form-switch">
 								<input v-model="isStaff" class="form-check-input" type="checkbox" role="switch" id="isStaffSwitch">
 								<label class="form-check-label" for="isStaffSwitch">Staff</label>
 							</div>
 						</div>
 						
-						<div class="btn btn-primary btn-lg mt-3 mb-3" @click="saveInfo">Save</div>
+						<div class="alignment">
+							<div class="button-margin button delete" @click="this.isDialogVisible = true">Delete</div>
+							<div class="button-margin button" @click="saveInfo">Save</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -87,15 +116,18 @@
 
 <style>
 
-.body {
+.profile-body {
 	background-color: rgb(233, 233, 233);
 	min-width: 100vw;
 	min-height: 90vh;
 }
 
-.card {
-	margin: 0% 5% 10% 5%;
-	padding-bottom: 150px;
+.profile {
+	margin: 0% 20% 10% 20%;
+	padding-bottom: 50px;
+
+	border-top-color: #44a1e4;
+	border-top-width: 10px;
 }
 
 .switches {
@@ -103,8 +135,38 @@
 	margin-left: 10%;
 }
 
+.member {
+	margin-left: 100px;
+}
+
+.form-check-input {
+	height: 20px;
+}
+
 .form-check-label {
-	font-size: larger;
+	font-size: 20px !important;
+}
+
+.button-margin {
+	max-width: 400px !important;
+}
+
+.delete {
+	background-color: #ff5454 !important;
+	color: #FFFFFF;
+	border-radius: 50%;
+}
+
+.delete:hover {
+	background-color: #de4949 !important;
+	color: #FFFFFF;
+}
+
+.alignment {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 70px;
 }
 
 </style>
