@@ -30,17 +30,24 @@ app.get('/api/login/:user&:pass', (req, res) => {
   let password = req.params.pass;
   var hashPswd = hash({pswd: password});
 
-  let sql = `SELECT u.UserId, Name, Member, Staff 
+  let sql = `SELECT u.UserId, Name, Member, Staff, Active
                 FROM Users u 
                 JOIN Credentials c ON u.UserId = c.UserId 
-                WHERE Username = '${username}' AND PASSWORD = '${hashPswd}' AND u.Active = 1;`
+                WHERE Username = '${username}' AND PASSWORD = '${hashPswd}';`
 
   db.get(sql, [], (err, row) => {
     if (err) {
-      console.log("oopsie");
+      console.log(err);
     }
-	  
-    res.send(row);
+    
+    // Send different results if account does not exist, account is deactivated, or account is valid
+    if (row == null) {
+      res.send('');
+    } else if (row.Active == 0) {
+      res.send('inactive');
+    } else {
+      res.send(row);
+    }
   });
 });
 

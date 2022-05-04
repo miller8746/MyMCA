@@ -3,7 +3,7 @@
 * Purpose: Component responsible for taking inputs for program information
 * Authors: Heather Miller
 * Date Created: 2/23/22
-* Last Modified: 5/1/22
+* Last Modified: 5/4/22
 */
 
 <script>
@@ -195,7 +195,8 @@
 						:text="'Are you sure you want to deactivate this program? This action cannot be undone.'"
 						:cancelButtonText="'Cancel'"
 						:confirmButtonText="'Deactivate'"
-						:isDialogVisible="this.isDeactivateDialogVisible"/>
+						:isDialogVisible="this.isDeactivateDialogVisible"
+						@exitPrompt="this.isDeactivateDialogVisible = false;"/>
 		<div class="pageContent create-page">
 			<div class="card create-card shadow-lg">
 				<div class="card-body">

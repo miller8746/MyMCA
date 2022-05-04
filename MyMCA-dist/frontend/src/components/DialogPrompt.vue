@@ -1,9 +1,9 @@
 /*
 * File name: DialogPrompt.vue
 * Purpose: Displays a dialog prompt over the application with the specified content.
-* Authors: Heather Miller
+* Authors: Heather Miller, Hannah Hunt
 * Date Created: 4/24/22
-* Last Modified: 4/24/22
+* Last Modified: 5/4/22
 */
 
 <script>
@@ -28,8 +28,6 @@
             <div class="modal-body">
               <slot name="body">{{text}}</slot>
             </div>
-
-            <!-- lol this is bad. if anyone has a better idea how to do put an input in a 'shared component' plz change :) -->
             <div v-if="confirmButtonText=='Enroll'" class="input-group mb-3">
 							<span class="input-group-text" id="basic-addon1">First Name</span>
 							<input v-model="this.firstName" type="text" class="form-control text">
@@ -37,7 +35,7 @@
 
             <div class="modal-footer">
               <slot name="footer">
-                <button class="modal-default-button btn btn-secondary" @click="isDialogVisible = false">{{cancelButtonText}}</button>
+                <button class="modal-default-button btn btn-secondary" @click="this.$emit('exitPrompt');">{{cancelButtonText}}</button>
                 <button class="modal-default-button btn btn-primary" @click="confirmFunction(confirmFunctionInput, firstName)">{{confirmButtonText}}</button>
               </slot>
             </div>

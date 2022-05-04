@@ -1,9 +1,9 @@
 /*
 * File name: Profile.vue
 * Purpose: Component responsible for viewing and changing user information
-* Authors: Heather Miller
+* Authors: Heather Miller, Hannah Hunt
 * Date Created: 3/8/22
-* Last Modified: 4/22/22
+* Last Modified: 5/4/22
 */
 
 <script>
@@ -59,6 +59,14 @@
 						this.$router.go();
 					}
 				});
+			},
+			/*
+			* Name: closeDeactivatePrompt
+			* Purpose: Closes the prompt for deactivating the user.
+			* Parameters: none
+			*/
+			closeDeactivatePrompt() {
+				this.isDialogVisible = false;
 			}
 		}
 	}
@@ -73,13 +81,14 @@
 						:text="'Are you sure you want to deactivate this account? This action cannot be undone.'"
 						:cancelButtonText="'Cancel'"
 						:confirmButtonText="'Deactivate'"
-						:isDialogVisible="this.isDialogVisible"/>
+						:isDialogVisible="this.isDialogVisible"
+						@exitPrompt="this.isDialogVisible = false;"/>
 
 		<div class="profile-body pt-5 container">
 			<div class="profile card">
 				<div class="card-body">
 					<div v-if="isSaveConfirmationDisplayed" class="alert alert-success alert-dismissible fade show alert-font" role="alert">
-						Your profile information has been saved
+						Your profile information has been saved.
 						
 						<button type="button" 
 								class="btn-close"
@@ -104,7 +113,7 @@
 						</div>
 						
 						<div class="alignment">
-							<div class="button-margin button delete" @click="this.isDialogVisible = true">Delete</div>
+							<div class="button-margin button delete" @click="this.isDialogVisible = true">Deactivate</div>
 							<div class="button-margin button" @click="saveInfo">Save</div>
 						</div>
 					</div>
@@ -154,7 +163,6 @@
 .delete {
 	background-color: #ff5454 !important;
 	color: #FFFFFF;
-	border-radius: 50%;
 }
 
 .delete:hover {

@@ -3,7 +3,7 @@
 * Purpose: Component for staff members to view users and their enrollments
 * Authors: Heather Miller, Hannah Hunt
 * Date Created: 4/1/22
-* Last Modified: 5/1/22
+* Last Modified: 5/4/22
 */
 
 <script>
@@ -48,7 +48,7 @@
 			*/
 			getEnrollmentDate(date) {
 				var parsedDate = new Date(date)
-				return `${parsedDate.getMonth()}/${parsedDate.getDate()}/${parsedDate.getFullYear()}`;
+				return `${parsedDate.getMonth()}/${parsedDate.getDate()}/${parsedDate.getFullYear()} at ${parsedDate.toLocaleTimeString()}`;
 			},
 
 			/*
@@ -85,7 +85,8 @@
 						:text="'Are you sure you want to deactivate this account? This action cannot be undone.'"
 						:cancelButtonText="'Cancel'"
 						:confirmButtonText="'Deactivate'"
-						:isDialogVisible="this.isDialogVisible"/>
+						:isDialogVisible="this.isDialogVisible"
+						@exitPrompt="this.isDialogVisible = false;"/>
 		<div class="body pt-3">
 			<SearchBar @search="this.queryUsers" :term="'Users'"/>
 			<div class="list-group list-group-horizontal align-items-stretch flex-wrap user-group">
@@ -99,10 +100,10 @@
 								<img v-if="user.Member == 1" src="../assets/memberIcon.png" class="userCredentialImage"/>
 								<img v-if="user.Staff == 1" src="../assets/staffIcon.png" class="userCredentialImage"/>
 							</span>
-							<span v-if="user.Active == 1"
+							<span v-if="user.Active == 1 && user.UserId != this.credentials.UserId"
 									class="material-icons delete-user" 
 									@click="this.isDialogVisible = true; this.selectedUserId = user.UserId">delete</span>
-							<span v-else class="inactive-user-label">Inactive User</span>
+							<span v-else-if="user.UserId != this.credentials.UserId" class="inactive-user-label">Inactive User</span>
 						</div>
 						<div v-if="user.Enrollments != null">
 							<div class="pt-3">Enrollments</div>

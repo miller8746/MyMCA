@@ -3,7 +3,7 @@
 * Purpose: Component responsible for logging in the user
 * Authors: Heather Miller, Hannah Hunt, Chloe McQuin
 * Date Created: 2/16/22
-* Last Modified: 4/22/22
+* Last Modified: 5/4/22
 */
 
 <script>
@@ -17,7 +17,8 @@
 				password: '',
 				credentials: null,
 				showLoginError: false,
-				showDataError: false
+				showDataError: false,
+				showInactiveError: false
 			}
 		},
 		methods: {
@@ -29,12 +30,16 @@
 			submitCredentials() {
 				this.showLoginError = false;
 				this.showDataError = false;
+				this.showInactiveError = false;
 				// Verify both fields are filled in
 				if (this.username != '' && this.password != '') {
 					Service.getCredentials(this.username, this.password).then(response => {
 						if (response.data == "") {
 							// Login unsuccessful
 							this.showLoginError = true;
+						} else if (response.data == 'inactive') {
+							// Account is deactivated, send special message
+							this.showInactiveError = true;
 						} else {
 							// Login successful, save in VueX state
 							this.credentials = response.data;
@@ -103,6 +108,7 @@
 					<div @click="submitCredentials" class="button ">Log in</div>
 					<div v-if="showLoginError" class="warningText">The credentials you have entered are not correct.</div>
 					<div v-if="showDataError" class="warningText">Please fill in both fields.</div>
+					<div v-if="showInactiveError" class="warningText">This acccount has been deactivated.</div>
 				</div>
 				<div class="linkText">
 					<span class="userInputText">Don't have an account?</span>
@@ -204,7 +210,7 @@
 	display: flex;
 	width: 400px;
 	height: 400px;
-	margin-top: -545px;
+	margin-top: -640px;
 	justify-content: space-around;
 	align-items: center;
 	flex-direction: column;
