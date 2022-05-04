@@ -21,7 +21,7 @@ var router = express.Router();
 
 // Common attributes for selection
 const allProgramAttributes = "ProgramId, Title, OfferingPeriod, OfferingPeriodEnd, Description, Location, Cost, Capacity, Repetitions, Active"
-const allUserAttributes = "UserId, Name,Member, Staff"
+const allUserAttributes = "UserId, Name,Member, Staff, Active"
 const allCredentialAttributes = "Username, Password, UserId";
 
 // Log in with username and password
@@ -284,16 +284,9 @@ app.post(`/api/deactivate-program/:programId`, (req, res) => {
 app.get('/api/users/search=:searchTerm', (req, res) => {
   var searchTerm = req.params.searchTerm == 0 ? '%' : req.params.searchTerm;
   
-  let sql = ``;
-  if (searchTerm == 'null') {
-    // Get all users
-    console.log('Getting all users');
-    sql = `SELECT ${allUserAttributes} FROM Users`;
-  } else {
-    // Get users that match the search term
-    console.log(`Getting users that match ${searchTerm}`);
-    sql = `SELECT ${allUserAttributes} FROM Users WHERE Name LIKE '${searchTerm}%'`;
-  }
+  console.log(`Getting users that match ${searchTerm}`);
+  let sql = `SELECT ${allUserAttributes} FROM Users WHERE Name LIKE '${searchTerm}%'`;
+  
   db.all(sql, [], (err, rows) => {
     if (err) { console.log(err); }
     res.send(rows);
@@ -359,26 +352,24 @@ app.post('/api/account/', (req,res) => {
 app.post('/api/account/delete', (req, res) => {
   let userId = req.body.userId;
 
-  let sql = `UPDATE Users 
+  let updateUsers = `UPDATE Users 
               SET Active = 0
               WHERE UserId = '${userId}';`;
-              
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      console.log(err);
-    }
-  });
 
-  sql = `DELETE FROM Enrollments 
+  let updateEnrollments = `UPDATE Enrollments 
+              SET Active = 0 
               WHERE UserId = '${userId}';`;
 
-  db.all(sql, [], (err, rows) => {
-      if (err) {
-        console.log(err);
-      }
-  });
-
-  res.json(200).send();         
+  db.run(updateUsers)
+      .run(updateEnrollments)
+      .all(`SELECT ${allUserAttributes} FROM Users`, (err, rows) => {
+        if( err ){
+          console.log(error);
+        } else {
+          console.log(rows);
+          res.send(rows);
+        }
+      });
 });
 
 
