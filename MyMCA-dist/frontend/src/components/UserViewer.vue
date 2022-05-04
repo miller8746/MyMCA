@@ -10,13 +10,16 @@
 	import Header from './Header.vue'
 	import SearchBar from './SearchBar.vue'
 	import Service from '../services/Service.js'
+	import DialogPrompt from './DialogPrompt.vue'
 
 	export default {
-		components: { Header, SearchBar },
+		components: { Header, SearchBar, DialogPrompt },
 		data() {
 			return {
 				credentials: this.$store.state.credentials,
 				users: null,
+				isDialogVisible: false,
+				selectedUserId: null,
 			};
 		},
 		mounted() {
@@ -46,6 +49,28 @@
 			getEnrollmentDate(date) {
 				var parsedDate = new Date(date)
 				return `${parsedDate.getMonth()}/${parsedDate.getDate()}/${parsedDate.getFullYear()}`;
+			},
+
+			/*
+			* Name: deactivateAccount
+			* Purpose: Deactivates the profile
+			* Parameters: userId
+			*/
+			deactivateAccount(userId) {
+				Service.deactivateAccount(userId).then((res) => {
+					if( userId == this.credentials.UserId ) {
+						this.$store.commit('logout');
+						this.$router.push('/');
+					} else {
+						this.isDialogVisible = false;
+						this.users = res.data;
+						this.users.forEach(user => {
+							Service.getUserEnrollments(user.UserId).then(response => {
+								user.Enrollments = response.data;
+							});
+						});
+					}
+				});
 			}
 		}
 	}
@@ -54,17 +79,30 @@
 <template>
 	<div>
 		<Header :credentials="this.credentials" :helpLink="'https://miller8746.github.io/MyMCA/build/UserManual/StaffOnly/userviewing.html'"/>
+		<DialogPrompt v-if="this.isDialogVisible" 
+						:confirmFunction="deactivateAccount"
+						:confirmFunctionInput="this.selectedUserId"
+						:text="'Are you sure you want to deactivate this account? This action cannot be undone.'"
+						:cancelButtonText="'Cancel'"
+						:confirmButtonText="'Deactivate'"
+						:isDialogVisible="this.isDialogVisible"/>
 		<div class="body pt-3">
 			<SearchBar @search="this.queryUsers" :term="'Users'"/>
 			<div class="list-group list-group-horizontal align-items-stretch flex-wrap user-group">
 				<div v-for="user in this.users" v-bind:key="user" class="list-group-item program-card card shadow-sm bg-body rounded user-item">
 					<div class="card-body">
 						<div class="program-card-title card-header">
-							<span class="fs-4">{{ user.Name }}</span>
+							<span v-if="user.Active == 1" class="fs-4">{{ user.Name }}</span>
+							<span v-else class="inactive-user">{{user.Name}}</span>
+
 							<span class="userViewCredentialsContainer">
 								<img v-if="user.Member == 1" src="../assets/memberIcon.png" class="userCredentialImage"/>
 								<img v-if="user.Staff == 1" src="../assets/staffIcon.png" class="userCredentialImage"/>
 							</span>
+							<span v-if="user.Active == 1"
+									class="material-icons delete-user" 
+									@click="this.isDialogVisible = true; this.selectedUserId = user.UserId">delete</span>
+							<span v-else class="inactive-user-label">Inactive User</span>
 						</div>
 						<div v-if="user.Enrollments != null">
 							<div class="pt-3">Enrollments</div>
@@ -99,6 +137,27 @@
 
 .user-group {
 	margin-left: 120px;
+}
+
+.delete-user {
+	float: right;
+	margin-top: 5px;
+	cursor: pointer;
+}
+
+.inactive-user-label {
+	float: right;
+	color: rgb(150, 150, 150);
+	font-size: small;
+	margin-top: 8px;
+}
+
+.inactive-user {
+	color: rgb(150, 150, 150);
+}
+
+.delete-user:hover {
+	color: rgb(26, 25, 25);
 }
 
 .user-item {
