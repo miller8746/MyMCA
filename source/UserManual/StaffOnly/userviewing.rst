@@ -21,4 +21,4 @@ To clear your search, simply hit the "Clear" button.
 
 .. image:: img/userviewing5.png
 
-Please ensure that the user information is consistent with the records of your assigned users.  If information looks out of place, please contact your senior Staff for further instructions.
+Please ensure that the user information is consistent with the records of your assigned users.  If information looks out of place, please see :doc:`userdeactivate`.
